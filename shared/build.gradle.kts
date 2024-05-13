@@ -1,0 +1,77 @@
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
+}
+
+kotlin {
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "11"
+            }
+        }
+    }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = "shared"
+            isStatic = true
+            export(libs.decompose)
+            export(libs.essenty.lifecycle)
+        }
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            api(libs.decompose)
+            api(libs.decompose.composeExtensions)
+            implementation(libs.gitlive.firebase.common)
+            implementation(libs.gitlive.firebase.firestore)
+            implementation(libs.gitlive.firebase.auth)
+            implementation(libs.gitlive.firebase.config)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.essenty.lifecycle)
+            api(libs.napier)
+        }
+        androidMain.dependencies {
+            implementation(libs.decompose.composeExtensions)
+            api(project.dependencies.platform(libs.firebase.bom))
+            api(libs.firebase.auth)
+            api(libs.firebase.common)
+            api(libs.firebase.analytics)
+            api(libs.firebase.crashlytics)
+            api(libs.firebase.config)
+        }
+        iosMain.dependencies {
+            api(libs.decompose)
+            api(libs.essenty.lifecycle)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+    }
+}
+
+android {
+    namespace = "com.zenithapps.mobilestack"
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 24
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+}

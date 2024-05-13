@@ -1,0 +1,168 @@
+package com.zenithapps.mobilestack.component
+
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.doOnResume
+import com.zenithapps.mobilestack.component.PurchaseComponent.Model
+import com.zenithapps.mobilestack.component.PurchaseComponent.Output
+import com.zenithapps.mobilestack.provider.AnalyticsProvider
+import com.zenithapps.mobilestack.provider.AuthProvider
+import com.zenithapps.mobilestack.provider.BillingProvider
+import com.zenithapps.mobilestack.provider.BillingProvider.Product
+import com.zenithapps.mobilestack.provider.NotificationProvider
+import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.NotificationProvider.Notification.Duration
+import com.zenithapps.mobilestack.useCase.SignUpUseCase
+import com.zenithapps.mobilestack.util.Result
+import com.zenithapps.mobilestack.util.createCoroutineScope
+import kotlinx.coroutines.launch
+
+interface PurchaseComponent {
+    val model: Value<Model>
+
+    data class Model(
+        val loading: Boolean = true,
+        val products: List<Product> = emptyList()
+    )
+
+    fun onProductTap(product: Product)
+
+    fun onBackTap()
+
+    sealed interface Output {
+        data object Back : Output
+        data object Purchased : Output
+    }
+}
+
+private const val SCREEN_NAME = "purchase"
+
+class DefaultPurchaseComponent(
+    componentContext: ComponentContext,
+    private val billingProvider: BillingProvider,
+    private val authProvider: AuthProvider,
+    private val signUp: SignUpUseCase,
+    private val analyticsProvider: AnalyticsProvider,
+    private val notificationProvider: NotificationProvider,
+    private val onOutput: (Output) -> Unit
+) : PurchaseComponent, ComponentContext by componentContext {
+    override val model = MutableValue(Model())
+    private val scope = createCoroutineScope()
+
+    init {
+        lifecycle.doOnResume {
+            scope.launch {
+                model.value = model.value.copy(loading = true)
+                try {
+                    val customerInfo = billingProvider.getCustomerInfo()
+                    val products =
+                        billingProvider.getProducts().filter { it.id !in customerInfo.purchases }
+                    model.value = model.value.copy(loading = false, products = products)
+                } catch (e: Exception) {
+                    model.value = model.value.copy(loading = false)
+                    notificationProvider.showNotification(
+                        Notification(
+                            message = e.message ?: "An error occurred"
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onProductTap(product: Product) {
+        analyticsProvider.logEvent(
+            eventName = "product_tap",
+            screenName = SCREEN_NAME,
+            params = mapOf("product_id" to product.id, "product_name" to product.title)
+        )
+        model.value = model.value.copy(loading = true)
+        scope.launch {
+            try {
+                val customerInfo = billingProvider.getCustomerInfo()
+                if (customerInfo.purchases.contains(product.id)) {
+                    model.value = model.value.copy(loading = false)
+                    notificationProvider.showNotification(
+                        Notification(message = "You already own this product")
+                    )
+                    onOutput(Output.Purchased)
+                    return@launch
+                }
+                billingProvider.purchase(product.packageId)
+                analyticsProvider.logEvent(
+                    eventName = "product_purchased",
+                    screenName = SCREEN_NAME,
+                    params = mapOf(
+                        "product_id" to product.id,
+                        "product_name" to product.title
+                    )
+                )
+                val purchaseSuccessMessage =
+                    if (authProvider.getAuthUser()?.email != null) {
+                        "Thank you for purchasing. You will receive MobileStack shortly."
+                    } else {
+                        "Thank you for purchasing. Please add your email to receive the template/invitations."
+                    }
+                notificationProvider.showNotification(
+                    Notification(purchaseSuccessMessage, duration = Duration.LONG)
+                )
+                when (val result = signUp.anonymously()) {
+                    is Result.Success -> {
+                        // Root will redirect user to logged in state
+                    }
+
+                    is Result.Error -> {
+                        model.value = model.value.copy(loading = false)
+                        notificationProvider.showNotification(
+                            Notification(message = result.error.reason)
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                if (e.message?.contains("pending", false) == true) {
+                    val pendingMessage =
+                        if (authProvider.getAuthUser()?.email != null) {
+                            "Thank you for purchasing. Your order is pending and you will receive MobileStack once your payment is processed."
+                        } else {
+                            "Thank you for purchasing. Your order is pending and you will receive MobileStack once your payment is processed. Please add your email to receive the template/invitations."
+                        }
+                    notificationProvider.showNotification(
+                        Notification(
+                            message = pendingMessage,
+                            duration = Duration.LONG
+                        )
+                    )
+                    when (val result = signUp.anonymously()) {
+                        is Result.Success -> {
+                            // Root will redirect user to logged in state
+                        }
+
+                        is Result.Error -> {
+                            model.value = model.value.copy(loading = false)
+                            notificationProvider.showNotification(
+                                Notification(message = result.error.reason)
+                            )
+                        }
+                    }
+                }
+                notificationProvider.showNotification(
+                    Notification(
+                        message = e.message ?: "An error occurred"
+                    )
+                )
+            } finally {
+                model.value = model.value.copy(loading = false)
+            }
+        }
+    }
+
+    override fun onBackTap() {
+        analyticsProvider.logEvent(
+            eventName = "back_tap",
+            screenName = SCREEN_NAME,
+            params = emptyMap()
+        )
+        onOutput(Output.Back)
+    }
+}

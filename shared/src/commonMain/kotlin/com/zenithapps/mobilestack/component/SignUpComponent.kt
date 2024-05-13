@@ -1,0 +1,153 @@
+package com.zenithapps.mobilestack.component
+
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.zenithapps.mobilestack.component.SignUpComponent.Model
+import com.zenithapps.mobilestack.component.SignUpComponent.Output
+import com.zenithapps.mobilestack.provider.AnalyticsProvider
+import com.zenithapps.mobilestack.provider.NotificationProvider
+import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.useCase.SignUpUseCase
+import com.zenithapps.mobilestack.util.Result
+import com.zenithapps.mobilestack.util.createCoroutineScope
+import kotlinx.coroutines.launch
+
+interface SignUpComponent {
+    val model: Value<Model>
+
+    data class Model(
+        val email: String = "",
+        val password: String = "",
+        val marketingConsent: Boolean = false,
+        val loading: Boolean = false
+    )
+
+    fun onSignUpTap()
+
+    fun onEmailChanged(email: String)
+
+    fun onPasswordChanged(password: String)
+
+    fun onMarketingConsentChanged(consent: Boolean)
+
+    fun onSignInTap()
+
+    fun onBackTap()
+
+    fun onSignUpAnonymouslyTap()
+
+    sealed interface Output {
+        data object ForgotPassword : Output
+        data object SignIn : Output
+        data object Authenticated : Output
+        data object Back : Output
+    }
+}
+
+private const val SCREEN_NAME = "sign_up"
+
+class DefaultSignUpComponent(
+    componentContext: ComponentContext,
+    private val signUp: SignUpUseCase,
+    private val analyticsProvider: AnalyticsProvider,
+    private val notificationProvider: NotificationProvider,
+    private val onOutput: (Output) -> Unit
+) : SignUpComponent, ComponentContext by componentContext {
+    override val model = MutableValue(Model())
+
+    private val scope = createCoroutineScope()
+
+    override fun onSignUpTap() {
+        analyticsProvider.logEvent(
+            eventName = "sign_up_tap",
+            screenName = SCREEN_NAME,
+            params = emptyMap()
+        )
+        scope.launch {
+            if (model.value.email.isEmpty() || model.value.password.isEmpty()) {
+                notificationProvider.showNotification(
+                    Notification(message = "Email and password are required")
+                )
+                return@launch
+            }
+            model.value = model.value.copy(loading = true)
+            when (val result = signUp(
+                email = model.value.email,
+                password = model.value.password,
+                marketingConsent = model.value.marketingConsent
+            )) {
+                is Result.Success -> {
+                    model.value = model.value.copy(loading = false)
+                    onOutput(Output.Authenticated)
+                }
+
+                is Result.Error -> {
+                    model.value = model.value.copy(loading = false)
+                    val message = when (result.error) {
+                        SignUpUseCase.SignUpWithEmailError.EmailAlreadyExists -> "Email already exists"
+                        SignUpUseCase.SignUpWithEmailError.InvalidEmail -> "Invalid email"
+                        SignUpUseCase.SignUpWithEmailError.InvalidPassword -> "Invalid password"
+                        is SignUpUseCase.SignUpWithEmailError.Other -> result.error.reason
+                    }
+                    notificationProvider.showNotification(
+                        Notification(message = message)
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onEmailChanged(email: String) {
+        model.value = model.value.copy(email = email)
+    }
+
+    override fun onPasswordChanged(password: String) {
+        model.value = model.value.copy(password = password)
+    }
+
+    override fun onMarketingConsentChanged(consent: Boolean) {
+        model.value = model.value.copy(marketingConsent = consent)
+    }
+
+    override fun onSignInTap() {
+        analyticsProvider.logEvent(
+            eventName = "sign_in_tap",
+            screenName = SCREEN_NAME,
+            params = emptyMap()
+        )
+        onOutput(Output.SignIn)
+    }
+
+    override fun onBackTap() {
+        analyticsProvider.logEvent(
+            eventName = "back_tap",
+            screenName = SCREEN_NAME,
+            params = emptyMap()
+        )
+        onOutput(Output.Back)
+    }
+
+    override fun onSignUpAnonymouslyTap() {
+        analyticsProvider.logEvent(
+            eventName = "sign_up_anonymously_tap",
+            screenName = SCREEN_NAME,
+            params = emptyMap()
+        )
+        model.value = model.value.copy(loading = true)
+        scope.launch {
+            when (val result = signUp.anonymously()) {
+                is Result.Success -> {
+                    model.value = model.value.copy(loading = false)
+                    onOutput(Output.Authenticated)
+                }
+                is Result.Error -> {
+                    model.value = model.value.copy(loading = false)
+                    notificationProvider.showNotification(
+                        Notification(message = result.error.reason)
+                    )
+                }
+            }
+        }
+    }
+}
