@@ -3,6 +3,7 @@ import SwiftUI
 import shared
 import RevenueCat
 import FirebaseAuth
+import FirebaseCrashlytics
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let root: RootComponent = DefaultRootComponent(
@@ -24,13 +25,16 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // Others(Release build)
         
         // init napier
-        NapierProxyKt.releaseBuild(antilog: CrashlyticsAntilog(
-            crashlyticsAddLog: { priority, tag, message in
-                Crashlytics.crashlytics().log("\(String(describing: tag)): \(String(describing: message))")
-            },
-            crashlyticsSendLog: { throwable in
-                Crashlytics.crashlytics().record(error: throwable)
-            }))
+        NapierProxyKt.initializeRelease(
+            antilog: CrashlyticsAntilog(
+                crashlyticsAddLog: { priority, tag, message in
+                    Crashlytics.crashlytics().log("\(String(describing: tag)): \(String(describing: message))")
+                },
+                crashlyticsSendLog: { throwable in
+                    Crashlytics.crashlytics().record(error: throwable.asError())
+                }
+            )
+        )
 #endif
         return true
     }
