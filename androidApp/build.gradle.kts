@@ -15,8 +15,8 @@ android {
         applicationId = "com.zenithapps.mobilestack.android" // TODO: Your package name here
         minSdk = 24
         targetSdk = 34
-        versionCode = 11 // TODO: Your version code here (start with 1)
-        versionName = "1.0.11" // TODO: Your version name here (start with 1.0.VERSION_CODE)
+        versionCode = 1
+        versionName = "1.0.1"
     }
     signingConfigs {
         val prop = Properties().apply {

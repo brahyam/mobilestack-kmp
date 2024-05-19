@@ -2,32 +2,34 @@ package com.zenithapps.mobilestack.useCase
 
 import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
-import com.zenithapps.mobilestack.util.Result
+import io.github.aakira.napier.Napier
 
 class SignInUseCase(
     private val authProvider: AuthProvider,
     private val billingProvider: BillingProvider
 ) {
-    suspend operator fun invoke(
-        email: String, password: String
-    ): Result<Unit, SignInError> {
-        return try {
+    suspend operator fun invoke(email: String, password: String) {
+        try {
+            if (email.isBlank() || password.isBlank()) {
+                throw SignInException.EmptyEmailOrPassword
+            }
             val authUser = authProvider.signInWithEmailPassword(email, password)
             billingProvider.logIn(authUser.id, authUser.email)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Error(SignInError.fromException(e))
+        } catch (exception: Exception) {
+            Napier.e(exception) { "Sign in failed" }
+            throw SignInException.fromException(exception)
         }
     }
 
 
-    sealed class SignInError {
-        data object InvalidEmail : SignInError()
-        data object InvalidCredentials : SignInError()
-        data class Other(val reason: String) : SignInError()
+    sealed class SignInException(reason: String) : Exception(reason) {
+        data object EmptyEmailOrPassword : SignInException("Empty email or password")
+        data object InvalidEmail : SignInException("Invalid email")
+        data object InvalidCredentials : SignInException("Invalid credentials")
+        data class Other(val reason: String) : SignInException(reason)
 
         companion object {
-            fun fromException(exception: Exception): SignInError {
+            fun fromException(exception: Exception): SignInException {
                 return when {
                     exception.message == null -> Other("Unknown error")
                     exception.message!!.contains("email", true) -> InvalidEmail

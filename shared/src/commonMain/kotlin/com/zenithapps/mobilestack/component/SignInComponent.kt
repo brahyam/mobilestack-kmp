@@ -8,8 +8,7 @@ import com.zenithapps.mobilestack.component.SignInComponent.Output
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider
 import com.zenithapps.mobilestack.useCase.SignInUseCase
-import com.zenithapps.mobilestack.useCase.SignInUseCase.SignInError
-import com.zenithapps.mobilestack.util.Result
+import com.zenithapps.mobilestack.useCase.SignInUseCase.SignInException
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import kotlinx.coroutines.launch
 
@@ -57,33 +56,24 @@ class DefaultSignInComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        if (model.value.email.isEmpty() || model.value.password.isEmpty()) {
-            notificationProvider.showNotification(
-                NotificationProvider.Notification(
-                    message = "Email and password are required"
-                )
-            )
-            return
-        }
+        model.value = model.value.copy(loading = true)
         scope.launch {
-            model.value = model.value.copy(loading = true)
-            when (val result = signIn(email = model.value.email, password = model.value.password)) {
-                is Result.Success -> {
-                    model.value = model.value.copy(loading = false)
-                    onOutput(Output.Authenticated)
+            try {
+                signIn(email = model.value.email, password = model.value.password)
+                onOutput(Output.Authenticated)
+            } catch (exception: Exception) {
+                val errorMessage = when (exception) {
+                    is SignInException.InvalidCredentials -> "Invalid credentials"
+                    is SignInException.Other -> exception.reason
+                    is SignInException.InvalidEmail -> "Invalid email"
+                    is SignInException.EmptyEmailOrPassword -> "Email and password must not be empty"
+                    else -> {
+                        exception.message ?: "Unknown error"
+                    }
                 }
-                is Result.Error -> {
-                    model.value = model.value.copy(loading = false)
-                    notificationProvider.showNotification(
-                        NotificationProvider.Notification(
-                            message = when (result.error) {
-                                is SignInError.InvalidCredentials -> "Invalid credentials"
-                                is SignInError.Other -> result.error.reason
-                                is SignInError.InvalidEmail -> "Invalid email"
-                            }
-                        )
-                    )
-                }
+                notificationProvider.showNotification(NotificationProvider.Notification(errorMessage))
+            } finally {
+                model.value = model.value.copy(loading = false)
             }
         }
     }

@@ -57,10 +57,11 @@ fun ProfileScreen(component: ProfileComponent) {
                 actions = {
                     if (model.customerInfo?.entitlements.isNullOrEmpty()) {
                         Spacer(Modifier.height(8.dp))
-                        MSFilledButton(
-                            text = "Get MobileStack",
+                        TextButton(
                             onClick = component::onPurchaseTap
-                        )
+                        ) {
+                            Text("Purchase")
+                        }
                     }
                 }
             )
@@ -142,6 +143,14 @@ fun ProfileScreen(component: ProfileComponent) {
                             "kmp_template_lifetime" -> "All-in"
                             else -> "No Purchases"
                         }
+                    if (model.user?.purchasePending == true) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = "Your purchase is pending. It might take a few minutes to show here.",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
                     SettingsTextItem(
                         label = "Purchases",
                         value = templatePurchased,
@@ -239,7 +248,6 @@ fun SettingsTextItem(
     onClick: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

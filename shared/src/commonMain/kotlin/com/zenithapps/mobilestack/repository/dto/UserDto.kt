@@ -8,16 +8,19 @@ data class UserDto(
     val id: String,
     val email: String?,
     val marketingConsent: Boolean,
+    val purchasePending: Boolean?,
 )
 
 fun UserDto.toModel(): User = User(
     id = id,
     email = email,
-    marketingConsent = marketingConsent
+    marketingConsent = marketingConsent,
+    purchasePending = purchasePending ?: false
 )
 
 fun User.toDto(): UserDto = UserDto(
     id = id,
     email = email,
-    marketingConsent = marketingConsent
+    marketingConsent = marketingConsent,
+    purchasePending = purchasePending
 )

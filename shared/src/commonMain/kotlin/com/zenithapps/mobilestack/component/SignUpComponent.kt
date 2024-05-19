@@ -9,6 +9,11 @@ import com.zenithapps.mobilestack.provider.AnalyticsProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
+import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.EmailAlreadyExists
+import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.EmptyEmailOrPassword
+import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.InvalidEmail
+import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.InvalidPassword
+import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.Other
 import com.zenithapps.mobilestack.util.Result
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import kotlinx.coroutines.launch
@@ -64,36 +69,29 @@ class DefaultSignUpComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
+        model.value = model.value.copy(loading = true)
         scope.launch {
-            if (model.value.email.isEmpty() || model.value.password.isEmpty()) {
-                notificationProvider.showNotification(
-                    Notification(message = "Email and password are required")
+            try {
+                signUp(
+                    email = model.value.email,
+                    password = model.value.password,
+                    marketingConsent = model.value.marketingConsent
                 )
-                return@launch
-            }
-            model.value = model.value.copy(loading = true)
-            when (val result = signUp(
-                email = model.value.email,
-                password = model.value.password,
-                marketingConsent = model.value.marketingConsent
-            )) {
-                is Result.Success -> {
-                    model.value = model.value.copy(loading = false)
-                    onOutput(Output.Authenticated)
-                }
-
-                is Result.Error -> {
-                    model.value = model.value.copy(loading = false)
-                    val message = when (result.error) {
-                        SignUpUseCase.SignUpWithEmailError.EmailAlreadyExists -> "Email already exists"
-                        SignUpUseCase.SignUpWithEmailError.InvalidEmail -> "Invalid email"
-                        SignUpUseCase.SignUpWithEmailError.InvalidPassword -> "Invalid password"
-                        is SignUpUseCase.SignUpWithEmailError.Other -> result.error.reason
+                onOutput(Output.Authenticated)
+            } catch (exception: Exception) {
+                val errorMessage = when (exception) {
+                    EmailAlreadyExists -> "Email already exists"
+                    InvalidEmail -> "Invalid email"
+                    InvalidPassword -> "Invalid password"
+                    EmptyEmailOrPassword -> "Email and password must not be empty"
+                    is Other -> exception.reason
+                    else -> {
+                        exception.message ?: "Unknown error"
                     }
-                    notificationProvider.showNotification(
-                        Notification(message = message)
-                    )
                 }
+                notificationProvider.showNotification(Notification(errorMessage))
+            } finally {
+                model.value = model.value.copy(loading = false)
             }
         }
     }
@@ -141,6 +139,7 @@ class DefaultSignUpComponent(
                     model.value = model.value.copy(loading = false)
                     onOutput(Output.Authenticated)
                 }
+
                 is Result.Error -> {
                     model.value = model.value.copy(loading = false)
                     notificationProvider.showNotification(

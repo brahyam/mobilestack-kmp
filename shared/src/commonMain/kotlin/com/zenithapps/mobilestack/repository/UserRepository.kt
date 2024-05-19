@@ -10,8 +10,10 @@ interface UserRepository {
     suspend fun createUser(
         id: String,
         email: String? = null,
-        marketingConsent: Boolean? = null
+        marketingConsent: Boolean? = null,
+        purchasePending: Boolean = false
     ): User
+
     suspend fun getUser(userId: String): User?
     suspend fun updateUser(user: User)
     suspend fun deleteUser(userId: String)
@@ -20,11 +22,17 @@ interface UserRepository {
 class FirebaseUserRepository(
     private val firebaseFirestore: FirebaseFirestore,
 ) : UserRepository {
-    override suspend fun createUser(id: String, email: String?, marketingConsent: Boolean?): User {
+    override suspend fun createUser(
+        id: String,
+        email: String?,
+        marketingConsent: Boolean?,
+        purchasePending: Boolean
+    ): User {
         val userDto = UserDto(
             id = id,
             email = email,
-            marketingConsent = marketingConsent ?: false
+            marketingConsent = marketingConsent ?: false,
+            purchasePending = false
         )
         firebaseFirestore.collection("users").document(userDto.id).set(userDto)
         return userDto.toModel()

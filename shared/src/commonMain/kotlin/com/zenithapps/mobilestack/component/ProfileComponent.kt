@@ -15,7 +15,6 @@ import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.repository.UserRepository
 import com.zenithapps.mobilestack.useCase.SignOutUseCase
-import com.zenithapps.mobilestack.util.Result
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import kotlinx.coroutines.launch
 
@@ -86,9 +85,13 @@ class DefaultProfileComponent(
             model.value = model.value.copy(loading = true)
             scope.launch {
                 val authUser = authProvider.getAuthUser() ?: return@launch
-                val user =
+                var user =
                     userRepository.getUser(authUser.id) ?: userRepository.createUser(authUser.id)
                 val customerInfo = billingProvider.getCustomerInfo()
+                if (user.purchasePending && customerInfo.purchases.isNotEmpty()) {
+                    user = user.copy(purchasePending = false)
+                    userRepository.updateUser(user)
+                }
                 model.value = model.value.copy(
                     loading = false,
                     user = user,
@@ -106,14 +109,19 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
+        model.value = model.value.copy(loading = true)
         scope.launch {
-            model.value = model.value.copy(loading = true)
-            when (val result = signOut()) {
-                is Result.Success -> onOutput(Output.SignedOut)
-                is Result.Error -> {
-                    model.value = model.value.copy(loading = false)
-                    notificationProvider.showNotification(Notification(result.error.reason))
-                }
+            try {
+                signOut()
+                onOutput(Output.SignedOut)
+            } catch (e: Exception) {
+                notificationProvider.showNotification(
+                    Notification(
+                        message = e.message ?: "An error occurred"
+                    )
+                )
+            } finally {
+                model.value = model.value.copy(loading = false)
             }
         }
     }
@@ -148,12 +156,6 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        if (model.value.customerInfo?.purchases?.isEmpty() == true) {
-            notificationProvider.showNotification(
-                Notification(message = "You don't have any purchases yet")
-            )
-            return
-        }
         val billingManagementUrl = model.value.customerInfo?.managementUrl
         if (billingManagementUrl.isNullOrEmpty() || billingManagementUrl == "null") {
             osCapabilityProvider.managePurchases()

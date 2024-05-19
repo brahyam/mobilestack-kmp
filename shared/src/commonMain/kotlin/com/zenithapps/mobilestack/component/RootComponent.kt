@@ -17,6 +17,7 @@ import com.zenithapps.mobilestack.provider.FirebaseRemoteConfigProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.repository.FirebaseUserRepository
+import com.zenithapps.mobilestack.useCase.PurchaseUseCase
 import com.zenithapps.mobilestack.useCase.SignInUseCase
 import com.zenithapps.mobilestack.useCase.SignOutUseCase
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
@@ -111,6 +112,15 @@ class DefaultRootComponent(
         SignOutUseCase(
             authProvider = authProvider,
             billingProvider = billingProvider,
+        )
+    }
+
+    private val purchaseUseCase by lazy {
+        PurchaseUseCase(
+            authProvider = authProvider,
+            billingProvider = billingProvider,
+            userRepository = userRepository,
+            signUp = signUpUseCase
         )
     }
 
@@ -231,7 +241,7 @@ class DefaultRootComponent(
                     componentContext = componentContext,
                     billingProvider = billingProvider,
                     authProvider = authProvider,
-                    signUp = signUpUseCase,
+                    purchase = purchaseUseCase,
                     analyticsProvider = analyticsProvider,
                     notificationProvider = notificationProvider,
                     onOutput = { output ->

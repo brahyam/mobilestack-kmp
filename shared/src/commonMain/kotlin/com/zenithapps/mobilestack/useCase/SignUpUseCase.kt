@@ -4,6 +4,7 @@ import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
 import com.zenithapps.mobilestack.repository.UserRepository
 import com.zenithapps.mobilestack.util.Result
+import io.github.aakira.napier.Napier
 
 class SignUpUseCase(
     private val authProvider: AuthProvider,
@@ -13,39 +14,54 @@ class SignUpUseCase(
     suspend operator fun invoke(
         email: String,
         password: String,
-        marketingConsent: Boolean
-    ): Result<Unit, SignUpWithEmailError> {
-        return try {
+        marketingConsent: Boolean,
+        purchasePending: Boolean = false
+    ) {
+        try {
+            if (email.isBlank() || password.isBlank()) {
+                throw SignUpWithEmailException.EmptyEmailOrPassword
+            }
             val authUser = authProvider.signUpWithEmailPassword(email, password)
-            val user = userRepository.createUser(authUser.id, authUser.email, marketingConsent)
+            val user = userRepository.createUser(
+                authUser.id,
+                authUser.email,
+                marketingConsent,
+                purchasePending
+            )
             billingProvider.logIn(user.id, user.email)
-            Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(SignUpWithEmailError.fromException(e))
+            Napier.e(e) { "Sign up failed" }
+            throw SignUpWithEmailException.fromException(e)
         }
     }
 
-    suspend fun anonymously(): Result<Unit, SignUpAnonError> {
+    suspend fun anonymously(): Result<Unit, SignUpAnonException> {
         return try {
             val authUser = authProvider.signUpAnonymously()
-            val user = userRepository.createUser(authUser.id, authUser.email, false)
+            val user = userRepository.createUser(
+                authUser.id,
+                authUser.email,
+                marketingConsent = false,
+                purchasePending = false
+            )
             billingProvider.logIn(user.id, user.email)
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(SignUpAnonError(e.message ?: "Unknown error"))
+            Result.Error(SignUpAnonException(e.message ?: "Unknown error"))
         }
     }
 
-    data class SignUpAnonError(val reason: String)
+    data class SignUpAnonException(val reason: String) : Exception()
 
-    sealed class SignUpWithEmailError {
-        data object EmailAlreadyExists : SignUpWithEmailError()
-        data object InvalidEmail : SignUpWithEmailError()
-        data object InvalidPassword : SignUpWithEmailError()
-        data class Other(val reason: String) : SignUpWithEmailError()
+    sealed class SignUpWithEmailException : Exception() {
+        data object EmailAlreadyExists : SignUpWithEmailException()
+        data object InvalidEmail : SignUpWithEmailException()
+        data object InvalidPassword : SignUpWithEmailException()
+        data object EmptyEmailOrPassword : SignUpWithEmailException()
+        data class Other(val reason: String) : SignUpWithEmailException()
 
         companion object {
-            fun fromException(exception: Exception): SignUpWithEmailError {
+            fun fromException(exception: Exception): SignUpWithEmailException {
                 return when {
                     exception.message == null -> Other("Unknown error")
                     exception.message!!.contains("already", true) -> EmailAlreadyExists
