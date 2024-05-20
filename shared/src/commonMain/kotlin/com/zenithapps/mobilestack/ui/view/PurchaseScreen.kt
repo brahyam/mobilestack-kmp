@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.zenithapps.mobilestack.component.PurchaseComponent
+import com.zenithapps.mobilestack.model.Product
 import com.zenithapps.mobilestack.ui.widget.FeatureItem
 import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 import com.zenithapps.mobilestack.ui.widget.MSTopAppBar
@@ -49,7 +50,7 @@ fun PurchaseScreen(component: PurchaseComponent) {
                 }
                 Spacer(Modifier.height(16.dp))
             }
-            items(model.products.sortedBy { it.period.value }) { product ->
+            items(model.products.sortedBy { it.price }) { product ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors().copy(
@@ -66,15 +67,19 @@ fun PurchaseScreen(component: PurchaseComponent) {
                             overflow = TextOverflow.Ellipsis
                         )
                         Spacer(Modifier.height(24.dp))
-                        val unit =
-                            product.period.unit.lowercase().replaceFirstChar { it.uppercase() }
-                        val period = when (product.period.value) {
-                            1 -> unit
-                            0 -> "Once"
-                            else -> "${product.period.value} ${unit}s"
+                        val duration = when (val period = product.period) {
+                            is Product.Period.Lifetime -> "Once"
+                            is Product.Period.Duration -> {
+                                val unit =
+                                    period.unit.name.lowercase().replaceFirstChar { it.uppercase() }
+                                when (period.value) {
+                                    1 -> unit
+                                    else -> "${period.value} ${unit}s"
+                                }
+                            }
                         }
                         Text(
-                            text = "${product.price} / $period",
+                            text = "${product.price} / $duration",
                             style = MaterialTheme.typography.displaySmall,
                         )
                         Spacer(Modifier.height(24.dp))
@@ -87,7 +92,7 @@ fun PurchaseScreen(component: PurchaseComponent) {
                         FeatureItem("Billing with RevenueCat")
                         Spacer(Modifier.height(4.dp))
                         FeatureItem("Analytics with Firebase")
-                        if (product.packageId.contains("starter")) {
+                        if (product is Product.Starter) {
                             Spacer(Modifier.height(4.dp))
                             NotIncludedItem("ChatGPT Terms/Privacy Policy Prompt")
                             Spacer(Modifier.height(4.dp))
@@ -95,7 +100,7 @@ fun PurchaseScreen(component: PurchaseComponent) {
                             Spacer(Modifier.height(4.dp))
                             NotIncludedItem("Lifetime Updates")
                         }
-                        if (product.packageId.contains("all-in")) {
+                        if (product is Product.AllIn) {
                             Spacer(Modifier.height(4.dp))
                             FeatureItem("ChatGPT Terms/Privacy Policy Prompt")
                             Spacer(Modifier.height(4.dp))

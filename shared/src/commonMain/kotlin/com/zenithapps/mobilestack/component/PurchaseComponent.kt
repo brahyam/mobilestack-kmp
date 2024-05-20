@@ -6,10 +6,10 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.doOnResume
 import com.zenithapps.mobilestack.component.PurchaseComponent.Model
 import com.zenithapps.mobilestack.component.PurchaseComponent.Output
+import com.zenithapps.mobilestack.model.Product
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
 import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
-import com.zenithapps.mobilestack.provider.BillingProvider.Product
 import com.zenithapps.mobilestack.provider.NotificationProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification.Duration
@@ -55,7 +55,7 @@ class DefaultPurchaseComponent(
             scope.launch {
                 model.value = model.value.copy(loading = true)
                 try {
-                    val customerInfo = billingProvider.getCustomerInfo()
+                    val customerInfo = billingProvider.getCustomerBillingInfo()
                     val products =
                         billingProvider.getProducts().filter { it.id !in customerInfo.purchases }
                     model.value = model.value.copy(loading = false, products = products)
@@ -93,7 +93,7 @@ class DefaultPurchaseComponent(
                     if (authProvider.getAuthUser()?.email != null) {
                         "Thank you for purchasing. You will receive an invite to MobileStack repo shortly via email."
                     } else {
-                        "Thank you for purchasing. Please add your email to receive the repo and Discord invitations."
+                        "Thank you for purchasing. Please add your email to receive and invite to Github and Discord."
                     }
                 notificationProvider.showNotification(
                     Notification(purchaseSuccessMessage, duration = Duration.LONG)
@@ -105,7 +105,7 @@ class DefaultPurchaseComponent(
                         if (authProvider.getAuthUser()?.email != null) {
                             "Thank you for purchasing. Your order is pending and you will receive MobileStack once your payment is processed."
                         } else {
-                            "Thank you for purchasing. Your order is pending and you will receive MobileStack once your payment is processed. Please add your email to receive the repo and Discord invitations."
+                            "Thank you for purchasing. Your order is pending and you will receive MobileStack once your payment is processed. Please add your email to receive and invite to Github and Discord."
                         }
                     notificationProvider.showNotification(
                         Notification(message = pendingMessage, duration = Duration.LONG)

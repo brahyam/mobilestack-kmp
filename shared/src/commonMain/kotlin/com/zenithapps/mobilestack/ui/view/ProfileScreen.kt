@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.zenithapps.mobilestack.component.ProfileComponent
+import com.zenithapps.mobilestack.model.Product
 import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedButton
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
@@ -55,7 +56,7 @@ fun ProfileScreen(component: ProfileComponent) {
             MSTopAppBar(
                 title = "Profile",
                 actions = {
-                    if (model.customerInfo?.entitlements.isNullOrEmpty()) {
+                    if (model.customerBillingInfo?.entitlements.isNullOrEmpty()) {
                         Spacer(Modifier.height(8.dp))
                         TextButton(
                             onClick = component::onPurchaseTap
@@ -138,12 +139,12 @@ fun ProfileScreen(component: ProfileComponent) {
                     title = "Billing"
                 ) {
                     val templatePurchased =
-                        when (model.customerInfo?.entitlements?.firstOrNull()) {
-                            "kmp_template" -> "Starter"
-                            "kmp_template_lifetime" -> "All-in"
+                        when (model.customerBillingInfo?.purchases?.firstOrNull()) {
+                            Product.Starter.ID -> "Starter"
+                            Product.AllIn.ID -> "All-in"
                             else -> "No Purchases"
                         }
-                    if (model.user?.purchasePending == true) {
+                    if (!model.user?.pendingPurchasePackageId.isNullOrEmpty()) {
                         Spacer(Modifier.height(8.dp))
                         Text(
                             text = "Your purchase is pending. It might take a few minutes to show here.",

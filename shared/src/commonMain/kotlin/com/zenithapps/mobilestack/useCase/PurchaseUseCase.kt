@@ -25,7 +25,7 @@ class PurchaseUseCase(
                 val userId =
                     authProvider.getAuthUser()?.id ?: throw PurchaseException.UserNotSignedIn
                 val user = userRepository.getUser(userId) ?: throw PurchaseException.UserNotFound
-                userRepository.updateUser(user.copy(purchasePending = true))
+                userRepository.updateUser(user.copy(pendingPurchasePackageId = packageId))
             }
             throw purchaseException
         }
@@ -36,12 +36,14 @@ class PurchaseUseCase(
         data object UserNotFound : PurchaseException("User not found")
         data object Pending : PurchaseException("Purchase pending")
         data object Declined : PurchaseException("Purchase declined")
+        data object Cancelled : PurchaseException("Purchase cancelled")
         data class Other(val reason: String) : PurchaseException(reason)
         companion object {
             fun fromException(exception: Exception): PurchaseException {
                 return when {
                     exception.message?.contains("pending") == true -> Pending
                     exception.message?.contains("not allowed") == true -> Declined
+                    exception.message?.contains("cancelled") == true -> Cancelled
                     else -> Other(exception.message ?: "Unknown error")
                 }
             }

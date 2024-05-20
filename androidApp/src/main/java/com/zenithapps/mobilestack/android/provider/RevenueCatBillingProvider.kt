@@ -13,6 +13,8 @@ import com.revenuecat.purchases.awaitPurchase
 import com.revenuecat.purchases.awaitRestore
 import com.revenuecat.purchases.models.PurchaseState
 import com.zenithapps.mobilestack.android.BuildConfig
+import com.zenithapps.mobilestack.model.CustomerBillingInfo
+import com.zenithapps.mobilestack.model.Product
 import com.zenithapps.mobilestack.provider.BillingProvider
 
 class RevenueCatBillingProvider(
@@ -47,29 +49,48 @@ class RevenueCatBillingProvider(
         }
     }
 
-    override suspend fun getCustomerInfo(): BillingProvider.CustomerInfo {
+    override suspend fun getCustomerBillingInfo(): CustomerBillingInfo {
         val customerInfo = Purchases.sharedInstance.awaitCustomerInfo()
-        return BillingProvider.CustomerInfo(
+        return CustomerBillingInfo(
             entitlements = customerInfo.entitlements.active.keys.toList(),
             purchases = customerInfo.allPurchasedProductIds.toList(),
             managementUrl = customerInfo.managementURL.toString()
         )
     }
 
-    override suspend fun getProducts(): List<BillingProvider.Product> {
+    override suspend fun getProducts(): List<Product> {
         val offerings = Purchases.sharedInstance.awaitOfferings()
         return offerings.current?.availablePackages?.map {
-            BillingProvider.Product(
-                id = it.product.id,
-                packageId = it.identifier,
-                title = it.product.name,
-                description = it.product.description,
-                price = it.product.price.formatted,
-                period = BillingProvider.Period(
-                    value = it.product.period?.value ?: 0,
-                    unit = it.product.period?.unit?.name ?: "ONCE"
+            when (it.identifier) {
+                Product.Starter.ID -> Product.Starter(
+                    id = it.product.id,
+                    title = it.product.name,
+                    description = it.product.description,
+                    price = it.product.price.formatted
                 )
-            )
+
+                Product.AllIn.ID -> Product.AllIn(
+                    id = it.product.id,
+                    title = it.product.name,
+                    description = it.product.description,
+                    price = it.product.price.formatted
+                )
+
+                else -> Product.Other(
+                    id = it.product.id,
+                    packageId = it.identifier,
+                    title = it.product.name,
+                    description = it.product.description,
+                    price = it.product.price.formatted,
+                    period = when (it.product.period?.value) {
+                        0 -> Product.Period.Lifetime
+                        else -> Product.Period.Duration(
+                            it.product.period!!.value,
+                            Product.PeriodUnit.valueOf(it.product.period!!.unit.name)
+                        )
+                    }
+                )
+            }
         } ?: emptyList()
     }
 

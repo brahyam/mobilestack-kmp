@@ -1,17 +1,30 @@
-# MobileStack Kotlin Multiplatform Template
+# MobileStack - Mobile Apps Boilerplate (Kotlin Multiplatform)
 
-A template for a Kotlin Multiplatform project that that builds a mobile app for Android and iOS.
+The Kotlin Multiplatform template with all you need to build your SaaS, AI tool, or any other mobile
+app and make your first $ online fast.
 
 ## Features
 
 - 100% Shared code between Android and iOS including UI and navigation using Compose UI and
   Decompose
-- Firebase Email/Password & Guest Authentication
-- Firestore Database with offline support
-- Firebase Remote Config
-- Firebase Crashlytics
-- Firebase Analytics
+- Email/Password & Guest Authentication using Firebase
+- Database with offline support using Firebase Firestore
+- Feature Flags and remote configs using Firebase Remote Config
+- Crash analysis and alerts using Firebase Crashlytics
+- Usage analytics using Firebase Analytics
+- In-App Purchases and Subscriptions using RevenueCat
+
+## UI Features
+
+- Dark Mode
+- User Profile
+- Sign In
+- Sign Up
+- Reset Password
+- Purchases
+- In-App Notifications
 
 ## Documentation
 
-Go to the official [Docs](https://docs.getmobilestack.com/) for more information.
+Check the official [documentation](https://docs.getmobilestack.com/) for instructions on how to
+setup and customize the apps.

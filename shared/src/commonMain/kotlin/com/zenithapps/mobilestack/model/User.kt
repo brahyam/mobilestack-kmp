@@ -7,5 +7,5 @@ data class User(
     val id: String,
     val email: String?,
     val marketingConsent: Boolean,
-    val purchasePending: Boolean
+    val pendingPurchasePackageId: String?
 )

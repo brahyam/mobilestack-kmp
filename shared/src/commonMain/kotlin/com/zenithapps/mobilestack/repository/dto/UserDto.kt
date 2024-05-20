@@ -8,19 +8,19 @@ data class UserDto(
     val id: String,
     val email: String?,
     val marketingConsent: Boolean,
-    val purchasePending: Boolean?,
+    val pendingPurchasePackageId: String?,
 )
 
 fun UserDto.toModel(): User = User(
     id = id,
     email = email,
     marketingConsent = marketingConsent,
-    purchasePending = purchasePending ?: false
+    pendingPurchasePackageId = pendingPurchasePackageId
 )
 
 fun User.toDto(): UserDto = UserDto(
     id = id,
     email = email,
     marketingConsent = marketingConsent,
-    purchasePending = purchasePending
+    pendingPurchasePackageId = pendingPurchasePackageId
 )

@@ -27,10 +27,10 @@ class RevenueCatBillingProvider: BillingProvider {
         }
     }
     
-    func getCustomerInfo() async throws -> BillingProviderCustomerInfo {
+    func getCustomerBillingInfo() async throws -> CustomerBillingInfo {
         
         let rcCustomerInfo = try await Purchases.shared.customerInfo()
-        return BillingProviderCustomerInfo(
+        return CustomerBillingInfo(
             entitlements: rcCustomerInfo.entitlements.active.keys.map{ $0.description },
             purchases: Array(rcCustomerInfo.allPurchasedProductIdentifiers),
             managementUrl: rcCustomerInfo.managementURL?.absoluteString
@@ -38,28 +38,54 @@ class RevenueCatBillingProvider: BillingProvider {
         
     }
     
-    func getProducts() async throws -> [BillingProviderProduct] {
-        
+    func getProducts() async throws -> [Product] {
         let offerings = try await Purchases.shared.offerings()
-        return offerings.current?.availablePackages.map { package in
-            let periodUnit = switch package.storeProduct.subscriptionPeriod?.unit {
-            case .day: "DAY"
-            case .week: "WEEK"
-            case .month: "MONTH"
-            case .year: "YEAR"
-            default: "ONCE"
-            }
-            return BillingProviderProduct(
-                id: package.storeProduct.productIdentifier,
-                packageId: package.identifier,
-                title: package.storeProduct.localizedTitle,
-                description: package.storeProduct.localizedDescription,
-                price: package.storeProduct.localizedPriceString,
-                period: BillingProviderPeriod(
-                    value: Int32(package.storeProduct.subscriptionPeriod?.value ?? 0),
-                    unit: periodUnit
+        return offerings.current?.availablePackages.compactMap { package in
+            switch package.identifier {
+            case ProductStarter.companion.ID:
+                return ProductStarter(
+                    id: package.storeProduct.productIdentifier,
+                    title: package.storeProduct.localizedTitle,
+                    description: package.storeProduct.localizedDescription,
+                    price: package.storeProduct.localizedPriceString
                 )
-            )
+                
+            case ProductAllIn.companion.ID:
+                return ProductAllIn(
+                    id: package.storeProduct.productIdentifier,
+                    title: package.storeProduct.localizedTitle,
+                    description: package.storeProduct.localizedDescription,
+                    price: package.storeProduct.localizedPriceString
+                )
+                
+            default:
+                let period: ProductPeriod
+                if let subscriptionPeriod = package.storeProduct.subscriptionPeriod {
+                    switch subscriptionPeriod.unit {
+                    case .day:
+                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .day)
+                    case .week:
+                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .week)
+                    case .month:
+                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .month)
+                    case .year:
+                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .year)
+                    @unknown default:
+                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .unknown)
+                    }
+                } else {
+                    period = ProductPeriodLifetime()
+                }
+                
+                return ProductOther(
+                    id: package.storeProduct.productIdentifier,
+                    packageId: package.identifier,
+                    title: package.storeProduct.localizedTitle,
+                    description: package.storeProduct.localizedDescription,
+                    price: package.storeProduct.localizedPriceString,
+                    period: period
+                )
+            }
         } ?? []
     }
     

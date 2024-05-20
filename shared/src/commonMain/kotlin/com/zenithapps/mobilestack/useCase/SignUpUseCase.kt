@@ -14,8 +14,7 @@ class SignUpUseCase(
     suspend operator fun invoke(
         email: String,
         password: String,
-        marketingConsent: Boolean,
-        purchasePending: Boolean = false
+        marketingConsent: Boolean
     ) {
         try {
             if (email.isBlank() || password.isBlank()) {
@@ -25,8 +24,7 @@ class SignUpUseCase(
             val user = userRepository.createUser(
                 authUser.id,
                 authUser.email,
-                marketingConsent,
-                purchasePending
+                marketingConsent
             )
             billingProvider.logIn(user.id, user.email)
         } catch (e: Exception) {
@@ -41,8 +39,7 @@ class SignUpUseCase(
             val user = userRepository.createUser(
                 authUser.id,
                 authUser.email,
-                marketingConsent = false,
-                purchasePending = false
+                marketingConsent = false
             )
             billingProvider.logIn(user.id, user.email)
             Result.Success(Unit)
@@ -51,14 +48,14 @@ class SignUpUseCase(
         }
     }
 
-    data class SignUpAnonException(val reason: String) : Exception()
+    data class SignUpAnonException(val reason: String) : Exception(reason)
 
-    sealed class SignUpWithEmailException : Exception() {
-        data object EmailAlreadyExists : SignUpWithEmailException()
-        data object InvalidEmail : SignUpWithEmailException()
-        data object InvalidPassword : SignUpWithEmailException()
-        data object EmptyEmailOrPassword : SignUpWithEmailException()
-        data class Other(val reason: String) : SignUpWithEmailException()
+    sealed class SignUpWithEmailException(reason: String) : Exception(reason) {
+        data object EmailAlreadyExists : SignUpWithEmailException("Email already exists")
+        data object InvalidEmail : SignUpWithEmailException("Invalid email")
+        data object InvalidPassword : SignUpWithEmailException("Invalid password")
+        data object EmptyEmailOrPassword : SignUpWithEmailException("Empty email or password")
+        data class Other(val reason: String) : SignUpWithEmailException(reason)
 
         companion object {
             fun fromException(exception: Exception): SignUpWithEmailException {

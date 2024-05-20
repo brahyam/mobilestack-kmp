@@ -6,6 +6,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.doOnResume
 import com.zenithapps.mobilestack.component.ProfileComponent.Model
 import com.zenithapps.mobilestack.component.ProfileComponent.Output
+import com.zenithapps.mobilestack.model.CustomerBillingInfo
 import com.zenithapps.mobilestack.model.User
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
 import com.zenithapps.mobilestack.provider.AuthProvider
@@ -24,7 +25,7 @@ interface ProfileComponent {
     data class Model(
         val loading: Boolean = false,
         val user: User? = null,
-        val customerInfo: BillingProvider.CustomerInfo? = null,
+        val customerBillingInfo: CustomerBillingInfo? = null,
         val appVersion: String = "",
         val newEmail: String = "",
         val editModeEnabled: Boolean = false
@@ -87,15 +88,17 @@ class DefaultProfileComponent(
                 val authUser = authProvider.getAuthUser() ?: return@launch
                 var user =
                     userRepository.getUser(authUser.id) ?: userRepository.createUser(authUser.id)
-                val customerInfo = billingProvider.getCustomerInfo()
-                if (user.purchasePending && customerInfo.purchases.isNotEmpty()) {
-                    user = user.copy(purchasePending = false)
+                val customerInfo = billingProvider.getCustomerBillingInfo()
+                if (!user.pendingPurchasePackageId.isNullOrEmpty() &&
+                    customerInfo.purchases.contains(user.pendingPurchasePackageId)
+                ) {
+                    user = user.copy(pendingPurchasePackageId = null)
                     userRepository.updateUser(user)
                 }
                 model.value = model.value.copy(
                     loading = false,
                     user = user,
-                    customerInfo = customerInfo,
+                    customerBillingInfo = customerInfo,
                     appVersion = osCapabilityProvider.getAppVersion(),
                     newEmail = user.email ?: "",
                 )
@@ -156,7 +159,7 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        val billingManagementUrl = model.value.customerInfo?.managementUrl
+        val billingManagementUrl = model.value.customerBillingInfo?.managementUrl
         if (billingManagementUrl.isNullOrEmpty() || billingManagementUrl == "null") {
             osCapabilityProvider.managePurchases()
         } else {
@@ -174,8 +177,8 @@ class DefaultProfileComponent(
         scope.launch {
             try {
                 billingProvider.restorePurchases()
-                val customerInfo = billingProvider.getCustomerInfo()
-                model.value = model.value.copy(loading = false, customerInfo = customerInfo)
+                val customerInfo = billingProvider.getCustomerBillingInfo()
+                model.value = model.value.copy(loading = false, customerBillingInfo = customerInfo)
                 notificationProvider.showNotification(
                     Notification(message = "Purchases restored")
                 )
