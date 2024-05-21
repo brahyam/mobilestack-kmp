@@ -92,7 +92,7 @@ fun PurchaseScreen(component: PurchaseComponent) {
                         FeatureItem("Billing with RevenueCat")
                         Spacer(Modifier.height(4.dp))
                         FeatureItem("Analytics with Firebase")
-                        if (product is Product.Starter) {
+                        if (product.toType() == Product.Type.STARTER) {
                             Spacer(Modifier.height(4.dp))
                             NotIncludedItem("ChatGPT Terms/Privacy Policy Prompt")
                             Spacer(Modifier.height(4.dp))
@@ -100,7 +100,7 @@ fun PurchaseScreen(component: PurchaseComponent) {
                             Spacer(Modifier.height(4.dp))
                             NotIncludedItem("Lifetime Updates")
                         }
-                        if (product is Product.AllIn) {
+                        if (product.toType() == Product.Type.ALL_IN) {
                             Spacer(Modifier.height(4.dp))
                             FeatureItem("ChatGPT Terms/Privacy Policy Prompt")
                             Spacer(Modifier.height(4.dp))

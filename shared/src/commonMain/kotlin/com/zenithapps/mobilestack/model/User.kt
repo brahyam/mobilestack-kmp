@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 data class User(
     val id: String,
     val email: String?,
-    val marketingConsent: Boolean,
-    val pendingPurchasePackageId: String?
+    val marketingConsent: Boolean
 )

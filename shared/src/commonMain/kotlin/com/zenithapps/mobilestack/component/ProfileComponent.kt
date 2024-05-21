@@ -86,15 +86,9 @@ class DefaultProfileComponent(
             model.value = model.value.copy(loading = true)
             scope.launch {
                 val authUser = authProvider.getAuthUser() ?: return@launch
-                var user =
+                val user =
                     userRepository.getUser(authUser.id) ?: userRepository.createUser(authUser.id)
                 val customerInfo = billingProvider.getCustomerBillingInfo()
-                if (!user.pendingPurchasePackageId.isNullOrEmpty() &&
-                    customerInfo.purchases.contains(user.pendingPurchasePackageId)
-                ) {
-                    user = user.copy(pendingPurchasePackageId = null)
-                    userRepository.updateUser(user)
-                }
                 model.value = model.value.copy(
                     loading = false,
                     user = user,

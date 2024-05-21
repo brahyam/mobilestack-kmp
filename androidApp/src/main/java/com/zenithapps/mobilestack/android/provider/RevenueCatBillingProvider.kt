@@ -11,6 +11,7 @@ import com.revenuecat.purchases.awaitLogOut
 import com.revenuecat.purchases.awaitOfferings
 import com.revenuecat.purchases.awaitPurchase
 import com.revenuecat.purchases.awaitRestore
+import com.revenuecat.purchases.models.Period
 import com.revenuecat.purchases.models.PurchaseState
 import com.zenithapps.mobilestack.android.BuildConfig
 import com.zenithapps.mobilestack.model.CustomerBillingInfo
@@ -61,36 +62,29 @@ class RevenueCatBillingProvider(
     override suspend fun getProducts(): List<Product> {
         val offerings = Purchases.sharedInstance.awaitOfferings()
         return offerings.current?.availablePackages?.map {
-            when (it.identifier) {
-                Product.Starter.ID -> Product.Starter(
-                    id = it.product.id,
-                    title = it.product.name,
-                    description = it.product.description,
-                    price = it.product.price.formatted
-                )
-
-                Product.AllIn.ID -> Product.AllIn(
-                    id = it.product.id,
-                    title = it.product.name,
-                    description = it.product.description,
-                    price = it.product.price.formatted
-                )
-
-                else -> Product.Other(
-                    id = it.product.id,
-                    packageId = it.identifier,
-                    title = it.product.name,
-                    description = it.product.description,
-                    price = it.product.price.formatted,
-                    period = when (it.product.period?.value) {
-                        0 -> Product.Period.Lifetime
-                        else -> Product.Period.Duration(
-                            it.product.period!!.value,
-                            Product.PeriodUnit.valueOf(it.product.period!!.unit.name)
-                        )
-                    }
-                )
-            }
+            val periodValue = it.product.period?.value
+            val periodUnit = it.product.period?.unit
+            Product(
+                id = it.product.id,
+                packageId = it.identifier,
+                title = it.product.name,
+                description = it.product.description,
+                price = it.product.price.formatted,
+                period = if (periodValue != null && periodValue != 0 && periodUnit != null) {
+                    Product.Period.Duration(
+                        periodValue,
+                        when (periodUnit) {
+                            Period.Unit.DAY -> Product.PeriodUnit.DAY
+                            Period.Unit.WEEK -> Product.PeriodUnit.WEEK
+                            Period.Unit.MONTH -> Product.PeriodUnit.MONTH
+                            Period.Unit.YEAR -> Product.PeriodUnit.YEAR
+                            else -> Product.PeriodUnit.UNKNOWN
+                        }
+                    )
+                } else {
+                    Product.Period.Lifetime
+                }
+            )
         } ?: emptyList()
     }
 

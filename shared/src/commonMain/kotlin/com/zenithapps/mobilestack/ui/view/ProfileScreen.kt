@@ -139,19 +139,11 @@ fun ProfileScreen(component: ProfileComponent) {
                     title = "Billing"
                 ) {
                     val templatePurchased =
-                        when (model.customerBillingInfo?.purchases?.firstOrNull()) {
-                            Product.Starter.ID -> "Starter"
-                            Product.AllIn.ID -> "All-in"
+                        when (model.customerBillingInfo?.entitlements?.firstOrNull()) {
+                            Product.Type.STARTER.entitlement -> "Starter"
+                            Product.Type.ALL_IN.entitlement -> "All-in"
                             else -> "No Purchases"
                         }
-                    if (!model.user?.pendingPurchasePackageId.isNullOrEmpty()) {
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = "Your purchase is pending. It might take a few minutes to show here.",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
                     SettingsTextItem(
                         label = "Purchases",
                         value = templatePurchased,

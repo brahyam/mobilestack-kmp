@@ -41,51 +41,32 @@ class RevenueCatBillingProvider: BillingProvider {
     func getProducts() async throws -> [Product] {
         let offerings = try await Purchases.shared.offerings()
         return offerings.current?.availablePackages.compactMap { package in
-            switch package.identifier {
-            case ProductStarter.companion.ID:
-                return ProductStarter(
-                    id: package.storeProduct.productIdentifier,
-                    title: package.storeProduct.localizedTitle,
-                    description: package.storeProduct.localizedDescription,
-                    price: package.storeProduct.localizedPriceString
-                )
-                
-            case ProductAllIn.companion.ID:
-                return ProductAllIn(
-                    id: package.storeProduct.productIdentifier,
-                    title: package.storeProduct.localizedTitle,
-                    description: package.storeProduct.localizedDescription,
-                    price: package.storeProduct.localizedPriceString
-                )
-                
-            default:
-                let period: ProductPeriod
-                if let subscriptionPeriod = package.storeProduct.subscriptionPeriod {
-                    switch subscriptionPeriod.unit {
-                    case .day:
-                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .day)
-                    case .week:
-                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .week)
-                    case .month:
-                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .month)
-                    case .year:
-                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .year)
-                    @unknown default:
-                        period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .unknown)
-                    }
-                } else {
-                    period = ProductPeriodLifetime()
+            let period: ProductPeriod
+            if let subscriptionPeriod = package.storeProduct.subscriptionPeriod {
+                switch subscriptionPeriod.unit {
+                case .day:
+                    period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .day)
+                case .week:
+                    period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .week)
+                case .month:
+                    period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .month)
+                case .year:
+                    period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .year)
+                @unknown default:
+                    period = ProductPeriodDuration(value: Int32(subscriptionPeriod.value), unit: .unknown)
                 }
-                
-                return ProductOther(
-                    id: package.storeProduct.productIdentifier,
-                    packageId: package.identifier,
-                    title: package.storeProduct.localizedTitle,
-                    description: package.storeProduct.localizedDescription,
-                    price: package.storeProduct.localizedPriceString,
-                    period: period
-                )
+            } else {
+                period = ProductPeriodLifetime()
             }
+            
+            return Product(
+                id: package.storeProduct.productIdentifier,
+                packageId: package.identifier,
+                title: package.storeProduct.localizedTitle,
+                description: package.storeProduct.localizedDescription,
+                price: package.storeProduct.localizedPriceString,
+                period: period
+            )
         } ?? []
     }
     

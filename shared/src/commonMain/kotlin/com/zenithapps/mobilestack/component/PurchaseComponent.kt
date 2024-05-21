@@ -80,7 +80,7 @@ class DefaultPurchaseComponent(
         model.value = model.value.copy(loading = true)
         scope.launch {
             try {
-                purchase(product.packageId)
+                purchase(product)
                 analyticsProvider.logEvent(
                     eventName = "product_purchased",
                     screenName = SCREEN_NAME,

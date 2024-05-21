@@ -1,5 +1,6 @@
 package com.zenithapps.mobilestack.useCase
 
+import com.zenithapps.mobilestack.model.Product
 import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
 import com.zenithapps.mobilestack.repository.UserRepository
@@ -11,29 +12,21 @@ class PurchaseUseCase(
     private val userRepository: UserRepository,
     private val signUp: SignUpUseCase
 ) {
-    suspend operator fun invoke(packageId: String) {
+    suspend operator fun invoke(product: Product) {
         try {
             // Needs to be signed in to assign the purchase to the correct user
             if (!authProvider.isLoggedIn()) {
                 signUp.anonymously()
             }
-            billingProvider.purchase(packageId)
+            billingProvider.purchase(product.packageId)
         } catch (exception: Exception) {
             Napier.e(exception) { "Purchase failed" }
             val purchaseException = PurchaseException.fromException(exception)
-            if (purchaseException is PurchaseException.Pending) {
-                val userId =
-                    authProvider.getAuthUser()?.id ?: throw PurchaseException.UserNotSignedIn
-                val user = userRepository.getUser(userId) ?: throw PurchaseException.UserNotFound
-                userRepository.updateUser(user.copy(pendingPurchasePackageId = packageId))
-            }
             throw purchaseException
         }
     }
 
     sealed class PurchaseException(reason: String) : Exception(reason) {
-        data object UserNotSignedIn : PurchaseException("User not signed in")
-        data object UserNotFound : PurchaseException("User not found")
         data object Pending : PurchaseException("Purchase pending")
         data object Declined : PurchaseException("Purchase declined")
         data object Cancelled : PurchaseException("Purchase cancelled")

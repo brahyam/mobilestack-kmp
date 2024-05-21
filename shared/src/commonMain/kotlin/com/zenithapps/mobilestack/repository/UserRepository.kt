@@ -29,8 +29,7 @@ class FirebaseUserRepository(
         val userDto = UserDto(
             id = id,
             email = email,
-            marketingConsent = marketingConsent ?: false,
-            pendingPurchasePackageId = null
+            marketingConsent = marketingConsent ?: false
         )
         firebaseFirestore.collection("users").document(userDto.id).set(userDto)
         return userDto.toModel()
