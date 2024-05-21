@@ -245,7 +245,9 @@ fun SettingsTextItem(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
         )
         Spacer(modifier = Modifier.weight(1f))
         TextButton(
@@ -254,6 +256,8 @@ fun SettingsTextItem(
             Text(
                 text = value,
                 fontWeight = FontWeight.Bold,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
         }
     }
