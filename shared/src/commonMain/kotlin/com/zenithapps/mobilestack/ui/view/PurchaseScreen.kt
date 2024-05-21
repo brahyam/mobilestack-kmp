@@ -94,15 +94,11 @@ fun PurchaseScreen(component: PurchaseComponent) {
                         FeatureItem("Analytics with Firebase")
                         if (product.toType() == Product.Type.STARTER) {
                             Spacer(Modifier.height(4.dp))
-                            NotIncludedItem("ChatGPT Terms/Privacy Policy Prompt")
-                            Spacer(Modifier.height(4.dp))
                             NotIncludedItem("Private Discord")
                             Spacer(Modifier.height(4.dp))
                             NotIncludedItem("Lifetime Updates")
                         }
                         if (product.toType() == Product.Type.ALL_IN) {
-                            Spacer(Modifier.height(4.dp))
-                            FeatureItem("ChatGPT Terms/Privacy Policy Prompt")
                             Spacer(Modifier.height(4.dp))
                             FeatureItem("Private Discord")
                             Spacer(Modifier.height(4.dp))
