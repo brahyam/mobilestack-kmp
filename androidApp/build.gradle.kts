@@ -9,10 +9,10 @@ plugins {
 }
 
 android {
-    namespace = "com.zenithapps.mobilestack.android" // TODO: Your package name here
+    namespace = "com.zenithapps.mobilestack.android"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.zenithapps.mobilestack.android" // TODO: Your package name here
+        applicationId = "com.zenithapps.mobilestack.android" // TODO: Your app id here
         minSdk = 24
         targetSdk = 34
         versionCode = 1
