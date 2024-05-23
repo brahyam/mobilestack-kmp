@@ -5,13 +5,11 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import mobile_stack.shared.generated.resources.Poppins_Bold
-import mobile_stack.shared.generated.resources.Poppins_Medium
-import mobile_stack.shared.generated.resources.Res
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import com.zenithapps.mobilestack.resources.Poppins_Bold
+import com.zenithapps.mobilestack.resources.Poppins_Medium
+import com.zenithapps.mobilestack.resources.Res
 import org.jetbrains.compose.resources.Font
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun getFontFamily() = FontFamily(
     // TODO: add your font .ttf files to the composeResources/font folder and replace the font names below

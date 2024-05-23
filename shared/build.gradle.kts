@@ -9,7 +9,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "11"
+                jvmTarget = JavaVersion.VERSION_11.toString()
             }
         }
     }
@@ -62,6 +62,12 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.zenithapps.mobilestack.resources"
+    generateResClass = always
 }
 
 android {

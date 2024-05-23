@@ -18,15 +18,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.zenithapps.mobilestack.component.WelcomeComponent
+import com.zenithapps.mobilestack.resources.Res
+import com.zenithapps.mobilestack.resources.img_app_icon
 import com.zenithapps.mobilestack.ui.widget.FeatureItem
 import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedButton
-import mobile_stack.shared.generated.resources.Res
-import mobile_stack.shared.generated.resources.img_app_icon
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WelcomeScreen(component: WelcomeComponent) {
     Column(
