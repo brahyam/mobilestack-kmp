@@ -40,9 +40,7 @@ fun MSFilledButton(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CircularProgressIndicator(
-                modifier = Modifier.size(24.dp).alpha(if (loading) 1f else 0f),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
+                modifier = Modifier.size(24.dp).alpha(if (loading) 1f else 0f)
             )
             Text(
                 modifier = Modifier.padding(horizontal = 8.dp),
@@ -76,9 +74,7 @@ fun MSOutlinedButton(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CircularProgressIndicator(
-                modifier = Modifier.size(24.dp).alpha(if (loading) 1f else 0f),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
+                modifier = Modifier.size(24.dp).alpha(if (loading) 1f else 0f)
             )
             Text(
                 modifier = Modifier.padding(horizontal = 8.dp),
