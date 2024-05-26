@@ -14,7 +14,6 @@ import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException
 import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.InvalidEmail
 import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.InvalidPassword
 import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.Other
-import com.zenithapps.mobilestack.util.Result
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import kotlinx.coroutines.launch
 
@@ -134,18 +133,15 @@ class DefaultSignUpComponent(
         )
         model.value = model.value.copy(loading = true)
         scope.launch {
-            when (val result = signUp.anonymously()) {
-                is Result.Success -> {
-                    model.value = model.value.copy(loading = false)
-                    onOutput(Output.Authenticated)
-                }
-
-                is Result.Error -> {
-                    model.value = model.value.copy(loading = false)
-                    notificationProvider.showNotification(
-                        Notification(message = result.error.reason)
-                    )
-                }
+            try {
+                signUp.anonymously()
+                onOutput(Output.Authenticated)
+            } catch (exception: Exception) {
+                notificationProvider.showNotification(
+                    Notification(exception.message ?: "Unknown error")
+                )
+            } finally {
+                model.value = model.value.copy(loading = false)
             }
         }
     }

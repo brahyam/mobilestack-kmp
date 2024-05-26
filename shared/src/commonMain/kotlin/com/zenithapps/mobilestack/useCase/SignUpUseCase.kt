@@ -3,7 +3,6 @@ package com.zenithapps.mobilestack.useCase
 import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
 import com.zenithapps.mobilestack.repository.UserRepository
-import com.zenithapps.mobilestack.util.Result
 import io.github.aakira.napier.Napier
 
 class SignUpUseCase(
@@ -33,7 +32,7 @@ class SignUpUseCase(
         }
     }
 
-    suspend fun anonymously(): Result<Unit, SignUpAnonException> {
+    suspend fun anonymously() {
         return try {
             val authUser = authProvider.signUpAnonymously()
             val user = userRepository.createUser(
@@ -42,9 +41,8 @@ class SignUpUseCase(
                 marketingConsent = false
             )
             billingProvider.logIn(user.id, user.email)
-            Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(SignUpAnonException(e.message ?: "Unknown error"))
+            throw SignUpAnonException(e.message ?: "Unknown error")
         }
     }
 

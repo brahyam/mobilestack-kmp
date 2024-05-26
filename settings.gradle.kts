@@ -18,3 +18,5 @@ dependencyResolutionManagement {
 rootProject.name = "Mobile_Stack"
 include(":androidApp")
 include(":shared")
+include(":ychat")
+include(":ychat-core")

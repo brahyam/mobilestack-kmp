@@ -16,6 +16,8 @@ import com.zenithapps.mobilestack.provider.FirebaseAuthProvider
 import com.zenithapps.mobilestack.provider.FirebaseRemoteConfigProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
+import com.zenithapps.mobilestack.provider.REVENUE_CAT_ANDROID_API_KEY
+import com.zenithapps.mobilestack.provider.REVENUE_CAT_IOS_API_KEY
 import com.zenithapps.mobilestack.repository.FirebaseUserRepository
 import com.zenithapps.mobilestack.useCase.PurchaseUseCase
 import com.zenithapps.mobilestack.useCase.SignInUseCase
@@ -153,8 +155,8 @@ class DefaultRootComponent(
 
     private fun getBillingApiKey(): String {
         val key = when (osCapabilityProvider.getPlatform()) {
-            OSCapabilityProvider.Platform.ANDROID -> "REVCAT_API_KEY_ANDROID"
-            OSCapabilityProvider.Platform.IOS -> "REVCAT_API_KEY_IOS"
+            OSCapabilityProvider.Platform.ANDROID -> REVENUE_CAT_ANDROID_API_KEY
+            OSCapabilityProvider.Platform.IOS -> REVENUE_CAT_IOS_API_KEY
         }
         return remoteConfigProvider.getString(key)
     }

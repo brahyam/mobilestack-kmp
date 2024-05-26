@@ -33,7 +33,7 @@ fun PurchaseScreen(component: PurchaseComponent) {
     Scaffold(
         topBar = {
             MSTopAppBar(
-                title = "Get MobileStack",
+                title = "Purchase",
                 onBackTap = component::onBackTap
             )
         }

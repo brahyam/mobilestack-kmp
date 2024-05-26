@@ -2,10 +2,8 @@ package com.zenithapps.mobilestack.component
 
 import com.arkivanov.decompose.ComponentContext
 
-interface LoadingComponent {
-}
+interface LoadingComponent
 
 class DefaultLoadingComponent(
     componentContext: ComponentContext
-) : LoadingComponent {
-}
+) : LoadingComponent, ComponentContext by componentContext

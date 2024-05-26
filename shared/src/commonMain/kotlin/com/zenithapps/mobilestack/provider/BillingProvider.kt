@@ -3,6 +3,9 @@ package com.zenithapps.mobilestack.provider
 import com.zenithapps.mobilestack.model.CustomerBillingInfo
 import com.zenithapps.mobilestack.model.Product
 
+const val REVENUE_CAT_ANDROID_API_KEY = "REVCAT_API_KEY_ANDROID"
+
+const val REVENUE_CAT_IOS_API_KEY = "REVCAT_API_KEY_IOS"
 interface BillingProvider {
     suspend fun configure(apiKey: String, userId: String?)
     suspend fun logIn(userId: String, email: String?)
