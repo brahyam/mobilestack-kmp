@@ -47,8 +47,6 @@
 		EABC0B8E2BA8C52F00AE3DFA /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = EABC0B8D2BA8C52F00AE3DFA /* FirebaseStorageCombine-Community */; };
 		EAE148F52BD82FDE00517EEF /* IOSCapabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE148F42BD82FDE00517EEF /* IOSCapabilityProvider.swift */; };
 		EAE148F72BDE5D2D00517EEF /* FirebaseAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE148F62BDE5D2C00517EEF /* FirebaseAnalyticsProvider.swift */; };
-		EAE148F92BDE64BC00517EEF /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = EAE148F82BDE64BC00517EEF /* Configuration.storekit */; };
-		EAE148FD2BE119ED00517EEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EAE148FC2BE119ED00517EEF /* GoogleService-Info.plist */; };
 		EAF4090C2BA2FFEB009460E8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4090B2BA2FFEB009460E8 /* RootView.swift */; };
 /* End PBXBuildFile section */
 
@@ -78,8 +76,6 @@
 		EAA201BE2BC712690063EFBD /* RevenueCatBillingProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueCatBillingProvider.swift; sourceTree = "<group>"; };
 		EAE148F42BD82FDE00517EEF /* IOSCapabilityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSCapabilityProvider.swift; sourceTree = "<group>"; };
 		EAE148F62BDE5D2C00517EEF /* FirebaseAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAnalyticsProvider.swift; sourceTree = "<group>"; };
-		EAE148F82BDE64BC00517EEF /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
-		EAE148FC2BE119ED00517EEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EAF4090B2BA2FFEB009460E8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -135,7 +131,6 @@
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
-				EAE148F82BDE64BC00517EEF /* Configuration.storekit */,
 				7555FF7D242A565900829871 /* iosApp */,
 				7555FF7C242A565900829871 /* Products */,
 				7555FFB0242A642200829871 /* Frameworks */,
@@ -154,7 +149,6 @@
 			isa = PBXGroup;
 			children = (
 				EA1363602BF0AC3100C684CB /* Providers */,
-				EAE148FC2BE119ED00517EEF /* GoogleService-Info.plist */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
@@ -291,8 +285,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
-				EAE148FD2BE119ED00517EEF /* GoogleService-Info.plist in Resources */,
-				EAE148F92BDE64BC00517EEF /* Configuration.storekit in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
