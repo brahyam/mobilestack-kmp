@@ -26,13 +26,13 @@ android {
         getByName("debug") {
             storeFile = file("debug_keystore.jks")
             storePassword = prop.getProperty("DEBUG_PASSWORD")
-            keyAlias = "androiddebugkey"
+            keyAlias = "mobilestack"
             keyPassword = prop.getProperty("DEBUG_PASSWORD")
         }
         create("release") {
             storeFile = file("release_keystore.jks")
             storePassword = prop.getProperty("RELEASE_PASSWORD")
-            keyAlias = "androidreleasekey"
+            keyAlias = "mobilestack"
             keyPassword = prop.getProperty("RELEASE_PASSWORD")
         }
     }
