@@ -55,6 +55,10 @@ android {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
             manifestPlaceholders["crashlyticsEnabled"] = "true"
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
