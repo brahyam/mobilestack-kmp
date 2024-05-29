@@ -24,7 +24,7 @@ android {
             load(FileInputStream(File(rootProject.rootDir, "local.properties")))
         }
         getByName("debug") {
-            storeFile = file("debug_keystore.jks")
+            storeFile = file("debug_keystore_old.jks")
             storePassword = prop.getProperty("DEBUG_PASSWORD")
             keyAlias = "mobilestack"
             keyPassword = prop.getProperty("DEBUG_PASSWORD")

@@ -46,6 +46,7 @@
 		EAE148F52BD82FDE00517EEF /* IOSCapabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE148F42BD82FDE00517EEF /* IOSCapabilityProvider.swift */; };
 		EAE148F72BDE5D2D00517EEF /* FirebaseAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE148F62BDE5D2C00517EEF /* FirebaseAnalyticsProvider.swift */; };
 		EAF4090C2BA2FFEB009460E8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4090B2BA2FFEB009460E8 /* RootView.swift */; };
+		EAF892B52C075FCD00EAAF97 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EAF892B42C075FCD00EAAF97 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -73,6 +74,7 @@
 		EAE148F42BD82FDE00517EEF /* IOSCapabilityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSCapabilityProvider.swift; sourceTree = "<group>"; };
 		EAE148F62BDE5D2C00517EEF /* FirebaseAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAnalyticsProvider.swift; sourceTree = "<group>"; };
 		EAF4090B2BA2FFEB009460E8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		EAF892B42C075FCD00EAAF97 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +146,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				EAF892B42C075FCD00EAAF97 /* GoogleService-Info.plist */,
 				EA1363602BF0AC3100C684CB /* Providers */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF8C242A565B00829871 /* Info.plist */,
@@ -280,6 +283,7 @@
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
+				EAF892B52C075FCD00EAAF97 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
