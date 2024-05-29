@@ -17,3 +17,5 @@ xcuserdata
 /androidApp/debug/androidApp-debug.aab
 /iosApp/Configuration.storekit
 /iosApp/iosApp/GoogleService-Info.plist
+.kotlin
+/androidApp/debug_keystore_old.jks
