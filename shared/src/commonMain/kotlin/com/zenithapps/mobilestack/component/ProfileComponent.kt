@@ -193,7 +193,7 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        osCapabilityProvider.openUrl("mailto:brahyam@getmobilestack.com")
+        osCapabilityProvider.openUrl("mailto:support@getmobilestack.com")
     }
 
     override fun onPrivacyPolicyTap() {
