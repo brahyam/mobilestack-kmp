@@ -17,7 +17,7 @@ interface AuthProvider {
     suspend fun signOut()
 
     suspend fun deleteAccount()
-    data class AuthUser(val id: String, val email: String?)
+    data class AuthUser(val id: String, val email: String?, val isAnonymous: Boolean)
 }
 
 class FirebaseAuthProvider(
@@ -60,6 +60,6 @@ class FirebaseAuthProvider(
     }
 
     private fun FirebaseUser.toModel(): AuthUser {
-        return AuthUser(uid, email)
+        return AuthUser(uid, email, isAnonymous)
     }
 }

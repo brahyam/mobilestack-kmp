@@ -54,6 +54,7 @@ fun ProfileScreen(component: ProfileComponent) {
         topBar = {
             MSTopAppBar(
                 title = "Profile",
+                onBackTap = if (model.canGoBack) component::onBackTap else null,
                 actions = {
                     if (model.customerBillingInfo?.entitlements.isNullOrEmpty()) {
                         Spacer(Modifier.height(8.dp))
@@ -121,16 +122,18 @@ fun ProfileScreen(component: ProfileComponent) {
                         value = model.user?.marketingConsent ?: false,
                         onValueChanged = component::onMarketingConsentChanged
                     )
-                    Spacer(Modifier.height(8.dp))
-                    MSOutlinedButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Sign Out",
-                        colors = ButtonDefaults.outlinedButtonColors().copy(
-                            contentColor = MaterialTheme.colorScheme.error
-                        ),
-                        onClick = component::onSignOutTap,
-                        loading = model.loading,
-                    )
+                    if (!model.isAnonymous) {
+                        Spacer(Modifier.height(8.dp))
+                        MSOutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Sign Out",
+                            colors = ButtonDefaults.outlinedButtonColors().copy(
+                                contentColor = MaterialTheme.colorScheme.error
+                            ),
+                            onClick = component::onSignOutTap,
+                            loading = model.loading,
+                        )
+                    }
                 }
             }
             item {
@@ -195,7 +198,7 @@ fun ProfileScreen(component: ProfileComponent) {
             item {
                 MSFilledButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Delete Account",
+                    text = "Delete Account / Data",
                     colors = ButtonDefaults.buttonColors().copy(
                         containerColor = MaterialTheme.colorScheme.error
                     ),

@@ -28,7 +28,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.koin.core)
             implementation(libs.napier)
-            implementation(project(":ychat-core"))
+            implementation(projects.ychatCore)
         }
 
 

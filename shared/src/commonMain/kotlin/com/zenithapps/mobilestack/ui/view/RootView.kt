@@ -47,6 +47,10 @@ fun RootView(component: RootComponent) {
                         is Child.Welcome -> {
                             WelcomeScreen(child.component)
                         }
+
+                        is Child.Home -> {
+                            HomeScreen(child.component)
+                        }
                     }
                 }
                 NotificationView(component.notificationComponent)

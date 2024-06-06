@@ -46,6 +46,7 @@ interface RootComponent {
         class Profile(val component: ProfileComponent) : Child
         class Purchase(val component: PurchaseComponent) : Child
         class Welcome(val component: WelcomeComponent) : Child
+        class Home(val component: SampleAiHomeComponent) : Child
     }
 }
 
@@ -135,8 +136,8 @@ class DefaultRootComponent(
             try {
                 remoteConfigProvider.fetchAndActivate()
                 billingProvider.configure(getBillingApiKey(), authProvider.getAuthUser()?.id)
-                if (authProvider.getAuthUser() != null) {
-                    navigation.replaceAll(Config.Profile)
+                if (authProvider.isLoggedIn()) {
+                    navigation.replaceAll(Config.Profile(canGoBack = false))
                 } else {
                     navigation.replaceAll(Config.Welcome)
                 }
@@ -181,15 +182,20 @@ class DefaultRootComponent(
                             SignUpComponent.Output.ForgotPassword -> navigation.pushToFront(Config.ResetPassword)
                             SignUpComponent.Output.SignIn -> navigation.pushToFront(Config.SignIn)
                             SignUpComponent.Output.Back -> navigation.pop()
-                            SignUpComponent.Output.Authenticated -> navigation.replaceAll(Config.Profile)
+                            SignUpComponent.Output.Authenticated -> navigation.replaceAll(
+                                Config.Profile(
+                                    canGoBack = false
+                                )
+                            )
                         }
                     }
                 )
             )
 
-            Config.Profile -> Child.Profile(
+            is Config.Profile -> Child.Profile(
                 component = DefaultProfileComponent(
                     componentContext = componentContext,
+                    canGoBack = config.canGoBack,
                     userRepository = userRepository,
                     authProvider = authProvider,
                     billingProvider = billingProvider,
@@ -218,7 +224,11 @@ class DefaultRootComponent(
                             SignInComponent.Output.ResetPassword -> navigation.pushToFront(Config.ResetPassword)
                             SignInComponent.Output.SignUp -> navigation.pushToFront(Config.SignUp)
                             SignInComponent.Output.Back -> navigation.pop()
-                            SignInComponent.Output.Authenticated -> navigation.replaceAll(Config.Profile)
+                            SignInComponent.Output.Authenticated -> navigation.replaceAll(
+                                Config.Profile(
+                                    canGoBack = false
+                                )
+                            )
                         }
                     }
                 )
@@ -249,7 +259,11 @@ class DefaultRootComponent(
                     onOutput = { output ->
                         when (output) {
                             PurchaseComponent.Output.Back -> navigation.pop()
-                            PurchaseComponent.Output.Purchased -> navigation.replaceAll(Config.Profile)
+                            PurchaseComponent.Output.Purchased -> navigation.replaceAll(
+                                Config.Profile(
+                                    canGoBack = false
+                                )
+                            )
                         }
                     }
                 )
@@ -263,6 +277,23 @@ class DefaultRootComponent(
                         when (output) {
                             WelcomeComponent.Output.SignUp -> navigation.pushToFront(Config.SignUp)
                             WelcomeComponent.Output.Purchase -> navigation.pushToFront(Config.Purchase)
+                        }
+                    }
+                )
+            )
+
+            Config.Home -> Child.Home(
+                component = DefaultSampleAiHomeComponent(
+                    componentContext = componentContext,
+                    authProvider = authProvider,
+                    signUp = signUpUseCase,
+                    remoteConfigProvider = remoteConfigProvider,
+                    notificationProvider = notificationProvider,
+                    onOutput = { output ->
+                        when (output) {
+                            SampleAiHomeComponent.Output.GoToProfile -> navigation.pushToFront(
+                                Config.Profile(canGoBack = true)
+                            )
                         }
                     }
                 )
@@ -284,12 +315,15 @@ class DefaultRootComponent(
         data object ResetPassword : Config
 
         @Serializable
-        data object Profile : Config
+        data class Profile(val canGoBack: Boolean = false) : Config
 
         @Serializable
         data object Purchase : Config
 
         @Serializable
         data object Welcome : Config
+
+        @Serializable
+        data object Home : Config
     }
 }

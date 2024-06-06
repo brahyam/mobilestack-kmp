@@ -45,6 +45,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.essenty.lifecycle)
             api(libs.napier)
+            implementation(projects.ychat)
         }
         androidMain.dependencies {
             implementation(libs.decompose.composeExtensions)

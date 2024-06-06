@@ -28,7 +28,9 @@ interface ProfileComponent {
         val customerBillingInfo: CustomerBillingInfo? = null,
         val appVersion: String = "",
         val newEmail: String = "",
-        val editModeEnabled: Boolean = false
+        val editModeEnabled: Boolean = false,
+        val isAnonymous: Boolean = false,
+        val canGoBack: Boolean
     )
 
     fun onSignOutTap()
@@ -57,6 +59,8 @@ interface ProfileComponent {
 
     fun onEnableEditModeTap()
 
+    fun onBackTap()
+
     sealed interface Output {
         data object Purchase : Output
         data object SignedOut : Output
@@ -68,6 +72,7 @@ private const val SCREEN_NAME = "profile"
 
 class DefaultProfileComponent(
     componentContext: ComponentContext,
+    canGoBack: Boolean,
     private val userRepository: UserRepository,
     private val authProvider: AuthProvider,
     private val billingProvider: BillingProvider,
@@ -77,7 +82,7 @@ class DefaultProfileComponent(
     private val signOut: SignOutUseCase,
     private val onOutput: (Output) -> Unit
 ) : ProfileComponent, ComponentContext by componentContext {
-    override val model = MutableValue(Model())
+    override val model = MutableValue(Model(canGoBack = canGoBack))
 
     private val scope = createCoroutineScope()
 
@@ -95,6 +100,7 @@ class DefaultProfileComponent(
                     customerBillingInfo = customerInfo,
                     appVersion = osCapabilityProvider.getAppVersion(),
                     newEmail = user.email ?: "",
+                    isAnonymous = authUser.isAnonymous
                 )
             }
         }
@@ -286,5 +292,9 @@ class DefaultProfileComponent(
             params = emptyMap()
         )
         model.value = model.value.copy(editModeEnabled = true)
+    }
+
+    override fun onBackTap() {
+        onOutput(Output.GoBack)
     }
 }
