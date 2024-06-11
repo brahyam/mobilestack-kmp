@@ -1,6 +1,7 @@
 # MobileStack - Mobile Apps Boilerplate (Kotlin Multiplatform)
 
-The Kotlin Multiplatform template with all you need to build your SaaS, AI tool, or any other mobile
+The Kotlin Multiplatform boilerplate with all you need to build your SaaS, AI tool, or any other
+mobile
 app and make your first $ online fast.
 
 ## Features

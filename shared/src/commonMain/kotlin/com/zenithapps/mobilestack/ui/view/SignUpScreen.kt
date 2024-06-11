@@ -74,7 +74,7 @@ fun SignUpScreen(component: SignUpComponent) {
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Bold
             )
-            FeatureItem("Try the template")
+            FeatureItem("Try the boilerplate")
             FeatureItem("Manage your subscription")
             FeatureItem("Get notified with updates")
             Spacer(modifier = Modifier.weight(1f))
