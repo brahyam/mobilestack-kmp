@@ -25,9 +25,9 @@ android {
         }
         getByName("debug") {
             storeFile = file("debug_keystore_old.jks")
-            storePassword = prop.getProperty("DEBUG_PASSWORD")
+            storePassword = prop.getProperty("DEBUG_PASSWORD_OLD")
             keyAlias = "mobilestack"
-            keyPassword = prop.getProperty("DEBUG_PASSWORD")
+            keyPassword = prop.getProperty("DEBUG_PASSWORD_OLD")
         }
         create("release") {
             storeFile = file("release_keystore.jks")
