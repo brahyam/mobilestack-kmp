@@ -131,14 +131,17 @@ class DefaultRootComponent(
         setup()
     }
 
+    // TIP: runs when app opens
     private fun setup() {
         scope.launch {
             try {
                 remoteConfigProvider.fetchAndActivate()
                 billingProvider.configure(getBillingApiKey(), authProvider.getAuthUser()?.id)
                 if (authProvider.isLoggedIn()) {
+                    // TIP: Define here what screen to show if the user is authenticated
                     navigation.replaceAll(Config.Profile(canGoBack = false))
                 } else {
+                    // TIP: Define here what screen to show if the user is not authenticated
                     navigation.replaceAll(Config.Welcome)
                 }
             } catch (e: FirebaseRemoteConfigClientException) {

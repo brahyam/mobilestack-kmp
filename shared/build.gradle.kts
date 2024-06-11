@@ -64,6 +64,8 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+
+    task("testClasses") // Fix for cannot locate tasks that match ':shared:testClasses'
 }
 
 compose.resources {

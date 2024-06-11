@@ -67,6 +67,7 @@ class DefaultSampleAiHomeComponent(
                 }
             }
             try {
+                // TODO: Create an OpenAI API Key and add it to Firebase remote configs with key OPENAI_API_KEY
                 val apiKey = remoteConfigProvider.getString("OPENAI_API_KEY")
                 if (apiKey.isEmpty()) {
                     throw IllegalStateException("OPENAI_API_KEY is empty")
@@ -104,8 +105,12 @@ class DefaultSampleAiHomeComponent(
                     .setMaxTokens(100)
                     .setTemperature(1.0)
                     .setTopP(1.0)
+                    .addMessage(
+                        "system",
+                        "You are a chatbot"
+                    ) // Tip: add your own specialized system prompt
                     .setMaxResults(1)
-                    .execute(model.value.prompt)
+                    .execute(model.value.prompt) // TIP: change this for  executeWithoutMemory for stateless completions
                 model.value = model.value.copy(
                     prompt = "",
                     result = (result.firstOrNull()?.content?.firstOrNull() as? Content.Text)?.text
