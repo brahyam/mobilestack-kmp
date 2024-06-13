@@ -17,6 +17,7 @@ fun MSOutlinedTextField(
     onValueChange: (String) -> Unit,
     label: String,
     shouldHide: Boolean = false,
+    singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) = OutlinedTextField(

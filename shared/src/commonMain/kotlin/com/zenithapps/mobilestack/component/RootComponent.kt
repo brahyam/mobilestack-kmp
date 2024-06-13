@@ -139,10 +139,10 @@ class DefaultRootComponent(
                 billingProvider.configure(getBillingApiKey(), authProvider.getAuthUser()?.id)
                 if (authProvider.isLoggedIn()) {
                     // TIP: Define here what screen to show if the user is authenticated
-                    navigation.replaceAll(Config.Profile(canGoBack = false))
+                    navigation.replaceAll(Config.Home)
                 } else {
                     // TIP: Define here what screen to show if the user is not authenticated
-                    navigation.replaceAll(Config.Welcome)
+                    navigation.replaceAll(Config.Home)
                 }
             } catch (e: FirebaseRemoteConfigClientException) {
                 Napier.e { "Failed to load configuration: ${e.message}" }

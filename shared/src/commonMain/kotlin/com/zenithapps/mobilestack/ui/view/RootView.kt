@@ -49,7 +49,7 @@ fun RootView(component: RootComponent) {
                         }
 
                         is Child.Home -> {
-                            HomeScreen(child.component)
+                            SampleAiHomeScreen(child.component)
                         }
                     }
                 }

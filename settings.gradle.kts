@@ -15,7 +15,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mobile_Stack"
+rootProject.name = "MobileStack"
 include(":androidApp")
 include(":shared")
 include(":ychat")

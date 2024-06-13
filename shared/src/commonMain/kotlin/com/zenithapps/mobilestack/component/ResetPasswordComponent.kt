@@ -63,7 +63,8 @@ class DefaultResetPasswordComponent(
                 model.value = model.value.copy(loading = false)
                 val message = when {
                     e.message == null -> "An error occurred"
-                    e.message!!.contains("email") -> "Invalid email"
+                    e.message!!.contains("badly formatted") -> "Invalid email"
+                    e.message!!.contains("empty") -> "Email cannot be empty"
                     else -> e.message!!
                 }
                 notificationProvider.showNotification(
