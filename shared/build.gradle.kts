@@ -25,6 +25,7 @@ kotlin {
             isStatic = true
             export(libs.decompose)
             export(libs.essenty.lifecycle)
+            export(libs.calf)
         }
     }
 
@@ -46,6 +47,8 @@ kotlin {
             implementation(libs.essenty.lifecycle)
             api(libs.napier)
             implementation(projects.ychat)
+            implementation(libs.calf)
+            implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
             implementation(libs.decompose.composeExtensions)

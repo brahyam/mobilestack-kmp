@@ -142,7 +142,7 @@ class DefaultRootComponent(
                     navigation.replaceAll(Config.Home)
                 } else {
                     // TIP: Define here what screen to show if the user is not authenticated
-                    navigation.replaceAll(Config.Home)
+                    navigation.replaceAll(Config.Welcome)
                 }
             } catch (e: FirebaseRemoteConfigClientException) {
                 Napier.e { "Failed to load configuration: ${e.message}" }

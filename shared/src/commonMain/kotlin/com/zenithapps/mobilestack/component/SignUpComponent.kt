@@ -16,6 +16,7 @@ import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException
 import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.Other
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 
 interface SignUpComponent {
     val model: Value<Model>
@@ -23,6 +24,7 @@ interface SignUpComponent {
     data class Model(
         val email: String = "",
         val password: String = "",
+        val birthdate: LocalDateTime? = null,
         val marketingConsent: Boolean = false,
         val loading: Boolean = false
     )
@@ -34,6 +36,8 @@ interface SignUpComponent {
     fun onPasswordChanged(password: String)
 
     fun onMarketingConsentChanged(consent: Boolean)
+
+    fun onBirthdateChanged(date: LocalDateTime)
 
     fun onSignInTap()
 
@@ -105,6 +109,10 @@ class DefaultSignUpComponent(
 
     override fun onMarketingConsentChanged(consent: Boolean) {
         model.value = model.value.copy(marketingConsent = consent)
+    }
+
+    override fun onBirthdateChanged(date: LocalDateTime) {
+        model.value = model.value.copy(birthdate = date)
     }
 
     override fun onSignInTap() {
