@@ -8,8 +8,6 @@ import FirebaseCrashlytics
 class AppDelegate: NSObject, UIApplicationDelegate {
     let root: RootComponent = DefaultRootComponent(
         componentContext: DefaultComponentContext(lifecycle: ApplicationLifecycle()),
-        // TODO: Replace MockBillingProvider() with RevenueCatBillingProvider() to enable Billing
-        billingProvider: MockBillingProvider(),
         osCapabilityProvider: IOSCapabilityProvider(),
         analyticsProvider: FirebaseAnalyticsProvider()
     )

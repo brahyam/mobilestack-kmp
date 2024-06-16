@@ -10,10 +10,10 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.RootComponent.Child
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
-import com.zenithapps.mobilestack.provider.BillingProvider
 import com.zenithapps.mobilestack.provider.DefaultNotificationProvider
 import com.zenithapps.mobilestack.provider.FirebaseAuthProvider
 import com.zenithapps.mobilestack.provider.FirebaseRemoteConfigProvider
+import com.zenithapps.mobilestack.provider.KMPRevenueCatBillingProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_ANDROID_API_KEY
@@ -44,15 +44,14 @@ interface RootComponent {
         class SignIn(val component: SignInComponent) : Child
         class ResetPassword(val component: ResetPasswordComponent) : Child
         class Profile(val component: ProfileComponent) : Child
-        class Purchase(val component: PurchaseComponent) : Child
         class Welcome(val component: WelcomeComponent) : Child
         class Home(val component: SampleAiHomeComponent) : Child
+        class RemotePaywall(val component: RemotePaywallComponent) : Child
     }
 }
 
 class DefaultRootComponent(
     componentContext: ComponentContext,
-    private val billingProvider: BillingProvider,
     private val osCapabilityProvider: OSCapabilityProvider,
     private val analyticsProvider: AnalyticsProvider,
 ) : RootComponent, ComponentContext by componentContext {
@@ -68,6 +67,10 @@ class DefaultRootComponent(
         handleBackButton = true,
         childFactory = ::createChild
     )
+
+    private val billingProvider by lazy {
+        KMPRevenueCatBillingProvider()
+    }
 
     private val notificationProvider by lazy {
         DefaultNotificationProvider()
@@ -208,7 +211,7 @@ class DefaultRootComponent(
                     signOut = signOutUseCase,
                     onOutput = { output ->
                         when (output) {
-                            ProfileComponent.Output.Purchase -> navigation.pushToFront(Config.Purchase)
+                            ProfileComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
                             ProfileComponent.Output.GoBack -> navigation.pop()
                             ProfileComponent.Output.SignedOut -> navigation.replaceAll(Config.Welcome)
                         }
@@ -251,27 +254,6 @@ class DefaultRootComponent(
                 )
             )
 
-            Config.Purchase -> Child.Purchase(
-                component = DefaultPurchaseComponent(
-                    componentContext = componentContext,
-                    billingProvider = billingProvider,
-                    authProvider = authProvider,
-                    purchase = purchaseUseCase,
-                    analyticsProvider = analyticsProvider,
-                    notificationProvider = notificationProvider,
-                    onOutput = { output ->
-                        when (output) {
-                            PurchaseComponent.Output.Back -> navigation.pop()
-                            PurchaseComponent.Output.Purchased -> navigation.replaceAll(
-                                Config.Profile(
-                                    canGoBack = false
-                                )
-                            )
-                        }
-                    }
-                )
-            )
-
             Config.Welcome -> Child.Welcome(
                 component = DefaultWelcomeComponent(
                     componentContext = componentContext,
@@ -279,7 +261,7 @@ class DefaultRootComponent(
                     onOutput = { output ->
                         when (output) {
                             WelcomeComponent.Output.SignUp -> navigation.pushToFront(Config.SignUp)
-                            WelcomeComponent.Output.Purchase -> navigation.pushToFront(Config.Purchase)
+                            WelcomeComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
                         }
                     }
                 )
@@ -297,6 +279,28 @@ class DefaultRootComponent(
                             SampleAiHomeComponent.Output.GoToProfile -> navigation.pushToFront(
                                 Config.Profile(canGoBack = true)
                             )
+                        }
+                    }
+                )
+            )
+
+            Config.RemotePaywall -> Child.RemotePaywall(
+                component = DefaultRemotePaywallComponent(
+                    componentContext = componentContext,
+                    onOutput = { output ->
+                        when (output) {
+                            RemotePaywallComponent.Output.Dismissed -> navigation.pop()
+                            RemotePaywallComponent.Output.PurchaseCancelled -> {}
+                            RemotePaywallComponent.Output.PurchaseCompleted -> navigation.pushToFront(
+                                Config.Profile(false)
+                            )
+
+                            RemotePaywallComponent.Output.PurchaseError -> {}
+                            RemotePaywallComponent.Output.RestoreCompleted -> navigation.pushToFront(
+                                Config.Profile(false)
+                            )
+
+                            RemotePaywallComponent.Output.RestoreError -> {}
                         }
                     }
                 )
@@ -321,12 +325,12 @@ class DefaultRootComponent(
         data class Profile(val canGoBack: Boolean = false) : Config
 
         @Serializable
-        data object Purchase : Config
-
-        @Serializable
         data object Welcome : Config
 
         @Serializable
         data object Home : Config
+
+        @Serializable
+        data object RemotePaywall : Config
     }
 }

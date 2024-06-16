@@ -40,16 +40,16 @@ fun RootView(component: RootComponent) {
                             ResetPasswordScreen(child.component)
                         }
 
-                        is Child.Purchase -> {
-                            PurchaseScreen(child.component)
-                        }
-
                         is Child.Welcome -> {
                             WelcomeScreen(child.component)
                         }
 
                         is Child.Home -> {
                             SampleAiHomeScreen(child.component)
+                        }
+
+                        is Child.RemotePaywall -> {
+                            RemotePaywallScreen(child.component)
                         }
                     }
                 }

@@ -47,8 +47,10 @@ kotlin {
             implementation(libs.essenty.lifecycle)
             api(libs.napier)
             implementation(projects.ychat)
-            implementation(libs.calf)
+            api(libs.calf)
             implementation(libs.kotlinx.datetime)
+            implementation("io.github.mirzemehdi:kmprevenuecat-purchases:1.0.0")
+            implementation("io.github.mirzemehdi:kmprevenuecat-purchases-ui:1.0.0")
         }
         androidMain.dependencies {
             implementation(libs.decompose.composeExtensions)

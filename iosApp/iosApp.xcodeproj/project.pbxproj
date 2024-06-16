@@ -14,7 +14,6 @@
 		EA1363662BF0B1C100C684CB /* IOSCapabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1363632BF0B1C100C684CB /* IOSCapabilityProvider.swift */; };
 		EA1363672BF0B1C100C684CB /* RevenueCatBillingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1363642BF0B1C100C684CB /* RevenueCatBillingProvider.swift */; };
 		EA838AAD2BA2031A00BE814C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA838AAC2BA2031A00BE814C /* AppDelegate.swift */; };
-		EAA201BF2BC712690063EFBD /* RevenueCatBillingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA201BE2BC712690063EFBD /* RevenueCatBillingProvider.swift */; };
 		EAA201C22BC713C70063EFBD /* ReceiptParser in Frameworks */ = {isa = PBXBuildFile; productRef = EAA201C12BC713C70063EFBD /* ReceiptParser */; };
 		EAA201C42BC713C70063EFBD /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = EAA201C32BC713C70063EFBD /* RevenueCat */; };
 		EAA201C62BC713C70063EFBD /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = EAA201C52BC713C70063EFBD /* RevenueCatUI */; };
@@ -73,7 +72,6 @@
 		EA1363632BF0B1C100C684CB /* IOSCapabilityProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOSCapabilityProvider.swift; sourceTree = "<group>"; };
 		EA1363642BF0B1C100C684CB /* RevenueCatBillingProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RevenueCatBillingProvider.swift; sourceTree = "<group>"; };
 		EA838AAC2BA2031A00BE814C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EAA201BE2BC712690063EFBD /* RevenueCatBillingProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueCatBillingProvider.swift; sourceTree = "<group>"; };
 		EAE148F42BD82FDE00517EEF /* IOSCapabilityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSCapabilityProvider.swift; sourceTree = "<group>"; };
 		EAE148F62BDE5D2C00517EEF /* FirebaseAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAnalyticsProvider.swift; sourceTree = "<group>"; };
 		EAF4090B2BA2FFEB009460E8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -170,7 +168,6 @@
 			isa = PBXGroup;
 			children = (
 				EA1363612BF0B1C100C684CB /* Providers */,
-				EAA201BE2BC712690063EFBD /* RevenueCatBillingProvider.swift */,
 				EAE148F42BD82FDE00517EEF /* IOSCapabilityProvider.swift */,
 				EAE148F62BDE5D2C00517EEF /* FirebaseAnalyticsProvider.swift */,
 			);
@@ -340,7 +337,6 @@
 			files = (
 				EAF4090C2BA2FFEB009460E8 /* RootView.swift in Sources */,
 				EA838AAD2BA2031A00BE814C /* AppDelegate.swift in Sources */,
-				EAA201BF2BC712690063EFBD /* RevenueCatBillingProvider.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				EA1363652BF0B1C100C684CB /* FirebaseAnalyticsProvider.swift in Sources */,
 				EAE148F72BDE5D2D00517EEF /* FirebaseAnalyticsProvider.swift in Sources */,

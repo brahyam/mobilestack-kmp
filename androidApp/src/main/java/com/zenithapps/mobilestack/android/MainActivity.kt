@@ -9,7 +9,6 @@ import com.google.firebase.ktx.Firebase
 import com.zenithapps.mobilestack.android.provider.AndroidCapabilityProvider
 import com.zenithapps.mobilestack.android.provider.FirebaseAnalyticsProvider
 import com.zenithapps.mobilestack.component.DefaultRootComponent
-import com.zenithapps.mobilestack.provider.MockBillingProvider
 import com.zenithapps.mobilestack.ui.view.RootView
 
 class MainActivity : ComponentActivity() {
@@ -17,8 +16,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val rootComponent = DefaultRootComponent(
             componentContext = defaultComponentContext(),
-            // TODO: replace MockBillingProvider() with RevenueCatBillingProvider(activity = this) to enable Billing
-            billingProvider = MockBillingProvider(),
             osCapabilityProvider = AndroidCapabilityProvider(this),
             analyticsProvider = FirebaseAnalyticsProvider(Firebase.analytics),
         )
