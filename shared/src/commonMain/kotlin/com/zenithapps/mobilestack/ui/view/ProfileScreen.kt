@@ -116,6 +116,7 @@ fun ProfileScreen(component: ProfileComponent) {
                             )
                         }
                     }
+
                     Spacer(Modifier.height(8.dp))
                     SettingsSwitchItem(
                         label = "Marketing consent",
@@ -144,7 +145,7 @@ fun ProfileScreen(component: ProfileComponent) {
                         when (model.customerBillingInfo?.entitlements?.firstOrNull()) {
                             Product.Type.STARTER.entitlement -> "Starter"
                             Product.Type.ALL_IN.entitlement -> "All-in"
-                            else -> "No Purchases"
+                            else -> "Purchase"
                         }
                     SettingsTextItem(
                         label = "Purchases",

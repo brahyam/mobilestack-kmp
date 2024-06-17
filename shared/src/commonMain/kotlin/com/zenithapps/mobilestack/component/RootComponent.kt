@@ -19,7 +19,6 @@ import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_ANDROID_API_KEY
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_IOS_API_KEY
 import com.zenithapps.mobilestack.repository.FirebaseUserRepository
-import com.zenithapps.mobilestack.useCase.PurchaseUseCase
 import com.zenithapps.mobilestack.useCase.SignInUseCase
 import com.zenithapps.mobilestack.useCase.SignOutUseCase
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
@@ -118,15 +117,6 @@ class DefaultRootComponent(
         SignOutUseCase(
             authProvider = authProvider,
             billingProvider = billingProvider,
-        )
-    }
-
-    private val purchaseUseCase by lazy {
-        PurchaseUseCase(
-            authProvider = authProvider,
-            billingProvider = billingProvider,
-            userRepository = userRepository,
-            signUp = signUpUseCase
         )
     }
 
@@ -287,9 +277,12 @@ class DefaultRootComponent(
             Config.RemotePaywall -> Child.RemotePaywall(
                 component = DefaultRemotePaywallComponent(
                     componentContext = componentContext,
+                    authProvider = authProvider,
+                    signUp = signUpUseCase,
                     onOutput = { output ->
                         when (output) {
                             RemotePaywallComponent.Output.Dismissed -> navigation.pop()
+
                             RemotePaywallComponent.Output.PurchaseCancelled -> {}
                             RemotePaywallComponent.Output.PurchaseCompleted -> navigation.pushToFront(
                                 Config.Profile(false)

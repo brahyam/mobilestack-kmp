@@ -5,6 +5,11 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.RemotePaywallComponent.Model
 import com.zenithapps.mobilestack.component.RemotePaywallComponent.Output
+import com.zenithapps.mobilestack.provider.AuthProvider
+import com.zenithapps.mobilestack.useCase.SignUpUseCase
+import com.zenithapps.mobilestack.util.createCoroutineScope
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.launch
 
 interface RemotePaywallComponent {
     val model: Value<Model>
@@ -33,19 +38,36 @@ interface RemotePaywallComponent {
 
 class DefaultRemotePaywallComponent(
     componentContext: ComponentContext,
+    private val authProvider: AuthProvider,
+    private val signUp: SignUpUseCase,
     private val onOutput: (Output) -> Unit
 ) : RemotePaywallComponent, ComponentContext by componentContext {
+    private val scope = createCoroutineScope()
     override val model = MutableValue(Model())
+    var purchaseCompleted: Boolean = false
 
     override fun onDismissTap() {
-        onOutput(Output.Dismissed)
+        if (!purchaseCompleted) { // RevenueCat lib fires dismiss right after purchase completed
+            purchaseCompleted = false
+            onOutput(Output.Dismissed)
+        }
     }
 
     override fun onPurchaseStarted() {
-
+        scope.launch {
+            try {
+                // Needs to be signed in to assign the purchase to the correct user
+                if (!authProvider.isLoggedIn()) {
+                    signUp.anonymously()
+                }
+            } catch (exception: Exception) {
+                Napier.e(exception) { "Sign up failed" }
+            }
+        }
     }
 
     override fun onPurchaseCompleted() {
+        purchaseCompleted = true
         onOutput(Output.PurchaseCompleted)
     }
 

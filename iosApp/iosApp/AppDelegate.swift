@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 import shared
-import RevenueCat
 import FirebaseAuth
 import FirebaseCrashlytics
 

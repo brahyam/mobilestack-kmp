@@ -3,6 +3,7 @@ package com.zenithapps.mobilestack.provider
 import com.mmk.kmprevenuecat.purchases.Purchases
 import com.zenithapps.mobilestack.model.CustomerBillingInfo
 import com.zenithapps.mobilestack.model.Product
+import io.github.aakira.napier.Napier
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
@@ -23,58 +24,91 @@ interface BillingProvider {
 }
 
 class KMPRevenueCatBillingProvider : BillingProvider {
+    private var configured: Boolean = false
     override suspend fun configure(apiKey: String, userId: String?) {
-        Purchases.configure(apiKey, userId)
+        if (apiKey.isNotBlank()) {
+            Purchases.configure(apiKey, userId)
+            configured = true
+        } else {
+            Napier.w { "Billing Provider not configured." }
+        }
     }
 
     override suspend fun logIn(userId: String, email: String?) = suspendCoroutine { continuation ->
-        Purchases.login(userId) {
-            it.onSuccess {
-                Purchases.setAttributes(mapOf("email" to email))
-                continuation.resumeWith(Result.success(Unit))
-            }
-            it.onFailure { error ->
-                continuation.resumeWithException(error)
+        if (!configured) {
+            Napier.w { "Billing Provider not configured." }
+            continuation.resumeWith(Result.success(Unit))
+        } else {
+            Purchases.login(userId) {
+                it.onSuccess {
+                    Purchases.setAttributes(mapOf("email" to email))
+                    continuation.resumeWith(Result.success(Unit))
+                }
+                it.onFailure { error ->
+                    continuation.resumeWithException(error)
+                }
             }
         }
     }
 
     override suspend fun setEmail(email: String) {
+        if (!configured) {
+            Napier.w { "Billing Provider not configured." }
+            return
+        }
         Purchases.setAttributes(mapOf("email" to email))
     }
 
     override suspend fun logOut() = suspendCoroutine { continuation ->
-        Purchases.logOut {
-            it.onSuccess {
-                continuation.resumeWith(Result.success(Unit))
-            }
-            it.onFailure { error ->
-                continuation.resumeWithException(error)
+        if (!configured) {
+            Napier.w { "Billing Provider not configured." }
+            continuation.resumeWith(Result.success(Unit))
+        } else {
+            Purchases.logOut {
+                it.onSuccess {
+                    continuation.resumeWith(Result.success(Unit))
+                }
+                it.onFailure { error ->
+                    continuation.resumeWithException(error)
+                }
             }
         }
     }
 
     override suspend fun getCustomerBillingInfo(): CustomerBillingInfo =
         suspendCoroutine { continuation ->
-            Purchases.getCustomerInfo {
-                it.onSuccess { customerInfo ->
-                    val entitlements = customerInfo.entitlements.all.map { entitlement ->
-                        entitlement.key
-                    }
-                    val purchases = emptyList<String>() // find out how to map purchases
-                    val managementUrl = customerInfo.managementURL
-                    continuation.resumeWith(
-                        Result.success(
-                            CustomerBillingInfo(
-                                entitlements,
-                                purchases,
-                                managementUrl
-                            )
+            if (!configured) {
+                Napier.w { "Billing Provider not configured." }
+                continuation.resumeWith(
+                    Result.success(
+                        CustomerBillingInfo(
+                            emptyList(),
+                            emptyList(),
+                            null
                         )
                     )
-                }
-                it.onFailure { error ->
-                    continuation.resumeWithException(error)
+                )
+            } else {
+                Purchases.getCustomerInfo {
+                    it.onSuccess { customerInfo ->
+                        val entitlements = customerInfo.entitlements.all.map { entitlement ->
+                            entitlement.key
+                        }
+                        val purchases = emptyList<String>() // find out how to map purchases
+                        val managementUrl = customerInfo.managementURL
+                        continuation.resumeWith(
+                            Result.success(
+                                CustomerBillingInfo(
+                                    entitlements,
+                                    purchases,
+                                    managementUrl
+                                )
+                            )
+                        )
+                    }
+                    it.onFailure { error ->
+                        continuation.resumeWithException(error)
+                    }
                 }
             }
         }
@@ -88,12 +122,17 @@ class KMPRevenueCatBillingProvider : BillingProvider {
     }
 
     override suspend fun restorePurchases() = suspendCoroutine { continuation ->
-        Purchases.syncPurchases {
-            it.onSuccess {
-                continuation.resumeWith(Result.success(Unit))
-            }
-            it.onFailure { error ->
-                continuation.resumeWithException(error)
+        if (!configured) {
+            Napier.w { "Billing Provider not configured." }
+            continuation.resumeWith(Result.success(Unit))
+        } else {
+            Purchases.syncPurchases {
+                it.onSuccess {
+                    continuation.resumeWith(Result.success(Unit))
+                }
+                it.onFailure { error ->
+                    continuation.resumeWithException(error)
+                }
             }
         }
     }
