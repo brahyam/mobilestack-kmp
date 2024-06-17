@@ -116,11 +116,15 @@ fun ProfileScreen(component: ProfileComponent) {
                             )
                         }
                     }
-
+                    SettingsTextItem(
+                        label = "Birthdate",
+                        value = model.user?.birthdate?.toString() ?: "Not specified",
+                    )
                     Spacer(Modifier.height(8.dp))
                     SettingsSwitchItem(
                         label = "Marketing consent",
                         value = model.user?.marketingConsent ?: false,
+                        enabled = !model.loading,
                         onValueChanged = component::onMarketingConsentChanged
                     )
                     if (!model.isAnonymous) {
@@ -293,6 +297,7 @@ fun SettingsTextFieldItem(
 fun SettingsSwitchItem(
     label: String,
     value: Boolean,
+    enabled: Boolean = true,
     onValueChanged: (Boolean) -> Unit
 ) {
     Row(
@@ -305,6 +310,7 @@ fun SettingsSwitchItem(
         Spacer(modifier = Modifier.weight(1f))
         Switch(
             checked = value,
+            enabled = enabled,
             onCheckedChange = onValueChanged
         )
     }
