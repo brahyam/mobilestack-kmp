@@ -90,4 +90,5 @@ interface ChatCompletions {
     fun execute(content: String, callback: YChat.Callback<List<ChatMessage>>)
 
     fun addImage(image: ByteArray, detail: ImageDetail): ChatCompletions
+    fun addImage(imageBase64: String, detail: ImageDetail): ChatCompletions
 }

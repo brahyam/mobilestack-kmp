@@ -87,4 +87,9 @@ internal class ChatCompletionsImpl(
         images.add(Content.Image(image, detail))
         return this
     }
+
+    override fun addImage(imageBase64: String, detail: ImageDetail): ChatCompletions {
+        images.add(Content.ImageBase64(imageBase64, detail))
+        return this
+    }
 }

@@ -1,8 +1,10 @@
 package co.yml.ychat.data.infrastructure
 
 import co.yml.ychat.core.network.factories.HttpClientFactory
+import co.yml.ychat.core.network.factories.HttpEngineFactory
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -17,11 +19,12 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 internal class OpenAiHttpClient(
-    private val apiKey: String
+    private val apiKey: String,
+    private val httpEngine: HttpClientEngine = HttpEngineFactory.getEngine()
 ) : HttpClientFactory {
 
     override fun getHttpClient(): HttpClient {
-        return HttpClient {
+        return HttpClient(httpEngine) {
             defaultRequest {
                 url {
                     host = BASE_URL
@@ -29,6 +32,9 @@ internal class OpenAiHttpClient(
                     contentType(ContentType.Application.Json)
                 }
                 header("Authorization", "Bearer $apiKey")
+            }
+            engine {
+
             }
             install(HttpTimeout) {
                 requestTimeoutMillis = TIMEOUT_MILLIS
