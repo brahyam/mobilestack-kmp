@@ -15,6 +15,7 @@ import com.zenithapps.mobilestack.provider.NotificationProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.repository.UserRepository
+import com.zenithapps.mobilestack.useCase.DeleteAccountUseCase
 import com.zenithapps.mobilestack.useCase.SignOutUseCase
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ interface ProfileComponent {
     val model: Value<Model>
 
     data class Model(
+        val initialLoading: Boolean = true,
         val loading: Boolean = false,
         val user: User? = null,
         val customerBillingInfo: CustomerBillingInfo? = null,
@@ -61,6 +63,8 @@ interface ProfileComponent {
 
     fun onBackTap()
 
+    fun onMobileStackTap()
+
     sealed interface Output {
         data object Purchase : Output
         data object SignedOut : Output
@@ -80,6 +84,7 @@ class DefaultProfileComponent(
     private val analyticsProvider: AnalyticsProvider,
     private val notificationProvider: NotificationProvider,
     private val signOut: SignOutUseCase,
+    private val deleteAccount: DeleteAccountUseCase,
     private val onOutput: (Output) -> Unit
 ) : ProfileComponent, ComponentContext by componentContext {
     override val model = MutableValue(Model(canGoBack = canGoBack))
@@ -88,14 +93,14 @@ class DefaultProfileComponent(
 
     init {
         lifecycle.doOnResume {
-            model.value = model.value.copy(loading = true)
+            model.value = model.value.copy(initialLoading = true)
             scope.launch {
                 val authUser = authProvider.getAuthUser() ?: return@launch
                 val user =
                     userRepository.getUser(authUser.id) ?: userRepository.createUser(authUser.id)
                 val customerInfo = billingProvider.getCustomerBillingInfo()
                 model.value = model.value.copy(
-                    loading = false,
+                    initialLoading = false,
                     user = user,
                     customerBillingInfo = customerInfo,
                     appVersion = osCapabilityProvider.getAppVersion(),
@@ -135,6 +140,7 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
+        if (model.value.customerBillingInfo?.entitlements?.isNotEmpty() == true) return
         onOutput(Output.Purchase)
     }
 
@@ -271,8 +277,7 @@ class DefaultProfileComponent(
         model.value = model.value.copy(loading = true)
         scope.launch {
             try {
-                userRepository.deleteUser(model.value.user!!.id)
-                authProvider.deleteAccount()
+                deleteAccount()
                 onOutput(Output.SignedOut)
             } catch (e: Exception) {
                 model.value = model.value.copy(loading = false)
@@ -296,5 +301,9 @@ class DefaultProfileComponent(
 
     override fun onBackTap() {
         onOutput(Output.GoBack)
+    }
+
+    override fun onMobileStackTap() {
+        osCapabilityProvider.openUrl("https://getmobilestack.com/")
     }
 }

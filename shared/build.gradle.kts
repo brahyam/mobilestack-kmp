@@ -49,8 +49,9 @@ kotlin {
             implementation(projects.ychat)
             api(libs.calf)
             implementation(libs.kotlinx.datetime)
-            implementation("io.github.mirzemehdi:kmprevenuecat-purchases:1.0.0")
-            implementation("io.github.mirzemehdi:kmprevenuecat-purchases-ui:1.0.0")
+            implementation(libs.kmp.revenuecat)
+            implementation(libs.kmp.revenuecat.ui)
+            implementation(libs.multiplatform.settings.no.arg)
         }
         androidMain.dependencies {
             implementation(libs.decompose.composeExtensions)

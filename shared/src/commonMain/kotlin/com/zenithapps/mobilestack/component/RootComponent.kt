@@ -14,11 +14,13 @@ import com.zenithapps.mobilestack.provider.DefaultNotificationProvider
 import com.zenithapps.mobilestack.provider.FirebaseAuthProvider
 import com.zenithapps.mobilestack.provider.FirebaseRemoteConfigProvider
 import com.zenithapps.mobilestack.provider.KMPRevenueCatBillingProvider
+import com.zenithapps.mobilestack.provider.KMPSettingsProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_ANDROID_API_KEY
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_IOS_API_KEY
 import com.zenithapps.mobilestack.repository.FirebaseUserRepository
+import com.zenithapps.mobilestack.useCase.DeleteAccountUseCase
 import com.zenithapps.mobilestack.useCase.SignInUseCase
 import com.zenithapps.mobilestack.useCase.SignOutUseCase
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
@@ -120,6 +122,18 @@ class DefaultRootComponent(
         )
     }
 
+    private val deleteAccountUseCase by lazy {
+        DeleteAccountUseCase(
+            userRepository = userRepository,
+            authProvider = authProvider,
+            billingProvider = billingProvider
+        )
+    }
+
+    private val keyValueStorageProvider by lazy {
+        KMPSettingsProvider()
+    }
+
     init {
         setup()
     }
@@ -199,6 +213,7 @@ class DefaultRootComponent(
                     analyticsProvider = analyticsProvider,
                     notificationProvider = notificationProvider,
                     signOut = signOutUseCase,
+                    deleteAccount = deleteAccountUseCase,
                     onOutput = { output ->
                         when (output) {
                             ProfileComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
