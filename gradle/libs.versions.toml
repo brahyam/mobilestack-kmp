@@ -3,6 +3,7 @@ agp = "8.4.1"
 kotlin = "2.0.0"
 coroutines-core = "1.8.1-Beta"
 androidx-activityCompose = "1.9.0"
+androidx-annotation = "1.8.0"
 jetbrains-compose = "1.6.10"
 google-services = "4.4.1"
 firebase-crashlytics = "3.0.1"
@@ -12,15 +13,53 @@ essenty = "2.0.0"
 kotlinx-serialization = "1.6.3"
 gitlive-firebase = "1.10.4"
 billing = "7.0.0"
+multiplatformSettingsNoArg = "1.1.1"
 revenuecat = "7.9.0"
 napier = "2.7.1"
+peekaboo = "0.5.2"
 ktor = "2.3.10"
 koin = "3.5.6"
 calf = "0.4.1"
 kotlinx-datetime = "0.5.0"
+exifinterface = "1.3.7"
+multiplatform-paging = "3.3.0-alpha02-0.5.1"
+androidx-lifecycleViewmodelCompose = "2.8.1"
+accompanist = "0.34.0"
+camerax = "1.3.3"
+kmprevenuecat = "1.0.0"
+revenueCatAndroid = "7.11.0"
+revenueCatIos = "4.43.0"
+androidx-startup-runtime = "1.1.1"
+androidx-core-ktx = "1.13.1"
+
+android-minSdk = "24"
+android-compileSdk = "34"
+reviewKtx = "2.0.1"
 
 [libraries]
+
+#Coroutines
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
+kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutines-core" }
+
+#Android
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
+multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettingsNoArg" }
+paging-common = { module = "app.cash.paging:paging-common", version.ref = "multiplatform-paging" }
+paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "multiplatform-paging" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycleViewmodelCompose" }
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
+camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }
+camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }
+camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "androidx-startup-runtime" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activityCompose" }
+
+#Compose
+components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "jetbrains-compose" }
 
 #Architecture
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
@@ -43,11 +82,16 @@ firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
 
 #Billing
 billing = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
-revenuecat = { module = "com.revenuecat.purchases:purchases", version.ref = "revenuecat" }
+kmp-revenuecat = { module = "io.github.mirzemehdi:kmprevenuecat-purchases", version.ref = "kmprevenuecat" }
+kmp-revenuecat-ui = { module = "io.github.mirzemehdi:kmprevenuecat-purchases-ui", version.ref = "kmprevenuecat" }
+# Revenuecat - Subscription lib
+revenuecat-purchases = { group = "com.revenuecat.purchases", name = "purchases", version.ref = "revenueCatAndroid" }
+#revenuecat-purchases-ui = { group = "com.revenuecat.purchases", name = "purchases-ui", version.ref = "revenueCatAndroid" }
 
 #Utils
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekaboo" }
+peekaboo-imagePicker = { module = "io.github.onseok:peekaboo-image-picker", version.ref = "peekaboo" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 #Network
@@ -65,6 +109,7 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 #UI
 calf = { group = "com.mohamedrejeb.calf", name = "calf-ui", version.ref = "calf" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -76,3 +121,4 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "jetbrains-comp
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
+kotlinNativeCocoaPods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
