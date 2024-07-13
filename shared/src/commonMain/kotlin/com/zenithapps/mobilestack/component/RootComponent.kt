@@ -48,6 +48,7 @@ interface RootComponent {
         class Welcome(val component: WelcomeComponent) : Child
         class Home(val component: SampleAiHomeComponent) : Child
         class RemotePaywall(val component: RemotePaywallComponent) : Child
+        class Onboarding(val component: OnboardingComponent) : Child
     }
 }
 
@@ -148,8 +149,11 @@ class DefaultRootComponent(
                     // TIP: Define here what screen to show if the user is authenticated
                     navigation.replaceAll(Config.Home)
                 } else {
-                    // TIP: Define here what screen to show if the user is not authenticated
-                    navigation.replaceAll(Config.Welcome)
+                    if (keyValueStorageProvider.getBoolean("onboarding_completed") == true) {
+                        navigation.replaceAll(Config.Welcome)
+                    } else {
+                        navigation.replaceAll(Config.Onboarding)
+                    }
                 }
             } catch (e: FirebaseRemoteConfigClientException) {
                 Napier.e { "Failed to load configuration: ${e.message}" }
@@ -313,6 +317,19 @@ class DefaultRootComponent(
                     }
                 )
             )
+
+            Config.Onboarding -> Child.Onboarding(
+                component = DefaultOnboardingComponent(
+                    componentContext = componentContext,
+                    keyValueStorageProvider = keyValueStorageProvider,
+                    analyticsProvider = analyticsProvider,
+                    onOutput = { output ->
+                        when (output) {
+                            OnboardingComponent.Output.Finished -> navigation.replaceAll(Config.Welcome)
+                        }
+                    }
+                )
+            )
         }
 
     @Serializable
@@ -340,5 +357,8 @@ class DefaultRootComponent(
 
         @Serializable
         data object RemotePaywall : Config
+
+        @Serializable
+        data object Onboarding : Config
     }
 }
