@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.zenithapps.mobilestack.component.ProfileComponent
-import com.zenithapps.mobilestack.model.Product
 import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedButton
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
@@ -73,7 +72,7 @@ fun ProfileScreen(component: ProfileComponent) {
         ) {
             item {
                 Text(
-                    text = "Hi, ${model.user?.email?.split("@")?.getOrNull(0) ?: "Guest"}",
+                    text = "Hi, ${if (model.user?.email != null) "Friend" else "Guest"}",
                     style = MaterialTheme.typography.displayMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -87,7 +86,8 @@ fun ProfileScreen(component: ProfileComponent) {
                     if (model.editModeEnabled.not()) {
                         SettingsTextItem(
                             label = "Email",
-                            value = model.user?.email ?: "Add Email",
+                            value = if (model.user?.email.isNullOrEmpty()) "Add Email" else model.user?.email
+                                ?: "",
                             onClick = if (model.user?.email.isNullOrEmpty()) component::onEnableEditModeTap else {
                                 {}
                             }
@@ -112,7 +112,8 @@ fun ProfileScreen(component: ProfileComponent) {
                                 modifier = Modifier.fillMaxWidth(),
                                 text = "Save Email",
                                 onClick = component::onSaveEmailTap,
-                                loading = model.loading
+                                loading = model.loading,
+                                enabled = model.initialLoading.not()
                             )
                         }
                     }
@@ -146,10 +147,10 @@ fun ProfileScreen(component: ProfileComponent) {
                     title = "Billing"
                 ) {
                     val templatePurchased =
-                        when (model.customerBillingInfo?.entitlements?.firstOrNull()) {
-                            Product.Type.STARTER.entitlement -> "Starter"
-                            Product.Type.ALL_IN.entitlement -> "All-in"
-                            else -> "Purchase"
+                        if (model.customerBillingInfo?.entitlements?.isNotEmpty() == true) {
+                            "Purchased"
+                        } else {
+                            "Not Purchased"
                         }
                     SettingsTextItem(
                         label = "Purchases",
@@ -201,9 +202,14 @@ fun ProfileScreen(component: ProfileComponent) {
                 }
             }
             item {
+                val deleteCTA = if (model.isAnonymous) {
+                    "Delete my Data"
+                } else {
+                    "Delete my Account"
+                }
                 MSFilledButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Delete Account / Data",
+                    text = deleteCTA,
                     colors = ButtonDefaults.buttonColors().copy(
                         containerColor = MaterialTheme.colorScheme.error
                     ),

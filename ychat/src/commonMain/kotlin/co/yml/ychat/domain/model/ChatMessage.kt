@@ -14,6 +14,7 @@ data class ChatMessage(
 sealed interface Content {
     data class Text(val text: String) : Content
     data class Image(val bytes: ByteArray, val detail: ImageDetail) : Content
+    data class ImageBase64(val base64: String, val detail: ImageDetail) : Content
 }
 
 enum class ImageDetail {

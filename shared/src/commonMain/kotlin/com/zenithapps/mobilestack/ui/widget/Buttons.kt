@@ -25,6 +25,7 @@ fun MSFilledButton(
     modifier: Modifier = Modifier,
     text: String,
     loading: Boolean = false,
+    enabled: Boolean = true,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     onClick: () -> Unit
 ) {
@@ -33,7 +34,7 @@ fun MSFilledButton(
         shape = MaterialTheme.shapes.medium,
         onClick = onClick,
         colors = colors,
-        enabled = loading.not(),
+        enabled = enabled && loading.not(),
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,

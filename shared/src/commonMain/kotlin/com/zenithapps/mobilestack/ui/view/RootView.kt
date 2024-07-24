@@ -20,6 +20,7 @@ fun RootView(component: RootComponent) {
                     stack = component.stack
                 ) {
                     when (val child = it.instance) {
+
                         is Child.Profile -> {
                             ProfileScreen(child.component)
                         }
@@ -50,6 +51,10 @@ fun RootView(component: RootComponent) {
 
                         is Child.RemotePaywall -> {
                             RemotePaywallScreen(child.component)
+                        }
+
+                        is Child.Onboarding -> {
+                            OnboardingScreen(child.component)
                         }
                     }
                 }

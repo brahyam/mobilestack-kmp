@@ -44,19 +44,14 @@ class DefaultRemotePaywallComponent(
 ) : RemotePaywallComponent, ComponentContext by componentContext {
     private val scope = createCoroutineScope()
     override val model = MutableValue(Model())
-    var purchaseCompleted: Boolean = false
 
     override fun onDismissTap() {
-        if (!purchaseCompleted) { // RevenueCat lib fires dismiss right after purchase completed
-            purchaseCompleted = false
-            onOutput(Output.Dismissed)
-        }
+        onOutput(Output.Dismissed)
     }
 
     override fun onPurchaseStarted() {
         scope.launch {
             try {
-                // Needs to be signed in to assign the purchase to the correct user
                 if (!authProvider.isLoggedIn()) {
                     signUp.anonymously()
                 }
@@ -67,7 +62,6 @@ class DefaultRemotePaywallComponent(
     }
 
     override fun onPurchaseCompleted() {
-        purchaseCompleted = true
         onOutput(Output.PurchaseCompleted)
     }
 

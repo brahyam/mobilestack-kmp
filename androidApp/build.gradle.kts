@@ -24,15 +24,15 @@ android {
             load(FileInputStream(File(rootProject.rootDir, "local.properties")))
         }
         getByName("debug") {
-            storeFile = file("debug_keystore.jks")
-            storePassword = prop.getProperty("DEBUG_PASSWORD")
-            keyAlias = "androiddebugkey"
-            keyPassword = prop.getProperty("DEBUG_PASSWORD")
+            storeFile = file("debug_keystore_old.jks")
+            storePassword = prop.getProperty("DEBUG_PASSWORD_OLD")
+            keyAlias = "mobilestack"
+            keyPassword = prop.getProperty("DEBUG_PASSWORD_OLD")
         }
         create("release") {
             storeFile = file("release_keystore.jks")
             storePassword = prop.getProperty("RELEASE_PASSWORD")
-            keyAlias = "androidreleasekey"
+            keyAlias = "mobilestack"
             keyPassword = prop.getProperty("RELEASE_PASSWORD")
         }
     }
@@ -74,5 +74,5 @@ dependencies {
     implementation(projects.shared)
     implementation(libs.androidx.activity.compose)
     implementation(libs.billing)
-    implementation(libs.revenuecat)
+    implementation(libs.review.ktx)
 }

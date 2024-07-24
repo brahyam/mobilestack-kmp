@@ -14,11 +14,13 @@ import com.zenithapps.mobilestack.provider.DefaultNotificationProvider
 import com.zenithapps.mobilestack.provider.FirebaseAuthProvider
 import com.zenithapps.mobilestack.provider.FirebaseRemoteConfigProvider
 import com.zenithapps.mobilestack.provider.KMPRevenueCatBillingProvider
+import com.zenithapps.mobilestack.provider.KMPSettingsProvider
 import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_ANDROID_API_KEY
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_IOS_API_KEY
 import com.zenithapps.mobilestack.repository.FirebaseUserRepository
+import com.zenithapps.mobilestack.useCase.DeleteAccountUseCase
 import com.zenithapps.mobilestack.useCase.SignInUseCase
 import com.zenithapps.mobilestack.useCase.SignOutUseCase
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
@@ -46,6 +48,7 @@ interface RootComponent {
         class Welcome(val component: WelcomeComponent) : Child
         class Home(val component: SampleAiHomeComponent) : Child
         class RemotePaywall(val component: RemotePaywallComponent) : Child
+        class Onboarding(val component: OnboardingComponent) : Child
     }
 }
 
@@ -120,6 +123,18 @@ class DefaultRootComponent(
         )
     }
 
+    private val deleteAccountUseCase by lazy {
+        DeleteAccountUseCase(
+            userRepository = userRepository,
+            authProvider = authProvider,
+            billingProvider = billingProvider
+        )
+    }
+
+    private val keyValueStorageProvider by lazy {
+        KMPSettingsProvider()
+    }
+
     init {
         setup()
     }
@@ -134,8 +149,11 @@ class DefaultRootComponent(
                     // TIP: Define here what screen to show if the user is authenticated
                     navigation.replaceAll(Config.Home)
                 } else {
-                    // TIP: Define here what screen to show if the user is not authenticated
-                    navigation.replaceAll(Config.Welcome)
+                    if (keyValueStorageProvider.getBoolean("onboarding_completed") == true) {
+                        navigation.replaceAll(Config.Welcome)
+                    } else {
+                        navigation.replaceAll(Config.Onboarding)
+                    }
                 }
             } catch (e: FirebaseRemoteConfigClientException) {
                 Napier.e { "Failed to load configuration: ${e.message}" }
@@ -199,6 +217,7 @@ class DefaultRootComponent(
                     analyticsProvider = analyticsProvider,
                     notificationProvider = notificationProvider,
                     signOut = signOutUseCase,
+                    deleteAccount = deleteAccountUseCase,
                     onOutput = { output ->
                         when (output) {
                             ProfileComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
@@ -298,6 +317,19 @@ class DefaultRootComponent(
                     }
                 )
             )
+
+            Config.Onboarding -> Child.Onboarding(
+                component = DefaultOnboardingComponent(
+                    componentContext = componentContext,
+                    keyValueStorageProvider = keyValueStorageProvider,
+                    analyticsProvider = analyticsProvider,
+                    onOutput = { output ->
+                        when (output) {
+                            OnboardingComponent.Output.Finished -> navigation.replaceAll(Config.Welcome)
+                        }
+                    }
+                )
+            )
         }
 
     @Serializable
@@ -325,5 +357,8 @@ class DefaultRootComponent(
 
         @Serializable
         data object RemotePaywall : Config
+
+        @Serializable
+        data object Onboarding : Config
     }
 }

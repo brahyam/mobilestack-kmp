@@ -48,5 +48,14 @@ internal fun Content.toContentDto(): ContentDto {
                 detail = this.detail.name.lowercase()
             )
         )
+
+        is Content.ImageBase64 -> ContentDto(
+            type = "image_url",
+            text = null,
+            imageUrl = ImageUrlDto(
+                url = "data:image/jpeg;base64,${this.base64}",
+                detail = this.detail.name.lowercase()
+            )
+        )
     }
 }
