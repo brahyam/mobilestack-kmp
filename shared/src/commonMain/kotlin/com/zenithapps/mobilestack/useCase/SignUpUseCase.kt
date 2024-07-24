@@ -4,6 +4,7 @@ import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
 import com.zenithapps.mobilestack.repository.UserRepository
 import io.github.aakira.napier.Napier
+import kotlinx.datetime.LocalDate
 
 class SignUpUseCase(
     private val authProvider: AuthProvider,
@@ -13,6 +14,7 @@ class SignUpUseCase(
     suspend operator fun invoke(
         email: String,
         password: String,
+        birthdate: LocalDate?,
         marketingConsent: Boolean
     ) {
         try {
@@ -23,6 +25,7 @@ class SignUpUseCase(
             val user = userRepository.createUser(
                 authUser.id,
                 authUser.email,
+                birthdate,
                 marketingConsent
             )
             billingProvider.logIn(user.id, user.email)

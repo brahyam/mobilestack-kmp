@@ -117,15 +117,17 @@ fun ProfileScreen(component: ProfileComponent) {
                             )
                         }
                     }
+                    SettingsTextItem(
+                        label = "Birthdate",
+                        value = model.user?.birthdate?.toString() ?: "Not specified",
+                    )
                     Spacer(Modifier.height(8.dp))
-                    if (model.user?.email != null) {
-                        SettingsSwitchItem(
-                            label = "Marketing consent",
-                            value = model.user?.marketingConsent ?: false,
-                            enabled = !model.loading,
-                            onValueChanged = component::onMarketingConsentChanged
-                        )
-                    }
+                    SettingsSwitchItem(
+                        label = "Marketing consent",
+                        value = model.user?.marketingConsent ?: false,
+                        enabled = !model.loading,
+                        onValueChanged = component::onMarketingConsentChanged
+                    )
                     if (!model.isAnonymous) {
                         Spacer(Modifier.height(8.dp))
                         MSOutlinedButton(

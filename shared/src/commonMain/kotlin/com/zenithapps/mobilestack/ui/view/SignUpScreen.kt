@@ -47,6 +47,7 @@ import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
 import com.zenithapps.mobilestack.ui.widget.MSTopAppBar
 import com.zenithapps.mobilestack.util.toLocalDateTime
+import com.zenithapps.mobilestack.util.toMillis
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,11 +60,13 @@ fun SignUpScreen(component: SignUpComponent) {
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(skipHiddenState = false)
     )
-    val state = rememberAdaptiveDatePickerState()
+    val state = rememberAdaptiveDatePickerState(
+        initialSelectedDateMillis = model.birthdate?.toMillis()
+    )
 
     LaunchedEffect(state.selectedDateMillis) {
         val selectedMillis = state.selectedDateMillis ?: return@LaunchedEffect
-        component.onBirthdateChanged(selectedMillis.toLocalDateTime())
+        component.onBirthdateChanged(selectedMillis.toLocalDateTime().date)
         scaffoldState.bottomSheetState.hide()
     }
 
@@ -165,15 +168,14 @@ fun SignUpScreen(component: SignUpComponent) {
                                     keyboardController?.hide()
                                 }
                             },
-                        value = model.birthdate?.date?.toString() ?: "",
+                        value = model.birthdate?.toString() ?: "",
                         onValueChange = { },
                         label = "Birthdate",
                         readOnly = true
                     )
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp) // Remove fixed
+                            .matchParentSize()
                             .clickable {
                                 coroutineScope.launch {
                                     scaffoldState.bottomSheetState.expand()

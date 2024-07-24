@@ -5,11 +5,13 @@ import com.zenithapps.mobilestack.repository.dto.UserDto
 import com.zenithapps.mobilestack.repository.dto.toDto
 import com.zenithapps.mobilestack.repository.dto.toModel
 import dev.gitlive.firebase.firestore.FirebaseFirestore
+import kotlinx.datetime.LocalDate
 
 interface UserRepository {
     suspend fun createUser(
         id: String,
         email: String? = null,
+        birthdate: LocalDate? = null,
         marketingConsent: Boolean? = null
     ): User
 
@@ -24,11 +26,13 @@ class FirebaseUserRepository(
     override suspend fun createUser(
         id: String,
         email: String?,
+        birthdate: LocalDate?,
         marketingConsent: Boolean?
     ): User {
         val userDto = UserDto(
             id = id,
             email = email,
+            birthdate = birthdate,
             marketingConsent = marketingConsent ?: false
         )
         firebaseFirestore.collection("users").document(userDto.id).set(userDto)
