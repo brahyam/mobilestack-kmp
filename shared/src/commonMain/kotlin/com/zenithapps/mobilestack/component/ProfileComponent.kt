@@ -95,9 +95,7 @@ class DefaultProfileComponent(
         lifecycle.doOnResume {
             model.value = model.value.copy(initialLoading = true)
             scope.launch {
-                val authUser = authProvider.getAuthUser() ?: return@launch
-                val user =
-                    userRepository.getUser(authUser.id) ?: userRepository.createUser(authUser.id)
+                val user = userRepository.getUser() ?: userRepository.createUser()
                 val customerInfo = billingProvider.getCustomerBillingInfo()
                 model.value = model.value.copy(
                     initialLoading = false,
@@ -105,7 +103,7 @@ class DefaultProfileComponent(
                     customerBillingInfo = customerInfo,
                     appVersion = osCapabilityProvider.getAppVersion(),
                     newEmail = user.email ?: "",
-                    isAnonymous = authUser.isAnonymous
+                    isAnonymous = user.email == null
                 )
             }
         }

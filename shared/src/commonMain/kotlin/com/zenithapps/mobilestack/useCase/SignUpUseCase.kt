@@ -23,7 +23,6 @@ class SignUpUseCase(
             }
             val authUser = authProvider.signUpWithEmailPassword(email, password)
             val user = userRepository.createUser(
-                authUser.id,
                 authUser.email,
                 birthdate,
                 marketingConsent
@@ -39,7 +38,6 @@ class SignUpUseCase(
         return try {
             val authUser = authProvider.signUpAnonymously()
             val user = userRepository.createUser(
-                authUser.id,
                 authUser.email,
                 marketingConsent = false
             )

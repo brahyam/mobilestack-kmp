@@ -13,8 +13,7 @@ class DeleteAccountUseCase(
 ) {
     suspend operator fun invoke() {
         try {
-            val userId = authProvider.getAuthUser()!!.id
-            userRepository.deleteUser(userId)
+            userRepository.deleteUser()
             authProvider.deleteAccount()
             billingProvider.logOut()
             Result.Success(Unit)

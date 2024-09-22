@@ -1,4 +1,4 @@
-package com.zenithapps.mobilestack.ui.view
+package com.zenithapps.mobilestack.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

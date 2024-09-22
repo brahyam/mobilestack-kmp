@@ -10,7 +10,6 @@ import com.zenithapps.mobilestack.component.RootComponent
 import com.zenithapps.mobilestack.component.RootComponent.Child
 import com.zenithapps.mobilestack.ui.screen.onboarding.OnboardingScreen
 import com.zenithapps.mobilestack.ui.style.MobileStackTheme
-import com.zenithapps.mobilestack.ui.view.RemotePaywallScreen
 
 @Composable
 fun RootView(component: RootComponent) {

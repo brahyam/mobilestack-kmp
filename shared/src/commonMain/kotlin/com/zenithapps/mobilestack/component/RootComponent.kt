@@ -91,6 +91,7 @@ class DefaultRootComponent(
 
     private val userRepository by lazy {
         FirebaseUserRepository(
+            authProvider = authProvider,
             firebaseFirestore = Firebase.firestore
         )
     }
@@ -149,8 +150,7 @@ class DefaultRootComponent(
                     // TIP: Define here what screen to show if the user is authenticated
                     navigation.replaceAll(Config.Home)
                 } else {
-//                    if (keyValueStorageProvider.getBoolean("onboarding_completed") == true) {
-                    if (false) {
+                    if (keyValueStorageProvider.getBoolean("onboarding_completed") == true) {
                         navigation.replaceAll(Config.Welcome)
                     } else {
                         navigation.replaceAll(Config.Onboarding)
@@ -197,11 +197,7 @@ class DefaultRootComponent(
                             SignUpComponent.Output.ForgotPassword -> navigation.pushToFront(Config.ResetPassword)
                             SignUpComponent.Output.SignIn -> navigation.pushToFront(Config.SignIn)
                             SignUpComponent.Output.Back -> navigation.pop()
-                            SignUpComponent.Output.Authenticated -> navigation.replaceAll(
-                                Config.Profile(
-                                    canGoBack = false
-                                )
-                            )
+                            SignUpComponent.Output.Authenticated -> navigation.replaceAll(Config.Home)
                         }
                     }
                 )
