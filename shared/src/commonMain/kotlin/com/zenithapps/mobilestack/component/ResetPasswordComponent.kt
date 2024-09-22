@@ -7,8 +7,8 @@ import com.zenithapps.mobilestack.component.ResetPasswordComponent.Model
 import com.zenithapps.mobilestack.component.ResetPasswordComponent.Output
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
 import com.zenithapps.mobilestack.provider.AuthProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import kotlinx.coroutines.launch
 
@@ -35,7 +35,7 @@ class DefaultResetPasswordComponent(
     componentContext: ComponentContext,
     private val authProvider: AuthProvider,
     private val analyticsProvider: AnalyticsProvider,
-    private val notificationProvider: NotificationProvider,
+    private val inAppNotificationProvider: InAppNotificationProvider,
     private val onOutput: (Output) -> Unit
 ) : ResetPasswordComponent, ComponentContext by componentContext {
     override val model = MutableValue(Model())
@@ -55,7 +55,7 @@ class DefaultResetPasswordComponent(
         scope.launch {
             try {
                 authProvider.resetPassword(model.value.email)
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(message = "Password reset email sent")
                 )
                 onOutput(Output.Back)
@@ -67,7 +67,7 @@ class DefaultResetPasswordComponent(
                     e.message!!.contains("empty") -> "Email cannot be empty"
                     else -> e.message!!
                 }
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(message = message)
                 )
             }

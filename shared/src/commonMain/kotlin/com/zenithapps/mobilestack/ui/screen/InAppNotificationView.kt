@@ -1,4 +1,4 @@
-package com.zenithapps.mobilestack.ui.view
+package com.zenithapps.mobilestack.ui.screen
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.SnackbarDuration
@@ -12,10 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.zenithapps.mobilestack.component.NotificationComponent
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 
 @Composable
-fun NotificationView(component: NotificationComponent) {
+fun InAppNotificationView(component: NotificationComponent) {
     val model by component.model.subscribeAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

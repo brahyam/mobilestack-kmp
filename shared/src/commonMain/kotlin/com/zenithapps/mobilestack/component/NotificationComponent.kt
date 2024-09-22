@@ -4,8 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.NotificationComponent.Model
-import com.zenithapps.mobilestack.provider.NotificationProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.catch
@@ -24,14 +24,14 @@ interface NotificationComponent {
 
 class DefaultNotificationComponent(
     componentContext: ComponentContext,
-    notificationProvider: NotificationProvider
+    inAppNotificationProvider: InAppNotificationProvider
 ) : NotificationComponent, ComponentContext by componentContext {
     override val model = MutableValue(Model())
 
     private val scope = createCoroutineScope()
 
     init {
-        notificationProvider.notifications
+        inAppNotificationProvider.notifications
             .onEach { notification ->
                 model.value =
                     model.value.copy(notification = notification)

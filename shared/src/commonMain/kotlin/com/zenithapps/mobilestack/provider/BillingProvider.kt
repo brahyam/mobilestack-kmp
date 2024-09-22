@@ -12,6 +12,7 @@ const val REVENUE_CAT_ANDROID_API_KEY = "REVCAT_API_KEY_ANDROID"
 const val REVENUE_CAT_IOS_API_KEY = "REVCAT_API_KEY_IOS"
 
 interface BillingProvider {
+    val isConfigured: Boolean
     suspend fun configure(apiKey: String, userId: String?)
     suspend fun logIn(userId: String, email: String?)
     suspend fun setEmail(email: String)
@@ -25,6 +26,8 @@ interface BillingProvider {
 
 class KMPRevenueCatBillingProvider : BillingProvider {
     private var configured: Boolean = false
+    override val isConfigured: Boolean
+        get() = configured
     override suspend fun configure(apiKey: String, userId: String?) {
         if (apiKey.isNotBlank()) {
             Purchases.configure(apiKey, userId)

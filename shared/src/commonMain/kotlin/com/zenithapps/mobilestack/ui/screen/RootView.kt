@@ -1,4 +1,4 @@
-package com.zenithapps.mobilestack.ui.view
+package com.zenithapps.mobilestack.ui.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.zenithapps.mobilestack.component.RootComponent
 import com.zenithapps.mobilestack.component.RootComponent.Child
+import com.zenithapps.mobilestack.ui.screen.onboarding.OnboardingScreen
 import com.zenithapps.mobilestack.ui.style.MobileStackTheme
+import com.zenithapps.mobilestack.ui.view.RemotePaywallScreen
 
 @Composable
 fun RootView(component: RootComponent) {
@@ -58,7 +60,7 @@ fun RootView(component: RootComponent) {
                         }
                     }
                 }
-                NotificationView(component.notificationComponent)
+                InAppNotificationView(component.notificationComponent)
             }
         }
     }

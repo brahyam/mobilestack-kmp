@@ -10,12 +10,12 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.RootComponent.Child
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
-import com.zenithapps.mobilestack.provider.DefaultNotificationProvider
+import com.zenithapps.mobilestack.provider.DefaultInAppNotificationProvider
 import com.zenithapps.mobilestack.provider.FirebaseAuthProvider
 import com.zenithapps.mobilestack.provider.FirebaseRemoteConfigProvider
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.KMPRevenueCatBillingProvider
 import com.zenithapps.mobilestack.provider.KMPSettingsProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_ANDROID_API_KEY
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_IOS_API_KEY
@@ -75,12 +75,12 @@ class DefaultRootComponent(
     }
 
     private val notificationProvider by lazy {
-        DefaultNotificationProvider()
+        DefaultInAppNotificationProvider()
     }
 
     override val notificationComponent = DefaultNotificationComponent(
         componentContext = componentContext,
-        notificationProvider = notificationProvider
+        inAppNotificationProvider = notificationProvider
     )
 
     private val authProvider by lazy {
@@ -149,7 +149,8 @@ class DefaultRootComponent(
                     // TIP: Define here what screen to show if the user is authenticated
                     navigation.replaceAll(Config.Home)
                 } else {
-                    if (keyValueStorageProvider.getBoolean("onboarding_completed") == true) {
+//                    if (keyValueStorageProvider.getBoolean("onboarding_completed") == true) {
+                    if (false) {
                         navigation.replaceAll(Config.Welcome)
                     } else {
                         navigation.replaceAll(Config.Onboarding)
@@ -190,7 +191,7 @@ class DefaultRootComponent(
                     componentContext = componentContext,
                     signUp = signUpUseCase,
                     analyticsProvider = analyticsProvider,
-                    notificationProvider = notificationProvider,
+                    inAppNotificationProvider = notificationProvider,
                     onOutput = { output ->
                         when (output) {
                             SignUpComponent.Output.ForgotPassword -> navigation.pushToFront(Config.ResetPassword)
@@ -215,7 +216,7 @@ class DefaultRootComponent(
                     billingProvider = billingProvider,
                     osCapabilityProvider = osCapabilityProvider,
                     analyticsProvider = analyticsProvider,
-                    notificationProvider = notificationProvider,
+                    inAppNotificationProvider = notificationProvider,
                     signOut = signOutUseCase,
                     deleteAccount = deleteAccountUseCase,
                     onOutput = { output ->
@@ -233,7 +234,7 @@ class DefaultRootComponent(
                     componentContext = componentContext,
                     signIn = signInUseCase,
                     analyticsProvider = analyticsProvider,
-                    notificationProvider = notificationProvider,
+                    inAppNotificationProvider = notificationProvider,
                     onOutput = { output ->
                         when (output) {
                             SignInComponent.Output.ResetPassword -> navigation.pushToFront(Config.ResetPassword)
@@ -254,7 +255,7 @@ class DefaultRootComponent(
                     componentContext = componentContext,
                     authProvider = authProvider,
                     analyticsProvider = analyticsProvider,
-                    notificationProvider = notificationProvider,
+                    inAppNotificationProvider = notificationProvider,
                     onOutput = { output ->
                         when (output) {
                             ResetPasswordComponent.Output.Back -> navigation.pop()
@@ -282,7 +283,7 @@ class DefaultRootComponent(
                     authProvider = authProvider,
                     signUp = signUpUseCase,
                     remoteConfigProvider = remoteConfigProvider,
-                    notificationProvider = notificationProvider,
+                    inAppNotificationProvider = notificationProvider,
                     onOutput = { output ->
                         when (output) {
                             SampleAiHomeComponent.Output.GoToProfile -> navigation.pushToFront(
@@ -323,6 +324,7 @@ class DefaultRootComponent(
                     componentContext = componentContext,
                     keyValueStorageProvider = keyValueStorageProvider,
                     analyticsProvider = analyticsProvider,
+                    billingProvider = billingProvider,
                     onOutput = { output ->
                         when (output) {
                             OnboardingComponent.Output.Finished -> navigation.replaceAll(Config.Welcome)

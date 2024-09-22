@@ -6,7 +6,11 @@ import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.OnboardingComponent.Model
 import com.zenithapps.mobilestack.component.OnboardingComponent.Output
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
+import com.zenithapps.mobilestack.provider.BillingProvider
 import com.zenithapps.mobilestack.provider.KeyValueStorageProvider
+import com.zenithapps.mobilestack.util.now
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.daysUntil
 
 interface OnboardingComponent {
 
@@ -15,6 +19,8 @@ interface OnboardingComponent {
     data class Model(
         val currentStep: Int = 0,
         val steps: List<Step> = Step.entries,
+        val socialProofInteractions: Int = 0,
+        val shouldShowPaywall: Boolean
     )
 
     enum class Step {
@@ -22,7 +28,7 @@ interface OnboardingComponent {
         STEP_1,
         STEP_2,
         STEP_3,
-        PAYWALL
+        STEP_4
     }
 
     fun onPageSelected(position: Int)
@@ -41,10 +47,18 @@ class DefaultOnboardingComponent(
     componentContext: ComponentContext,
     private val keyValueStorageProvider: KeyValueStorageProvider,
     private val analyticsProvider: AnalyticsProvider,
+    private val billingProvider: BillingProvider,
     private val onOutput: (Output) -> Unit
 ) : OnboardingComponent, ComponentContext by componentContext {
 
-    override val model = MutableValue(Model())
+    override val model = MutableValue(Model(shouldShowPaywall = billingProvider.isConfigured))
+
+    init {
+        val startDate = LocalDate(2024, 7, 1)
+        val currentDate = now()
+        val daysBetween = startDate.daysUntil(currentDate.date)
+        model.value = model.value.copy(socialProofInteractions = daysBetween)
+    }
 
     override fun onPageSelected(position: Int) {
         model.value = model.value.copy(currentStep = position)
@@ -61,7 +75,7 @@ class DefaultOnboardingComponent(
     }
 
     override fun onNextTap() {
-        if (model.value.currentStep == OnboardingComponent.Step.PAYWALL.ordinal) {
+        if (model.value.currentStep == OnboardingComponent.Step.STEP_4.ordinal) {
             keyValueStorageProvider.setBoolean("onboarding_completed", true)
             analyticsProvider.logEvent(
                 eventName = "onboarding_completed",

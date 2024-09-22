@@ -9,7 +9,7 @@ import com.google.firebase.ktx.Firebase
 import com.zenithapps.mobilestack.android.provider.AndroidCapabilityProvider
 import com.zenithapps.mobilestack.android.provider.FirebaseAnalyticsProvider
 import com.zenithapps.mobilestack.component.DefaultRootComponent
-import com.zenithapps.mobilestack.ui.view.RootView
+import com.zenithapps.mobilestack.ui.screen.RootView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

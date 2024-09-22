@@ -85,6 +85,7 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun MobileStackTheme(
+    // Known issue: images in composeResources/drawable and composeResources/drawable-dark ignore this setting and use the system theme
     // TODO: Replace with useDarkTheme: Boolean = false, to use only light theme
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit

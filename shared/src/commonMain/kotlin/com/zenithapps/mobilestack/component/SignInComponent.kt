@@ -6,7 +6,7 @@ import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.SignInComponent.Model
 import com.zenithapps.mobilestack.component.SignInComponent.Output
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider
 import com.zenithapps.mobilestack.useCase.SignInUseCase
 import com.zenithapps.mobilestack.useCase.SignInUseCase.SignInException
 import com.zenithapps.mobilestack.util.createCoroutineScope
@@ -43,7 +43,7 @@ class DefaultSignInComponent(
     componentContext: ComponentContext,
     private val signIn: SignInUseCase,
     private val analyticsProvider: AnalyticsProvider,
-    private val notificationProvider: NotificationProvider,
+    private val inAppNotificationProvider: InAppNotificationProvider,
     private val onOutput: (Output) -> Unit
 ) : SignInComponent, ComponentContext by componentContext {
     override val model = MutableValue(Model())
@@ -71,7 +71,11 @@ class DefaultSignInComponent(
                         exception.message ?: "Unknown error"
                     }
                 }
-                notificationProvider.showNotification(NotificationProvider.Notification(errorMessage))
+                inAppNotificationProvider.showNotification(
+                    InAppNotificationProvider.Notification(
+                        errorMessage
+                    )
+                )
             } finally {
                 model.value = model.value.copy(loading = false)
             }

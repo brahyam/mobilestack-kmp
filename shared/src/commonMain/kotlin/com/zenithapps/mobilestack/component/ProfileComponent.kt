@@ -11,8 +11,8 @@ import com.zenithapps.mobilestack.model.User
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
 import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.repository.UserRepository
 import com.zenithapps.mobilestack.useCase.DeleteAccountUseCase
@@ -82,7 +82,7 @@ class DefaultProfileComponent(
     private val billingProvider: BillingProvider,
     private val osCapabilityProvider: OSCapabilityProvider,
     private val analyticsProvider: AnalyticsProvider,
-    private val notificationProvider: NotificationProvider,
+    private val inAppNotificationProvider: InAppNotificationProvider,
     private val signOut: SignOutUseCase,
     private val deleteAccount: DeleteAccountUseCase,
     private val onOutput: (Output) -> Unit
@@ -123,7 +123,7 @@ class DefaultProfileComponent(
                 signOut()
                 onOutput(Output.SignedOut)
             } catch (e: Exception) {
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(
                         message = e.message ?: "An error occurred"
                     )
@@ -185,12 +185,12 @@ class DefaultProfileComponent(
                 billingProvider.restorePurchases()
                 val customerInfo = billingProvider.getCustomerBillingInfo()
                 model.value = model.value.copy(loading = false, customerBillingInfo = customerInfo)
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(message = "Purchases restored")
                 )
             } catch (e: Exception) {
                 model.value = model.value.copy(loading = false)
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(
                         message = e.message ?: "An error occurred"
                     )
@@ -247,12 +247,12 @@ class DefaultProfileComponent(
             params = emptyMap()
         )
         if (newEmail.isEmpty()) {
-            notificationProvider.showNotification(Notification(message = "Email is required"))
+            inAppNotificationProvider.showNotification(Notification(message = "Email is required"))
             return
         }
         val emailRegex = Regex("^[A-Za-z0-9+_.-]+@(.+)\$")
         if (!emailRegex.matches(newEmail)) {
-            notificationProvider.showNotification(Notification(message = "Invalid email"))
+            inAppNotificationProvider.showNotification(Notification(message = "Invalid email"))
             return
         }
         model.value = model.value.copy(loading = true)
@@ -281,7 +281,7 @@ class DefaultProfileComponent(
                 onOutput(Output.SignedOut)
             } catch (e: Exception) {
                 model.value = model.value.copy(loading = false)
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(
                         message = e.message ?: "An error occurred"
                     )

@@ -1,10 +1,10 @@
 package com.zenithapps.mobilestack.provider
 
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-interface NotificationProvider {
+interface InAppNotificationProvider {
 
     val notifications: Flow<Notification>
     fun showNotification(notification: Notification)
@@ -28,7 +28,7 @@ interface NotificationProvider {
     }
 }
 
-class DefaultNotificationProvider : NotificationProvider {
+class DefaultInAppNotificationProvider : InAppNotificationProvider {
 
     override val notifications = MutableSharedFlow<Notification>(replay = 1)
 

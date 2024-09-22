@@ -6,8 +6,8 @@ import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.SignUpComponent.Model
 import com.zenithapps.mobilestack.component.SignUpComponent.Output
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
 import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.EmailAlreadyExists
 import com.zenithapps.mobilestack.useCase.SignUpUseCase.SignUpWithEmailException.EmptyEmailOrPassword
@@ -59,7 +59,7 @@ class DefaultSignUpComponent(
     componentContext: ComponentContext,
     private val signUp: SignUpUseCase,
     private val analyticsProvider: AnalyticsProvider,
-    private val notificationProvider: NotificationProvider,
+    private val inAppNotificationProvider: InAppNotificationProvider,
     private val onOutput: (Output) -> Unit
 ) : SignUpComponent, ComponentContext by componentContext {
     override val model = MutableValue(Model())
@@ -93,7 +93,7 @@ class DefaultSignUpComponent(
                         exception.message ?: "Unknown error"
                     }
                 }
-                notificationProvider.showNotification(Notification(errorMessage))
+                inAppNotificationProvider.showNotification(Notification(errorMessage))
             } finally {
                 model.value = model.value.copy(loading = false)
             }
@@ -146,7 +146,7 @@ class DefaultSignUpComponent(
                 signUp.anonymously()
                 onOutput(Output.Authenticated)
             } catch (exception: Exception) {
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(exception.message ?: "Unknown error")
                 )
             } finally {

@@ -9,9 +9,9 @@ import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Model
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Output
 import com.zenithapps.mobilestack.provider.AuthProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification
-import com.zenithapps.mobilestack.provider.NotificationProvider.Notification.Duration
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
+import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification.Duration
 import com.zenithapps.mobilestack.provider.RemoteConfigProvider
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
 import com.zenithapps.mobilestack.util.createCoroutineScope
@@ -44,7 +44,7 @@ class DefaultSampleAiHomeComponent(
     private val authProvider: AuthProvider,
     private val signUp: SignUpUseCase,
     private val remoteConfigProvider: RemoteConfigProvider,
-    private val notificationProvider: NotificationProvider,
+    private val inAppNotificationProvider: InAppNotificationProvider,
     private val onOutput: (Output) -> Unit
 ) : SampleAiHomeComponent, ComponentContext by componentContext {
     private val scope = createCoroutineScope()
@@ -60,7 +60,7 @@ class DefaultSampleAiHomeComponent(
 
                 } catch (e: Exception) {
                     Napier.e(e) { "Error signing up anonymously" }
-                    notificationProvider.showNotification(
+                    inAppNotificationProvider.showNotification(
                         Notification(
                             message = e.message ?: "Unknown error",
                             duration = Duration.LONG
@@ -96,7 +96,7 @@ class DefaultSampleAiHomeComponent(
                 Napier.e(e) { "Error creating YChat instance" }
                 val errorMessage = (e.message
                     ?: "Unknown error") + ". Make sure you added your OpenAI key to Firebase remote configs with the name OPENAI_API_KEY."
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(
                         message = errorMessage,
                         duration = Duration.LONG
@@ -126,7 +126,7 @@ class DefaultSampleAiHomeComponent(
                 )
             } catch (e: Exception) {
                 Napier.e(e) { "Error calling completions API" }
-                notificationProvider.showNotification(
+                inAppNotificationProvider.showNotification(
                     Notification(
                         message = e.message ?: "Unknown error",
                         duration = Duration.LONG
