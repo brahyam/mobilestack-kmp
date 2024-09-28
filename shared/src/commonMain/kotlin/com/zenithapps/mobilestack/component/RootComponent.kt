@@ -44,8 +44,8 @@ class DefaultRootComponent(
     componentContext: ComponentContext,
     private val osCapabilityProvider: OSCapabilityProvider,
     private val analyticsProvider: AnalyticsProvider,
-    private val dependencyProvider: DependencyProvider = DefaultDependencyProvider(),
-) : RootComponent, ComponentContext by componentContext, DependencyProvider by dependencyProvider {
+) : RootComponent, ComponentContext by componentContext,
+    DependencyProvider by DefaultDependencyProvider() {
 
     private val scope = createCoroutineScope()
 
@@ -206,8 +206,9 @@ class DefaultRootComponent(
                     componentContext = componentContext,
                     authProvider = authProvider,
                     signUp = signUpUseCase,
-                    remoteConfigProvider = remoteConfigProvider,
                     inAppNotificationProvider = notificationProvider,
+                    aiProvider = aiProvider,
+                    osCapabilityProvider = osCapabilityProvider,
                     onOutput = { output ->
                         when (output) {
                             SampleAiHomeComponent.Output.GoToProfile -> navigation.pushToFront(

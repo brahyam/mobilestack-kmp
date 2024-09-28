@@ -22,9 +22,11 @@ interface DependencyProvider {
     val signOutUseCase: SignOutUseCase
     val deleteAccountUseCase: DeleteAccountUseCase
     val keyValueStorageProvider: KeyValueStorageProvider
+    val aiProvider: AiProvider
 }
 
 class DefaultDependencyProvider : DependencyProvider {
+
     override val billingProvider by lazy {
         KMPRevenueCatBillingProvider()
     }
@@ -84,5 +86,14 @@ class DefaultDependencyProvider : DependencyProvider {
 
     override val keyValueStorageProvider by lazy {
         KMPSettingsProvider()
+    }
+
+    override val aiProvider by lazy {
+        val apiKey = remoteConfigProvider.getString("OPENAI_API_KEY")
+        if (apiKey.isNotEmpty()) {
+            DefaultAiProvider(apiKey = apiKey)
+        } else {
+            MockAiProvider()
+        }
     }
 }

@@ -9,6 +9,12 @@ interface OSCapabilityProvider {
 
     fun managePurchases()
 
+    fun openAppSettings()
+
+    fun requestStoreReview()
+
+    fun shareImage(imageByteArray: ByteArray, mimeType: String, title: String, message: String)
+
     enum class Platform {
         ANDROID,
         IOS

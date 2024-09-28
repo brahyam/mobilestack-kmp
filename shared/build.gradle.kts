@@ -46,13 +46,16 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.essenty.lifecycle)
             api(libs.napier)
-            implementation(projects.ychat)
             api(libs.calf)
             implementation(libs.kotlinx.datetime)
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.revenuecat.purchases.core)
             implementation(libs.revenuecat.purchases.datetime)
             implementation(libs.revenuecat.purchases.ui)
+            implementation(libs.openai.client)
+            implementation(libs.material.icons)
+            implementation(projects.peekabooUi)
+            implementation(projects.peekabooImagePicker)
         }
         androidMain.dependencies {
             implementation(libs.decompose.composeExtensions)
@@ -62,10 +65,12 @@ kotlin {
             api(libs.firebase.analytics)
             api(libs.firebase.crashlytics)
             api(libs.firebase.config)
+            implementation(libs.ktor.okhttp)
         }
         iosMain.dependencies {
             api(libs.decompose)
             api(libs.essenty.lifecycle)
+            implementation(libs.ktor.darwin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

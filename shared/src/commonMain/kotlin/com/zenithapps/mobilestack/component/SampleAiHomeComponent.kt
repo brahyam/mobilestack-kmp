@@ -1,22 +1,24 @@
 package com.zenithapps.mobilestack.component
 
-import co.yml.ychat.YChat
-import co.yml.ychat.domain.model.Content
-import co.yml.ychat.entrypoint.features.ChatCompletions
+import androidx.compose.ui.graphics.ImageBitmap
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.preat.peekaboo.image.picker.toImageBitmap
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Model
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Output
+import com.zenithapps.mobilestack.provider.AiProvider
 import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification.Duration
-import com.zenithapps.mobilestack.provider.RemoteConfigProvider
+import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.useCase.SignUpUseCase
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 interface SampleAiHomeComponent {
     val model: Value<Model>
@@ -25,13 +27,20 @@ interface SampleAiHomeComponent {
         // TIP: things you want to be dynamic or your users to interact with
         val loading: Boolean = true,
         val prompt: String = "",
-        val messages: List<String> = emptyList(),
+        val image: ImageBitmap? = null,
+        val capturing: Boolean = false,
+        val messages: List<String> = emptyList()
     )
 
     // TIP: a function for each user interaction
     fun onPromptChanged(prompt: String)
     fun onProfileTap()
     fun onSubmitTap()
+    fun onCameraTap()
+    fun onImageSelected(byteArray: ByteArray)
+    fun onCloseCameraTap()
+    fun onRequestCameraPermissionTap()
+    fun onRemoveImageTap()
 
     sealed interface Output {
         // TIP: an object for each navigation action
@@ -39,21 +48,24 @@ interface SampleAiHomeComponent {
     }
 }
 
+@OptIn(ExperimentalEncodingApi::class)
 class DefaultSampleAiHomeComponent(
     componentContext: ComponentContext,
     private val authProvider: AuthProvider,
     private val signUp: SignUpUseCase,
-    private val remoteConfigProvider: RemoteConfigProvider,
     private val inAppNotificationProvider: InAppNotificationProvider,
+    private val aiProvider: AiProvider,
+    private val osCapabilityProvider: OSCapabilityProvider,
     private val onOutput: (Output) -> Unit
 ) : SampleAiHomeComponent, ComponentContext by componentContext {
     private val scope = createCoroutineScope()
-    private lateinit var chatCompletion: ChatCompletions
+    private var imageBase64: String? = null // Prepares image to be sent to the AiProvider
 
     override val model = MutableValue(Model())
 
+
     init {
-        scope.launch {// TIP: wrap network or long running operations in launch
+        scope.launch {
             if (!authProvider.isLoggedIn()) {
                 try {
                     signUp.anonymously()
@@ -68,41 +80,7 @@ class DefaultSampleAiHomeComponent(
                     )
                 }
             }
-            try {
-                // TODO: Create an OpenAI API Key and add it to Firebase remote configs with key OPENAI_API_KEY
-                val apiKey = remoteConfigProvider.getString("OPENAI_API_KEY")
-                if (apiKey.isEmpty()) {
-                    throw IllegalStateException("OPENAI_API_KEY is empty")
-                }
-                chatCompletion = YChat.create(apiKey)
-                    .chatCompletions()
-                    .setModel("gpt-4o")
-                    .setMaxTokens(300)
-                    .setTemperature(1.0)
-                    .setTopP(1.0)
-                    .addMessage(
-                        "system",
-                        "You are a helpful chatbot but your mission is to sell MobileStack." +
-                                " MobileStack is a kotlin multiplatform template that allows " +
-                                "developers to ship mobile apps faster by including everything" +
-                                " you need to launch and monetise a mobile app out of the box" +
-                                " (db, billing, analytics, user management etc).  " +
-                                "You can answer questions but always keep then short " +
-                                "and find a way to promote MobileStack"
-                    ) // Tip: add your own specialized system prompt
-                    .setMaxResults(1)
-                model.value = model.value.copy(loading = false)
-            } catch (e: Exception) {
-                Napier.e(e) { "Error creating YChat instance" }
-                val errorMessage = (e.message
-                    ?: "Unknown error") + ". Make sure you added your OpenAI key to Firebase remote configs with the name OPENAI_API_KEY."
-                inAppNotificationProvider.showNotification(
-                    Notification(
-                        message = errorMessage,
-                        duration = Duration.LONG
-                    )
-                )
-            }
+            model.value = model.value.copy(loading = false)
         }
     }
 
@@ -116,14 +94,19 @@ class DefaultSampleAiHomeComponent(
 
     override fun onSubmitTap() {
         model.value = model.value.copy(loading = true)
-        scope.launch {// TIP: wrap network or long running operations in launch
+        scope.launch {
             try {
-                val result = chatCompletion
-                    .execute(model.value.prompt) // TIP: change this for  executeWithoutMemory for stateless completions
+                val result = if (imageBase64 != null) {
+                    aiProvider.completeTextChat(model.value.prompt.trim(), imageBase64!!)
+                } else {
+                    aiProvider.completeTextChat(model.value.prompt.trim())
+                }
                 model.value = model.value.copy(
                     prompt = "",
-                    messages = model.value.messages + model.value.prompt + (result.first().content.first() as Content.Text).text
+                    image = null,
+                    messages = model.value.messages + model.value.prompt.trim() + result
                 )
+                imageBase64 = null
             } catch (e: Exception) {
                 Napier.e(e) { "Error calling completions API" }
                 inAppNotificationProvider.showNotification(
@@ -136,5 +119,31 @@ class DefaultSampleAiHomeComponent(
                 model.value = model.value.copy(loading = false)
             }
         }
+    }
+
+    override fun onCameraTap() {
+        model.value = model.value.copy(capturing = true)
+    }
+
+    override fun onImageSelected(byteArray: ByteArray) {
+        model.value =
+            model.value.copy(image = byteArray.toImageBitmap(), capturing = false, loading = true)
+        scope.launch {
+            imageBase64 = Base64.encode(byteArray)
+            model.value = model.value.copy(loading = false)
+        }
+    }
+
+    override fun onCloseCameraTap() {
+        model.value = model.value.copy(capturing = false)
+    }
+
+    override fun onRequestCameraPermissionTap() {
+        osCapabilityProvider.openAppSettings()
+    }
+
+    override fun onRemoveImageTap() {
+        model.value = model.value.copy(image = null)
+        imageBase64 = null
     }
 }

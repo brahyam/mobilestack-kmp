@@ -18,7 +18,5 @@ dependencyResolutionManagement {
 rootProject.name = "MobileStack"
 include(":androidApp")
 include(":shared")
-include(":ychat")
-include(":ychat-core")
 include(":peekaboo-ui")
 include(":peekaboo-image-picker")
