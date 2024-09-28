@@ -11,12 +11,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.mmk.kmprevenuecat.purchases.data.CustomerInfo
-import com.mmk.kmprevenuecat.purchases.ui.Paywall
-import com.mmk.kmprevenuecat.purchases.ui.PaywallListener
+import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import com.zenithapps.mobilestack.component.RemotePaywallComponent
 import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 import com.zenithapps.mobilestack.ui.widget.MSTopAppBar
@@ -51,38 +51,11 @@ fun RemotePaywallScreen(component: RemotePaywallComponent) {
                 )
             }
         }
-        Paywall(
-            shouldDisplayDismissButton = model.dismissible,
-            onDismiss = component::onDismissTap,
-            listener = object : PaywallListener {
-                override fun onPurchaseStarted() {
-                    component.onPurchaseStarted()
-                }
-
-                override fun onPurchaseCompleted(customerInfo: CustomerInfo?) {
-                    component.onPurchaseCompleted()
-                }
-
-                override fun onPurchaseError(error: String?) {
-                    component.onPurchaseError(error)
-                }
-
-                override fun onPurchaseCancelled() {
-                    component.onPurchaseCancelled()
-                }
-
-                override fun onRestoreStarted() {
-                    component.onRestoreStarted()
-                }
-
-                override fun onRestoreCompleted(customerInfo: CustomerInfo?) {
-                    component.onRestoreCompleted()
-                }
-
-                override fun onRestoreError(error: String?) {
-                    component.onRestoreError(error)
-                }
+        val options = remember {
+            PaywallOptions(dismissRequest = component::onDismissTap) {
+                shouldDisplayDismissButton = true
             }
-        )
+        }
+        Paywall(options)
     }
 }

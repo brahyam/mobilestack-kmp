@@ -49,9 +49,10 @@ kotlin {
             implementation(projects.ychat)
             api(libs.calf)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.kmp.revenuecat)
-            implementation(libs.kmp.revenuecat.ui)
             implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.revenuecat.purchases.core)
+            implementation(libs.revenuecat.purchases.datetime)
+            implementation(libs.revenuecat.purchases.ui)
         }
         androidMain.dependencies {
             implementation(libs.decompose.composeExtensions)
@@ -68,6 +69,13 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+
+        // RevenueCat uses generated Kotlin bindings for native code on iOS
+        named { it.lowercase().startsWith("ios") }.configureEach {
+            languageSettings {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
         }
     }
 

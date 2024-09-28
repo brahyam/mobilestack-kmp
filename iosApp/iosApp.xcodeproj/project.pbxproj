@@ -12,10 +12,9 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		EA1363652BF0B1C100C684CB /* FirebaseAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1363622BF0B1C100C684CB /* FirebaseAnalyticsProvider.swift */; };
 		EA1363662BF0B1C100C684CB /* IOSCapabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1363632BF0B1C100C684CB /* IOSCapabilityProvider.swift */; };
+		EA16FF102CA8271F00DF679C /* PurchasesHybridCommon in Frameworks */ = {isa = PBXBuildFile; productRef = EA16FF0F2CA8271F00DF679C /* PurchasesHybridCommon */; };
+		EA16FF122CA8271F00DF679C /* PurchasesHybridCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = EA16FF112CA8271F00DF679C /* PurchasesHybridCommonUI */; };
 		EA838AAD2BA2031A00BE814C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA838AAC2BA2031A00BE814C /* AppDelegate.swift */; };
-		EAA201C22BC713C70063EFBD /* ReceiptParser in Frameworks */ = {isa = PBXBuildFile; productRef = EAA201C12BC713C70063EFBD /* ReceiptParser */; };
-		EAA201C42BC713C70063EFBD /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = EAA201C32BC713C70063EFBD /* RevenueCat */; };
-		EAA201C62BC713C70063EFBD /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = EAA201C52BC713C70063EFBD /* RevenueCatUI */; };
 		EABC0B5A2BA8C52F00AE3DFA /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EABC0B592BA8C52F00AE3DFA /* FirebaseAnalytics */; };
 		EABC0B5C2BA8C52F00AE3DFA /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = EABC0B5B2BA8C52F00AE3DFA /* FirebaseAnalyticsOnDeviceConversion */; };
 		EABC0B5E2BA8C52F00AE3DFA /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EABC0B5D2BA8C52F00AE3DFA /* FirebaseAnalyticsSwift */; };
@@ -90,18 +89,17 @@
 				EABC0B5C2BA8C52F00AE3DFA /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				EABC0B822BA8C52F00AE3DFA /* FirebaseMLModelDownloader in Frameworks */,
 				EABC0B762BA8C52F00AE3DFA /* FirebaseFirestoreSwift in Frameworks */,
-				EAA201C62BC713C70063EFBD /* RevenueCatUI in Frameworks */,
 				EABC0B622BA8C52F00AE3DFA /* FirebaseAppCheck in Frameworks */,
 				EABC0B602BA8C52F00AE3DFA /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
-				EAA201C22BC713C70063EFBD /* ReceiptParser in Frameworks */,
+				EA16FF102CA8271F00DF679C /* PurchasesHybridCommon in Frameworks */,
 				EABC0B662BA8C52F00AE3DFA /* FirebaseAuth in Frameworks */,
+				EA16FF122CA8271F00DF679C /* PurchasesHybridCommonUI in Frameworks */,
 				EABC0B6A2BA8C52F00AE3DFA /* FirebaseCrashlytics in Frameworks */,
 				EABC0B8A2BA8C52F00AE3DFA /* FirebaseRemoteConfigSwift in Frameworks */,
 				EABC0B7C2BA8C52F00AE3DFA /* FirebaseInAppMessaging-Beta in Frameworks */,
 				EABC0B6E2BA8C52F00AE3DFA /* FirebaseDatabaseSwift in Frameworks */,
 				EABC0B782BA8C52F00AE3DFA /* FirebaseFunctions in Frameworks */,
 				EABC0B8E2BA8C52F00AE3DFA /* FirebaseStorageCombine-Community in Frameworks */,
-				EAA201C42BC713C70063EFBD /* RevenueCat in Frameworks */,
 				EABC0B882BA8C52F00AE3DFA /* FirebaseRemoteConfig in Frameworks */,
 				EABC0B642BA8C52F00AE3DFA /* FirebaseAppDistribution-Beta in Frameworks */,
 				EABC0B682BA8C52F00AE3DFA /* FirebaseAuthCombine-Community in Frameworks */,
@@ -231,9 +229,8 @@
 				EABC0B892BA8C52F00AE3DFA /* FirebaseRemoteConfigSwift */,
 				EABC0B8B2BA8C52F00AE3DFA /* FirebaseStorage */,
 				EABC0B8D2BA8C52F00AE3DFA /* FirebaseStorageCombine-Community */,
-				EAA201C12BC713C70063EFBD /* ReceiptParser */,
-				EAA201C32BC713C70063EFBD /* RevenueCat */,
-				EAA201C52BC713C70063EFBD /* RevenueCatUI */,
+				EA16FF0F2CA8271F00DF679C /* PurchasesHybridCommon */,
+				EA16FF112CA8271F00DF679C /* PurchasesHybridCommonUI */,
 			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* MobileStack.app */;
@@ -265,7 +262,7 @@
 			mainGroup = 7555FF72242A565900829871;
 			packageReferences = (
 				EABC0B582BA8C52F00AE3DFA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				EAA201C02BC713C70063EFBD /* XCRemoteSwiftPackageReference "purchases-ios" */,
+				EA16FF0E2CA8271F00DF679C /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */,
 			);
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
 			projectDirPath = "";
@@ -565,12 +562,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EAA201C02BC713C70063EFBD /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+		EA16FF0E2CA8271F00DF679C /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			repositoryURL = "https://github.com/RevenueCat/purchases-hybrid-common.git";
 			requirement = {
-				kind = exactVersion;
-				version = 4.41.2;
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.3.0;
 			};
 		};
 		EABC0B582BA8C52F00AE3DFA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -584,20 +581,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EAA201C12BC713C70063EFBD /* ReceiptParser */ = {
+		EA16FF0F2CA8271F00DF679C /* PurchasesHybridCommon */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EAA201C02BC713C70063EFBD /* XCRemoteSwiftPackageReference "purchases-ios" */;
-			productName = ReceiptParser;
+			package = EA16FF0E2CA8271F00DF679C /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */;
+			productName = PurchasesHybridCommon;
 		};
-		EAA201C32BC713C70063EFBD /* RevenueCat */ = {
+		EA16FF112CA8271F00DF679C /* PurchasesHybridCommonUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EAA201C02BC713C70063EFBD /* XCRemoteSwiftPackageReference "purchases-ios" */;
-			productName = RevenueCat;
-		};
-		EAA201C52BC713C70063EFBD /* RevenueCatUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EAA201C02BC713C70063EFBD /* XCRemoteSwiftPackageReference "purchases-ios" */;
-			productName = RevenueCatUI;
+			package = EA16FF0E2CA8271F00DF679C /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */;
+			productName = PurchasesHybridCommonUI;
 		};
 		EABC0B592BA8C52F00AE3DFA /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

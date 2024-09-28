@@ -14,7 +14,6 @@ kotlinx-serialization = "1.6.3"
 gitlive-firebase = "1.10.4"
 billing = "7.0.0"
 multiplatformSettingsNoArg = "1.1.1"
-revenuecat = "7.9.0"
 napier = "2.7.1"
 peekaboo = "0.5.2"
 ktor = "2.3.10"
@@ -26,11 +25,9 @@ multiplatform-paging = "3.3.0-alpha02-0.5.1"
 androidx-lifecycleViewmodelCompose = "2.8.1"
 accompanist = "0.34.0"
 camerax = "1.3.3"
-kmprevenuecat = "1.0.0"
-revenueCatAndroid = "7.11.0"
-revenueCatIos = "4.43.0"
 androidx-startup-runtime = "1.1.1"
 androidx-core-ktx = "1.13.1"
+revenuecat-purchases = "1.1.0+13.3.0"
 
 android-minSdk = "24"
 android-compileSdk = "34"
@@ -82,11 +79,9 @@ firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
 
 #Billing
 billing = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
-kmp-revenuecat = { module = "io.github.mirzemehdi:kmprevenuecat-purchases", version.ref = "kmprevenuecat" }
-kmp-revenuecat-ui = { module = "io.github.mirzemehdi:kmprevenuecat-purchases-ui", version.ref = "kmprevenuecat" }
-# Revenuecat - Subscription lib
-revenuecat-purchases = { group = "com.revenuecat.purchases", name = "purchases", version.ref = "revenueCatAndroid" }
-#revenuecat-purchases-ui = { group = "com.revenuecat.purchases", name = "purchases-ui", version.ref = "revenueCatAndroid" }
+revenuecat-purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat-purchases" }
+revenuecat-purchases-datetime = { module = "com.revenuecat.purchases:purchases-kmp-datetime", version.ref = "revenuecat-purchases" }
+revenuecat-purchases-ui = { module = "com.revenuecat.purchases:purchases-kmp-ui", version.ref = "revenuecat-purchases" }
 
 #Utils
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }

@@ -16,13 +16,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.mmk.kmprevenuecat.purchases.data.CustomerInfo
-import com.mmk.kmprevenuecat.purchases.ui.Paywall
-import com.mmk.kmprevenuecat.purchases.ui.PaywallListener
+import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import com.zenithapps.mobilestack.component.OnboardingComponent
 import com.zenithapps.mobilestack.ui.widget.MSTopAppBar
 import kotlinx.coroutines.launch
@@ -98,23 +98,12 @@ fun OnboardingScreen(component: OnboardingComponent) {
             }
         )
         if (model.shouldShowPaywall && model.currentStep == model.steps.size - 1) {
-            Paywall(
-                shouldDisplayDismissButton = true,
-                onDismiss = component::onNextTap,
-                object : PaywallListener {
-
-                    override fun onPurchaseCompleted(customerInfo: CustomerInfo?) {
-                        super.onPurchaseCompleted(customerInfo)
-                        component.onNextTap()
-                    }
-
-                    override fun onRestoreCompleted(customerInfo: CustomerInfo?) {
-                        super.onRestoreCompleted(customerInfo)
-                        component.onNextTap()
-                    }
-
+            val options = remember {
+                PaywallOptions(dismissRequest = component::onNextTap) {
+                    shouldDisplayDismissButton = true
                 }
-            )
+            }
+            Paywall(options)
         }
     }
 

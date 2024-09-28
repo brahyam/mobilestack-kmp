@@ -1,11 +1,15 @@
 package com.zenithapps.mobilestack.provider
 
-import com.mmk.kmprevenuecat.purchases.Purchases
+import com.revenuecat.purchases.kmp.LogLevel
+import com.revenuecat.purchases.kmp.Purchases
+import com.revenuecat.purchases.kmp.PurchasesConfiguration
+import com.revenuecat.purchases.kmp.ktx.awaitCustomerInfo
+import com.revenuecat.purchases.kmp.ktx.awaitLogIn
+import com.revenuecat.purchases.kmp.ktx.awaitLogOut
+import com.revenuecat.purchases.kmp.ktx.awaitSyncPurchases
 import com.zenithapps.mobilestack.model.CustomerBillingInfo
 import com.zenithapps.mobilestack.model.Product
 import io.github.aakira.napier.Napier
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 const val REVENUE_CAT_ANDROID_API_KEY = "REVCAT_API_KEY_ANDROID"
 
@@ -21,7 +25,6 @@ interface BillingProvider {
     suspend fun getProducts(): List<Product>
     suspend fun purchase(packageId: String)
     suspend fun restorePurchases()
-
 }
 
 class KMPRevenueCatBillingProvider : BillingProvider {
@@ -30,27 +33,29 @@ class KMPRevenueCatBillingProvider : BillingProvider {
         get() = configured
     override suspend fun configure(apiKey: String, userId: String?) {
         if (apiKey.isNotBlank()) {
-            Purchases.configure(apiKey, userId)
-            configured = true
+            try {
+                val purchasesConfig = PurchasesConfiguration(apiKey) {
+                    appUserId = userId
+                }
+                Purchases.logLevel = LogLevel.DEBUG
+                Purchases.configure(purchasesConfig)
+                configured = true
+            } catch (e: Exception) {
+                Napier.e(e) { "Failed to configure Billing Provider." }
+            }
         } else {
-            Napier.w { "Billing Provider not configured." }
+            Napier.w { "Billing Provider not configured. API key was blank  " }
         }
     }
 
-    override suspend fun logIn(userId: String, email: String?) = suspendCoroutine { continuation ->
+    override suspend fun logIn(userId: String, email: String?) {
         if (!configured) {
             Napier.w { "Billing Provider not configured." }
-            continuation.resumeWith(Result.success(Unit))
-        } else {
-            Purchases.login(userId) {
-                it.onSuccess {
-                    Purchases.setAttributes(mapOf("email" to email))
-                    continuation.resumeWith(Result.success(Unit))
-                }
-                it.onFailure { error ->
-                    continuation.resumeWithException(error)
-                }
-            }
+            return
+        }
+        Purchases.sharedInstance.awaitLogIn(newAppUserID = userId)
+        if (email != null) {
+            Purchases.sharedInstance.setAttributes(mapOf("email" to email))
         }
     }
 
@@ -59,62 +64,29 @@ class KMPRevenueCatBillingProvider : BillingProvider {
             Napier.w { "Billing Provider not configured." }
             return
         }
-        Purchases.setAttributes(mapOf("email" to email))
+        Purchases.sharedInstance.setAttributes(mapOf("email" to email))
     }
 
-    override suspend fun logOut() = suspendCoroutine { continuation ->
+    override suspend fun logOut() {
         if (!configured) {
             Napier.w { "Billing Provider not configured." }
-            continuation.resumeWith(Result.success(Unit))
-        } else {
-            Purchases.logOut {
-                it.onSuccess {
-                    continuation.resumeWith(Result.success(Unit))
-                }
-                it.onFailure { error ->
-                    continuation.resumeWithException(error)
-                }
-            }
+            return
         }
+        Purchases.sharedInstance.awaitLogOut()
     }
 
-    override suspend fun getCustomerBillingInfo(): CustomerBillingInfo =
-        suspendCoroutine { continuation ->
-            if (!configured) {
-                Napier.w { "Billing Provider not configured." }
-                continuation.resumeWith(
-                    Result.success(
-                        CustomerBillingInfo(
-                            emptyList(),
-                            emptyList(),
-                            null
-                        )
-                    )
-                )
-            } else {
-                Purchases.getCustomerInfo {
-                    it.onSuccess { customerInfo ->
-                        val entitlements = customerInfo.entitlements.all.map { entitlement ->
-                            entitlement.key
-                        }
-                        val purchases = emptyList<String>() // find out how to map purchases
-                        val managementUrl = customerInfo.managementURL
-                        continuation.resumeWith(
-                            Result.success(
-                                CustomerBillingInfo(
-                                    entitlements,
-                                    purchases,
-                                    managementUrl
-                                )
-                            )
-                        )
-                    }
-                    it.onFailure { error ->
-                        continuation.resumeWithException(error)
-                    }
-                }
-            }
+    override suspend fun getCustomerBillingInfo(): CustomerBillingInfo {
+        return if (!configured) {
+            Napier.w { "Billing Provider not configured." }
+            CustomerBillingInfo(emptyList(), emptyList(), null)
+        } else {
+            val customerInfo = Purchases.sharedInstance.awaitCustomerInfo()
+            val entitlements = customerInfo.entitlements.all.map { it.key }
+            val purchases = emptyList<String>() // find out how to map purchases
+            val managementUrl = customerInfo.managementUrlString
+            CustomerBillingInfo(entitlements, purchases, managementUrl)
         }
+    }
 
     override suspend fun getProducts(): List<Product> {
         return emptyList()
@@ -124,19 +96,12 @@ class KMPRevenueCatBillingProvider : BillingProvider {
         //  no-op
     }
 
-    override suspend fun restorePurchases() = suspendCoroutine { continuation ->
+    override suspend fun restorePurchases() {
         if (!configured) {
             Napier.w { "Billing Provider not configured." }
-            continuation.resumeWith(Result.success(Unit))
+            return
         } else {
-            Purchases.syncPurchases {
-                it.onSuccess {
-                    continuation.resumeWith(Result.success(Unit))
-                }
-                it.onFailure { error ->
-                    continuation.resumeWithException(error)
-                }
-            }
+            Purchases.sharedInstance.awaitSyncPurchases()
         }
     }
 }
