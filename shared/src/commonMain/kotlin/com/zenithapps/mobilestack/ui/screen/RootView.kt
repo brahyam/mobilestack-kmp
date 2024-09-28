@@ -59,7 +59,7 @@ fun RootView(component: RootComponent) {
                         }
                     }
                 }
-                InAppNotificationView(component.notificationComponent)
+                InAppNotificationView(component.inAppNotificationComponent)
             }
         }
     }

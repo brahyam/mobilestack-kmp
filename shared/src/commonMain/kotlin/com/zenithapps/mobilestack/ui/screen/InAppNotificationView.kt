@@ -11,11 +11,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.zenithapps.mobilestack.component.NotificationComponent
+import com.zenithapps.mobilestack.component.InAppNotificationComponent
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 
 @Composable
-fun InAppNotificationView(component: NotificationComponent) {
+fun InAppNotificationView(component: InAppNotificationComponent) {
     val model by component.model.subscribeAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

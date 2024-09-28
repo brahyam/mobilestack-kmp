@@ -3,7 +3,7 @@ package com.zenithapps.mobilestack.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.zenithapps.mobilestack.component.NotificationComponent.Model
+import com.zenithapps.mobilestack.component.InAppNotificationComponent.Model
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
 import com.zenithapps.mobilestack.util.createCoroutineScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-interface NotificationComponent {
+interface InAppNotificationComponent {
     val model: Value<Model>
 
     data class Model(
@@ -22,10 +22,10 @@ interface NotificationComponent {
     fun onDismissNotification(notification: Notification)
 }
 
-class DefaultNotificationComponent(
+class DefaultInAppNotificationComponent(
     componentContext: ComponentContext,
     inAppNotificationProvider: InAppNotificationProvider
-) : NotificationComponent, ComponentContext by componentContext {
+) : InAppNotificationComponent, ComponentContext by componentContext {
     override val model = MutableValue(Model())
 
     private val scope = createCoroutineScope()

@@ -10,26 +10,14 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.zenithapps.mobilestack.component.RootComponent.Child
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
-import com.zenithapps.mobilestack.provider.DefaultInAppNotificationProvider
-import com.zenithapps.mobilestack.provider.FirebaseAuthProvider
-import com.zenithapps.mobilestack.provider.FirebaseRemoteConfigProvider
+import com.zenithapps.mobilestack.provider.DefaultDependencyProvider
+import com.zenithapps.mobilestack.provider.DependencyProvider
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider.Notification
-import com.zenithapps.mobilestack.provider.KMPRevenueCatBillingProvider
-import com.zenithapps.mobilestack.provider.KMPSettingsProvider
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_ANDROID_API_KEY
 import com.zenithapps.mobilestack.provider.REVENUE_CAT_IOS_API_KEY
-import com.zenithapps.mobilestack.repository.FirebaseUserRepository
-import com.zenithapps.mobilestack.useCase.DeleteAccountUseCase
-import com.zenithapps.mobilestack.useCase.SignInUseCase
-import com.zenithapps.mobilestack.useCase.SignOutUseCase
-import com.zenithapps.mobilestack.useCase.SignUpUseCase
 import com.zenithapps.mobilestack.util.createCoroutineScope
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
-import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.remoteconfig.FirebaseRemoteConfigClientException
-import dev.gitlive.firebase.remoteconfig.remoteConfig
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -37,7 +25,7 @@ import kotlinx.serialization.Serializable
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
 
-    val notificationComponent: NotificationComponent
+    val inAppNotificationComponent: InAppNotificationComponent
 
     sealed interface Child {
         class Loading(val component: LoadingComponent) : Child
@@ -56,7 +44,8 @@ class DefaultRootComponent(
     componentContext: ComponentContext,
     private val osCapabilityProvider: OSCapabilityProvider,
     private val analyticsProvider: AnalyticsProvider,
-) : RootComponent, ComponentContext by componentContext {
+    private val dependencyProvider: DependencyProvider = DefaultDependencyProvider(),
+) : RootComponent, ComponentContext by componentContext, DependencyProvider by dependencyProvider {
 
     private val scope = createCoroutineScope()
 
@@ -70,71 +59,10 @@ class DefaultRootComponent(
         childFactory = ::createChild
     )
 
-    private val billingProvider by lazy {
-        KMPRevenueCatBillingProvider()
-    }
-
-    private val notificationProvider by lazy {
-        DefaultInAppNotificationProvider()
-    }
-
-    override val notificationComponent = DefaultNotificationComponent(
+    override val inAppNotificationComponent = DefaultInAppNotificationComponent(
         componentContext = componentContext,
         inAppNotificationProvider = notificationProvider
     )
-
-    private val authProvider by lazy {
-        FirebaseAuthProvider(
-            firebaseAuth = Firebase.auth
-        )
-    }
-
-    private val userRepository by lazy {
-        FirebaseUserRepository(
-            authProvider = authProvider,
-            firebaseFirestore = Firebase.firestore
-        )
-    }
-
-    private val remoteConfigProvider by lazy {
-        FirebaseRemoteConfigProvider(
-            remoteConfig = Firebase.remoteConfig
-        )
-    }
-
-    private val signUpUseCase by lazy {
-        SignUpUseCase(
-            userRepository = userRepository,
-            authProvider = authProvider,
-            billingProvider = billingProvider,
-        )
-    }
-
-    private val signInUseCase by lazy {
-        SignInUseCase(
-            authProvider = authProvider,
-            billingProvider = billingProvider,
-        )
-    }
-
-    private val signOutUseCase by lazy {
-        SignOutUseCase(
-            authProvider = authProvider,
-            billingProvider = billingProvider,
-        )
-    }
-
-    private val deleteAccountUseCase by lazy {
-        DeleteAccountUseCase(
-            userRepository = userRepository,
-            authProvider = authProvider,
-            billingProvider = billingProvider
-        )
-    }
-
-    private val keyValueStorageProvider by lazy {
-        KMPSettingsProvider()
-    }
 
     init {
         setup()
