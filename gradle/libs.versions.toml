@@ -1,36 +1,33 @@
 [versions]
-agp = "8.4.1"
-kotlin = "2.0.0"
-coroutines-core = "1.8.1-Beta"
-androidx-activityCompose = "1.9.0"
-androidx-annotation = "1.8.0"
-jetbrains-compose = "1.6.10"
-google-services = "4.4.1"
-firebase-crashlytics = "3.0.1"
-firebase-bom = "33.0.0"
-decompose = "3.0.0"
-essenty = "2.0.0"
-kotlinx-serialization = "1.6.3"
-gitlive-firebase = "1.10.4"
-billing = "7.0.0"
-multiplatformSettingsNoArg = "1.1.1"
-napier = "2.7.1"
-peekaboo = "0.5.2"
-ktor = "2.3.10"
-koin = "3.5.6"
-calf = "0.4.1"
-kotlinx-datetime = "0.5.0"
-exifinterface = "1.3.7"
-multiplatform-paging = "3.3.0-alpha02-0.5.1"
-androidx-lifecycleViewmodelCompose = "2.8.1"
-accompanist = "0.34.0"
-camerax = "1.3.3"
-androidx-startup-runtime = "1.1.1"
-androidx-core-ktx = "1.13.1"
-revenuecat-purchases = "1.1.0+13.3.0"
-
 android-minSdk = "24"
 android-compileSdk = "34"
+android-targetSdk = "34"
+agp = "8.4.1"
+kotlin = "2.0.0"
+coroutines-core = "1.8.1"
+androidx-activityCompose = "1.9.2"
+androidx-annotation = "1.8.2"
+jetbrains-compose = "1.6.10"
+google-services = "4.4.2"
+firebase-crashlytics = "3.0.2"
+firebase-bom = "33.3.0"
+decompose = "3.1.0"
+essenty = "2.1.0"
+kotlinx-serialization = "1.7.1"
+gitlive-firebase = "1.10.4"
+billing = "7.1.0"
+multiplatformSettingsNoArg = "1.1.1"
+napier = "2.7.1"
+ktor = "2.3.12"
+koin = "3.5.6"
+calf = "0.5.4"
+kotlinx-datetime = "0.6.1"
+exifinterface = "1.3.7"
+multiplatform-paging = "3.3.0-alpha02-0.5.1"
+androidx-lifecycleViewmodelCompose = "2.8.6"
+accompanist = "0.34.0"
+camerax = "1.3.4"
+revenuecat-purchases = "1.1.0+13.3.0"
 reviewKtx = "2.0.1"
 
 [libraries]
@@ -51,9 +48,6 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }
 camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
-androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "androidx-startup-runtime" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
-androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activityCompose" }
 
 #Compose
 components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "jetbrains-compose" }
@@ -72,7 +66,6 @@ gitlive-firebase-config = { module = "dev.gitlive:firebase-config", version.ref 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-common = { module = "com.google.firebase:firebase-common-ktx" }
-firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
@@ -85,12 +78,9 @@ revenuecat-purchases-ui = { module = "com.revenuecat.purchases:purchases-kmp-ui"
 
 #Utils
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
-peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekaboo" }
-peekaboo-imagePicker = { module = "io.github.onseok:peekaboo-image-picker", version.ref = "peekaboo" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 #Network
-ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
@@ -116,4 +106,3 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "jetbrains-comp
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
-kotlinNativeCocoaPods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
