@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.preat.peekaboo.image.picker.toImageBitmap
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
 
@@ -89,7 +90,7 @@ fun SampleAiHomeScreen(component: SampleAiHomeComponent) {
                                     ) {
                                         if (message.image != null) {
                                             Image(
-                                                bitmap = message.image,
+                                                bitmap = message.image.toImageBitmap(),
                                                 contentDescription = "Image",
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier.size(100.dp)
@@ -122,7 +123,7 @@ fun SampleAiHomeScreen(component: SampleAiHomeComponent) {
                                 onClick = component::onRemoveImageTap
                             ) {
                                 Image(
-                                    bitmap = model.image!!,
+                                    bitmap = model.image!!.toImageBitmap(),
                                     contentDescription = "Image",
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize()
