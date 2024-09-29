@@ -18,5 +18,5 @@ dependencyResolutionManagement {
 rootProject.name = "MobileStack"
 include(":androidApp")
 include(":shared")
-include(":peekaboo-ui")
-include(":peekaboo-image-picker")
+include(":camera")
+include(":image-picker")

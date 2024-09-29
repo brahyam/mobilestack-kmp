@@ -26,7 +26,8 @@ interface SignUpComponent {
         val password: String = "",
         val birthdate: LocalDate? = null,
         val marketingConsent: Boolean = false,
-        val loading: Boolean = false
+        val loading: Boolean = false,
+        val canGoBack: Boolean = false
     )
 
     fun onSignUpTap()
@@ -57,12 +58,13 @@ private const val SCREEN_NAME = "sign_up"
 
 class DefaultSignUpComponent(
     componentContext: ComponentContext,
+    canGoBack: Boolean,
     private val signUp: SignUpUseCase,
     private val analyticsProvider: AnalyticsProvider,
     private val inAppNotificationProvider: InAppNotificationProvider,
     private val onOutput: (Output) -> Unit
 ) : SignUpComponent, ComponentContext by componentContext {
-    override val model = MutableValue(Model())
+    override val model = MutableValue(Model(canGoBack = canGoBack))
 
     private val scope = createCoroutineScope()
 

@@ -54,8 +54,8 @@ kotlin {
             implementation(libs.revenuecat.purchases.ui)
             implementation(libs.openai.client)
             implementation(libs.material.icons)
-            implementation(projects.peekabooUi)
-            implementation(projects.peekabooImagePicker)
+            implementation(projects.camera)
+            implementation(projects.imagePicker)
         }
         androidMain.dependencies {
             implementation(libs.decompose.composeExtensions)

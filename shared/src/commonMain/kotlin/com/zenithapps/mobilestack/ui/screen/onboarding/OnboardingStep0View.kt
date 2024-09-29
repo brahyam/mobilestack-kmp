@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.zenithapps.mobilestack.resources.Res
@@ -45,7 +46,7 @@ import org.jetbrains.compose.resources.painterResource
 fun OnboardingStep0View(socialProofInteractions: Int, onNextTap: () -> Unit) {
 
     val welcomeSocialMessage = listOf(
-        "...idea to \$ in 10d",
+        "...ready to ship",
         "...well documented",
         "...5x faster setup",
         "...game changer",
@@ -83,12 +84,13 @@ fun OnboardingStep0View(socialProofInteractions: Int, onNextTap: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 text = "MobileStack",
                 style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Launch your app ideas FAST and make \$\$\$.",
+                text = "Validate ideas and monetize FAST",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center

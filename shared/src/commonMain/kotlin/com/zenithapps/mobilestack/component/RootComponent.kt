@@ -114,9 +114,10 @@ class DefaultRootComponent(
                 component = DefaultLoadingComponent(componentContext)
             )
 
-            Config.SignUp -> Child.SignUp(
+            is Config.SignUp -> Child.SignUp(
                 component = DefaultSignUpComponent(
                     componentContext = componentContext,
+                    canGoBack = config.canGoBack,
                     signUp = signUpUseCase,
                     analyticsProvider = analyticsProvider,
                     inAppNotificationProvider = notificationProvider,
@@ -162,7 +163,11 @@ class DefaultRootComponent(
                     onOutput = { output ->
                         when (output) {
                             SignInComponent.Output.ResetPassword -> navigation.pushToFront(Config.ResetPassword)
-                            SignInComponent.Output.SignUp -> navigation.pushToFront(Config.SignUp)
+                            SignInComponent.Output.SignUp -> navigation.pushToFront(
+                                Config.SignUp(
+                                    canGoBack = true
+                                )
+                            )
                             SignInComponent.Output.Back -> navigation.pop()
                             SignInComponent.Output.Authenticated -> navigation.replaceAll(
                                 Config.Profile(
@@ -194,7 +199,11 @@ class DefaultRootComponent(
                     analyticsProvider = analyticsProvider,
                     onOutput = { output ->
                         when (output) {
-                            WelcomeComponent.Output.SignUp -> navigation.pushToFront(Config.SignUp)
+                            WelcomeComponent.Output.SignUp -> navigation.pushToFront(
+                                Config.SignUp(
+                                    canGoBack = true
+                                )
+                            )
                             WelcomeComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
                         }
                     }
@@ -252,7 +261,11 @@ class DefaultRootComponent(
                     billingProvider = billingProvider,
                     onOutput = { output ->
                         when (output) {
-                            OnboardingComponent.Output.Finished -> navigation.replaceAll(Config.Welcome)
+                            OnboardingComponent.Output.Finished -> navigation.replaceAll(
+                                Config.SignUp(
+                                    canGoBack = false
+                                )
+                            )
                         }
                     }
                 )
@@ -265,7 +278,7 @@ class DefaultRootComponent(
         data object Loading : Config
 
         @Serializable
-        data object SignUp : Config
+        data class SignUp(val canGoBack: Boolean = false) : Config
 
         @Serializable
         data object SignIn : Config
