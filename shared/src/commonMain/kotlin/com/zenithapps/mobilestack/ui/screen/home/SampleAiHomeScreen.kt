@@ -87,8 +87,19 @@ fun SampleAiHomeScreen(component: SampleAiHomeComponent) {
                                     Column(
                                         modifier = Modifier.padding(8.dp)
                                     ) {
+                                        if (message.image != null) {
+                                            Image(
+                                                bitmap = message.image,
+                                                contentDescription = "Image",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.size(100.dp)
+                                            )
+                                            if (message.text.isNotBlank()) {
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                            }
+                                        }
                                         Text(
-                                            text = message,
+                                            text = message.text,
                                             style = MaterialTheme.typography.bodyMedium,
                                         )
                                     }
@@ -134,11 +145,11 @@ fun SampleAiHomeScreen(component: SampleAiHomeComponent) {
                         label = "Prompt"
                     )
                     Spacer(modifier = Modifier.size(4.dp))
-                    if (model.prompt.isNotBlank()) {
+                    if (model.prompt.isNotBlank() || model.image != null) {
                         OutlinedIconButton(
                             modifier = Modifier.size(60.dp).padding(top = 4.dp),
                             onClick = component::onSubmitTap,
-                            enabled = model.prompt.isNotBlank() && !model.loading,
+                            enabled = (model.prompt.isNotBlank() || model.image != null) && !model.loading,
                             shape = MaterialTheme.shapes.medium
                         ) {
                             Icon(

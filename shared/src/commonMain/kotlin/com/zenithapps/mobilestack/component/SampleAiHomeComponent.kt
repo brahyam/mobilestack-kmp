@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.preat.peekaboo.image.picker.toImageBitmap
+import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Message
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Model
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Output
 import com.zenithapps.mobilestack.provider.AiProvider
@@ -29,7 +30,13 @@ interface SampleAiHomeComponent {
         val prompt: String = "",
         val image: ImageBitmap? = null,
         val capturing: Boolean = false,
-        val messages: List<String> = emptyList()
+        val messages: List<Message> = emptyList()
+    )
+
+    data class Message(
+        val isUser: Boolean,
+        val text: String,
+        val image: ImageBitmap? = null
     )
 
     // TIP: a function for each user interaction
@@ -101,10 +108,19 @@ class DefaultSampleAiHomeComponent(
                 } else {
                     aiProvider.completeTextChat(model.value.prompt.trim())
                 }
+                val userMessage = Message(
+                    isUser = true,
+                    text = model.value.prompt.trim(),
+                    image = model.value.image
+                )
+                val aiAnswer = Message(
+                    isUser = false,
+                    text = result
+                )
                 model.value = model.value.copy(
                     prompt = "",
                     image = null,
-                    messages = model.value.messages + model.value.prompt.trim() + result
+                    messages = model.value.messages + userMessage + aiAnswer
                 )
                 imageBase64 = null
             } catch (e: Exception) {
