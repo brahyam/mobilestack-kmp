@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/A200301424/Projects/mobile-stack/iosApp/MobileStack.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

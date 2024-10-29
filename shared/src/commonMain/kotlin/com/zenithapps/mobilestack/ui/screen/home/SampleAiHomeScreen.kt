@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.preat.peekaboo.image.picker.toImageBitmap
 import com.zenithapps.mobilestack.component.SampleAiHomeComponent
+import com.zenithapps.mobilestack.ui.widget.Camera
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -177,7 +178,7 @@ fun SampleAiHomeScreen(component: SampleAiHomeComponent) {
         }
     }
     if (model.capturing) {
-        CameraView(
+        Camera(
             onCapture = component::onImageSelected,
             onSelectedFromFile = component::onImageSelected,
             onCloseTap = component::onCloseCameraTap,

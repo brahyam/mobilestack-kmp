@@ -12,7 +12,6 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 
 interface AiProvider {
     suspend fun completeTextChat(prompt: String, image: ByteArray? = null): String
-
 }
 
 class MockAiProvider : AiProvider {
@@ -23,7 +22,7 @@ class MockAiProvider : AiProvider {
 }
 
 @OptIn(ExperimentalEncodingApi::class)
-class DefaultAiProvider(apiKey: String) : AiProvider {
+class OpenAiProvider(apiKey: String) : AiProvider {
     private val openAi = OpenAI(token = apiKey)
 
     override suspend fun completeTextChat(prompt: String, image: ByteArray?): String {

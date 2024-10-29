@@ -91,7 +91,7 @@ class DefaultDependencyProvider : DependencyProvider {
     override val aiProvider by lazy {
         val apiKey = remoteConfigProvider.getString("OPENAI_API_KEY")
         if (apiKey.isNotEmpty()) {
-            DefaultAiProvider(apiKey = apiKey)
+            OpenAiProvider(apiKey = apiKey)
         } else {
             MockAiProvider()
         }

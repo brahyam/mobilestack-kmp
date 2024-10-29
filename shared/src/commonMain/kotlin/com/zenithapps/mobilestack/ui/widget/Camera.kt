@@ -1,4 +1,4 @@
-package com.zenithapps.mobilestack.ui.screen.home
+package com.zenithapps.mobilestack.ui.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +35,6 @@ import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.ui.camera.PeekabooCamera
 import com.preat.peekaboo.ui.camera.rememberPeekabooCameraState
-import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 
 import com.preat.peekaboo.image.picker.ResizeOptions as PickerResizeOptions
 import com.preat.peekaboo.ui.camera.ResizeOptions as CameraResizeOptions
@@ -55,11 +54,11 @@ private val cameraResizeOptions = CameraResizeOptions(
 )
 
 @Composable
-fun CameraView(
+fun Camera(
     onCapture: (ByteArray) -> Unit,
     onSelectedFromFile: (ByteArray) -> Unit,
     onCloseTap: () -> Unit,
-    onRequestPermissionTap: () -> Unit
+    onRequestPermissionTap: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val cameraState = rememberPeekabooCameraState(onCapture = {
