@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.zenithapps.mobilestack.component.RootComponent
 import com.zenithapps.mobilestack.component.RootComponent.Child
-import com.zenithapps.mobilestack.ui.screen.home.SampleAiHomeScreen
+import com.zenithapps.mobilestack.ui.screen.home.AiChatScreen
 import com.zenithapps.mobilestack.ui.screen.onboarding.OnboardingScreen
 import com.zenithapps.mobilestack.ui.style.MobileStackTheme
 
@@ -48,7 +48,7 @@ fun RootView(component: RootComponent) {
                         }
 
                         is Child.Home -> {
-                            SampleAiHomeScreen(child.component)
+                            AiChatScreen(child.component)
                         }
 
                         is Child.RemotePaywall -> {

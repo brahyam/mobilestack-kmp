@@ -37,13 +37,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.preat.peekaboo.image.picker.toImageBitmap
-import com.zenithapps.mobilestack.component.SampleAiHomeComponent
+import com.zenithapps.mobilestack.component.AiChatComponent
 import com.zenithapps.mobilestack.ui.widget.Camera
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SampleAiHomeScreen(component: SampleAiHomeComponent) {
+fun AiChatScreen(component: AiChatComponent) {
     val model by component.model.subscribeAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {

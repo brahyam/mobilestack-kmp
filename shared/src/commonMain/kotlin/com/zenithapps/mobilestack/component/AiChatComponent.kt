@@ -3,9 +3,9 @@ package com.zenithapps.mobilestack.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Message
-import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Model
-import com.zenithapps.mobilestack.component.SampleAiHomeComponent.Output
+import com.zenithapps.mobilestack.component.AiChatComponent.Message
+import com.zenithapps.mobilestack.component.AiChatComponent.Model
+import com.zenithapps.mobilestack.component.AiChatComponent.Output
 import com.zenithapps.mobilestack.provider.AiProvider
 import com.zenithapps.mobilestack.provider.AuthProvider
 import com.zenithapps.mobilestack.provider.InAppNotificationProvider
@@ -16,9 +16,8 @@ import com.zenithapps.mobilestack.useCase.SignUpUseCase
 import com.zenithapps.mobilestack.util.createCoroutineScope
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
-import kotlin.io.encoding.ExperimentalEncodingApi
 
-interface SampleAiHomeComponent {
+interface AiChatComponent {
     val model: Value<Model>
 
     data class Model(
@@ -52,16 +51,15 @@ interface SampleAiHomeComponent {
     }
 }
 
-@OptIn(ExperimentalEncodingApi::class)
-class DefaultSampleAiHomeComponent(
+class DefaultAiChatComponent(
     componentContext: ComponentContext,
     private val authProvider: AuthProvider,
     private val signUp: SignUpUseCase,
     private val inAppNotificationProvider: InAppNotificationProvider,
     private val aiProvider: AiProvider,
     private val osCapabilityProvider: OSCapabilityProvider,
-    private val onOutput: (Output) -> Unit
-) : SampleAiHomeComponent, ComponentContext by componentContext {
+    private val onOutput: (Output) -> Unit,
+) : AiChatComponent, ComponentContext by componentContext {
     private val scope = createCoroutineScope()
 
     override val model = MutableValue(Model())

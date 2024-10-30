@@ -28,15 +28,15 @@ interface RootComponent {
     val inAppNotificationComponent: InAppNotificationComponent
 
     sealed interface Child {
-        class Loading(val component: LoadingComponent) : Child
-        class SignUp(val component: SignUpComponent) : Child
-        class SignIn(val component: SignInComponent) : Child
-        class ResetPassword(val component: ResetPasswordComponent) : Child
-        class Profile(val component: ProfileComponent) : Child
-        class Welcome(val component: WelcomeComponent) : Child
-        class Home(val component: SampleAiHomeComponent) : Child
-        class RemotePaywall(val component: RemotePaywallComponent) : Child
-        class Onboarding(val component: OnboardingComponent) : Child
+        data class Loading(val component: LoadingComponent) : Child
+        data class SignUp(val component: SignUpComponent) : Child
+        data class SignIn(val component: SignInComponent) : Child
+        data class ResetPassword(val component: ResetPasswordComponent) : Child
+        data class Profile(val component: ProfileComponent) : Child
+        data class Welcome(val component: WelcomeComponent) : Child
+        data class Home(val component: AiChatComponent) : Child
+        data class RemotePaywall(val component: RemotePaywallComponent) : Child
+        data class Onboarding(val component: OnboardingComponent) : Child
     }
 }
 
@@ -107,7 +107,7 @@ class DefaultRootComponent(
 
     private fun createChild(
         config: Config,
-        componentContext: ComponentContext
+        componentContext: ComponentContext,
     ): Child =
         when (config) {
             Config.Loading -> Child.Loading(
@@ -168,6 +168,7 @@ class DefaultRootComponent(
                                     canGoBack = true
                                 )
                             )
+
                             SignInComponent.Output.Back -> navigation.pop()
                             SignInComponent.Output.Authenticated -> navigation.replaceAll(
                                 Config.Profile(
@@ -204,6 +205,7 @@ class DefaultRootComponent(
                                     canGoBack = true
                                 )
                             )
+
                             WelcomeComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
                         }
                     }
@@ -211,7 +213,7 @@ class DefaultRootComponent(
             )
 
             Config.Home -> Child.Home(
-                component = DefaultSampleAiHomeComponent(
+                component = DefaultAiChatComponent(
                     componentContext = componentContext,
                     authProvider = authProvider,
                     signUp = signUpUseCase,
@@ -220,7 +222,7 @@ class DefaultRootComponent(
                     osCapabilityProvider = osCapabilityProvider,
                     onOutput = { output ->
                         when (output) {
-                            SampleAiHomeComponent.Output.GoToProfile -> navigation.pushToFront(
+                            AiChatComponent.Output.GoToProfile -> navigation.pushToFront(
                                 Config.Profile(canGoBack = true)
                             )
                         }
