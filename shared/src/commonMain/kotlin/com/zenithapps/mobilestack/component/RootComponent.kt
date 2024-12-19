@@ -149,6 +149,7 @@ class DefaultRootComponent(
                             ProfileComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
                             ProfileComponent.Output.GoBack -> navigation.pop()
                             ProfileComponent.Output.SignedOut -> navigation.replaceAll(Config.Welcome)
+                            ProfileComponent.Output.Onboarding -> navigation.replaceAll(Config.Onboarding)
                         }
                     }
                 )
@@ -261,13 +262,19 @@ class DefaultRootComponent(
                     keyValueStorageProvider = keyValueStorageProvider,
                     analyticsProvider = analyticsProvider,
                     billingProvider = billingProvider,
+                    osCapabilityProvider = osCapabilityProvider,
                     onOutput = { output ->
                         when (output) {
-                            OnboardingComponent.Output.Finished -> navigation.replaceAll(
-                                Config.SignUp(
-                                    canGoBack = false
-                                )
-                            )
+                            OnboardingComponent.Output.Finished -> {
+                                scope.launch {
+                                    if (authProvider.isLoggedIn()) {
+                                        // TIP: Define here what screen to show if the user is authenticated
+                                        navigation.replaceAll(Config.Home)
+                                    } else {
+                                        navigation.replaceAll(Config.SignUp(canGoBack = false))
+                                    }
+                                }
+                            }
                         }
                     }
                 )

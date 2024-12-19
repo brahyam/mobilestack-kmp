@@ -58,7 +58,7 @@ fun OnboardingScreen(component: OnboardingComponent) {
                     title = "",
                     onBackTap = if (model.currentStep > 0 && model.currentStep < model.steps.size - 1) component::onBackTap else null,
                     actions = {
-                        if (model.currentStep < model.steps.size - 1) {
+                        if (model.currentStep > 0 && model.currentStep < model.steps.size - 1) {
                             TextButton(onClick = { component.onSkipTap() }) {
                                 Text("Skip all")
                             }
@@ -83,14 +83,14 @@ fun OnboardingScreen(component: OnboardingComponent) {
                         model.steps[page].let { step ->
                             when (step) {
                                 OnboardingComponent.Step.WELCOME -> OnboardingStep0View(
-                                    socialProofInteractions = model.socialProofInteractions,
-                                    onNextTap = component::onNextTap
+                                    onNextTap = component::onNextTap,
+                                    onHapticFeedback = component::onHapticFeedback
                                 )
-
                                 OnboardingComponent.Step.STEP_1 -> OnboardingStep1View(onNextTap = component::onNextTap)
                                 OnboardingComponent.Step.STEP_2 -> OnboardingStep2View(onNextTap = component::onNextTap)
                                 OnboardingComponent.Step.STEP_3 -> OnboardingStep3View(onNextTap = component::onNextTap)
-                                OnboardingComponent.Step.STEP_4 -> OnboardingStep4View(onDismissTap = component::onNextTap)
+                                OnboardingComponent.Step.REVIEW -> OnboardingStep4View(onDismissTap = component::onNextTap)
+                                OnboardingComponent.Step.PAYWALL -> OnboardingStep4View(onDismissTap = component::onNextTap)
                             }
                         }
                     }

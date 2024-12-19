@@ -13,9 +13,9 @@ class DeleteAccountUseCase(
 ) {
     suspend operator fun invoke() {
         try {
-            userRepository.deleteUser()
             authProvider.deleteAccount()
             billingProvider.logOut()
+            userRepository.deleteUser()
             Result.Success(Unit)
         } catch (exception: Exception) {
             Napier.e(exception) { "Delete account failed" }

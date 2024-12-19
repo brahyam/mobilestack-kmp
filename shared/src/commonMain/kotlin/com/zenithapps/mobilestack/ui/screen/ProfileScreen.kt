@@ -140,6 +140,12 @@ fun ProfileScreen(component: ProfileComponent) {
                             loading = model.loading,
                         )
                     }
+                    Spacer(Modifier.height(8.dp))
+                    MSOutlinedButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Redo Onboarding",
+                        onClick = component::onOnboardingTap
+                    )
                 }
             }
             item {

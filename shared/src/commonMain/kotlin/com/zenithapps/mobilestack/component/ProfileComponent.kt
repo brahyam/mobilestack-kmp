@@ -65,10 +65,13 @@ interface ProfileComponent {
 
     fun onMobileStackTap()
 
+    fun onOnboardingTap()
+
     sealed interface Output {
         data object Purchase : Output
         data object SignedOut : Output
         data object GoBack : Output
+        data object Onboarding : Output
     }
 }
 
@@ -303,5 +306,9 @@ class DefaultProfileComponent(
 
     override fun onMobileStackTap() {
         osCapabilityProvider.openUrl("https://getmobilestack.com/")
+    }
+
+    override fun onOnboardingTap() {
+        onOutput(Output.Onboarding)
     }
 }

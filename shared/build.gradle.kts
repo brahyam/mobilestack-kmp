@@ -25,7 +25,6 @@ kotlin {
             isStatic = true
             export(libs.decompose)
             export(libs.essenty.lifecycle)
-            export(libs.calf)
         }
     }
 
@@ -46,7 +45,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.essenty.lifecycle)
             api(libs.napier)
-            api(libs.calf)
             implementation(libs.kotlinx.datetime)
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.revenuecat.purchases.core)

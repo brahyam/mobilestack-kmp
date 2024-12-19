@@ -59,4 +59,10 @@ class IOSCapabilityProvider: OSCapabilityProvider {
             UIApplication.shared.windows.first?.rootViewController?.present(activityViewController, animated: true, completion: nil)
         }
     }
+    
+    func vibrate(durationMs: Int64, strength: OSCapabilityProviderVibrationStrength) {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+    }
+    
 }

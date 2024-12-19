@@ -15,6 +15,14 @@ interface OSCapabilityProvider {
 
     fun shareImage(imageByteArray: ByteArray, mimeType: String, title: String, message: String)
 
+    fun vibrate(durationMs: Long, strength: VibrationStrength)
+
+    enum class VibrationStrength {
+        LIGHT,
+        MEDIUM,
+        STRONG
+    }
+
     enum class Platform {
         ANDROID,
         IOS

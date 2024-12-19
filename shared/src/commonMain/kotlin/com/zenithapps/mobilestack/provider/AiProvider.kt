@@ -2,22 +2,49 @@ package com.zenithapps.mobilestack.provider
 
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
+import com.aallam.openai.api.chat.ChatResponseFormat
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.TextPart
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.json.Json
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 interface AiProvider {
-    suspend fun completeTextChat(prompt: String, image: ByteArray? = null): String
+    suspend fun complete(
+        systemPrompt: String,
+        userPrompt: String,
+        userImage: ByteArray? = null,
+    ): String
+
+    suspend fun <T> complete(
+        systemPrompt: String,
+        userPrompt: String,
+        userImage: ByteArray?,
+        serializer: DeserializationStrategy<T>,
+    ): T
 }
 
 class MockAiProvider : AiProvider {
 
-    override suspend fun completeTextChat(prompt: String, image: ByteArray?): String {
+    override suspend fun complete(
+        systemPrompt: String,
+        userPrompt: String,
+        userImage: ByteArray?,
+    ): String {
         return "Please add your OpenAI API Key to Firebase Remote Configs as `OPENAI_API_KEY`"
+    }
+
+    override suspend fun <T> complete(
+        systemPrompt: String,
+        userPrompt: String,
+        userImage: ByteArray?,
+        serializer: DeserializationStrategy<T>,
+    ): T {
+        throw IllegalStateException("Please add your OpenAI API Key to Firebase Remote Configs as `OPENAI_API_KEY`")
     }
 }
 
@@ -25,24 +52,22 @@ class MockAiProvider : AiProvider {
 class OpenAiProvider(apiKey: String) : AiProvider {
     private val openAi = OpenAI(token = apiKey)
 
-    override suspend fun completeTextChat(prompt: String, image: ByteArray?): String {
-        val imageBase64 = if (image != null) Base64.encode(image) else null
+    override suspend fun complete(
+        systemPrompt: String,
+        userPrompt: String,
+        userImage: ByteArray?,
+    ): String {
+        val imageBase64 = if (userImage != null) Base64.encode(userImage) else null
         val messages = listOfNotNull(
             ChatMessage(
                 role = ChatRole.System,
-                content = "You are a helpful chatbot but your mission is to sell MobileStack." +
-                        " MobileStack is a kotlin multiplatform template that allows " +
-                        "developers to ship mobile apps faster by including everything" +
-                        " you need to launch and monetise a mobile app out of the box" +
-                        " (db, billing, analytics, user management etc).  " +
-                        "You can answer questions but always keep then short " +
-                        "and find a way to promote MobileStack"
+                content = systemPrompt
             ),
-            if (image != null) {
+            if (userImage != null) {
                 ChatMessage(
                     role = ChatRole.User,
                     content = listOf(
-                        TextPart(text = prompt),
+                        TextPart(text = userPrompt),
                         ImagePart(url = "data:image/jpeg;base64,${imageBase64}", detail = null)
                     ),
                 )
@@ -57,5 +82,40 @@ class OpenAiProvider(apiKey: String) : AiProvider {
             messages = messages
         )
         return openAi.chatCompletion(chatCompletionRequest).choices.first().message.content ?: ""
+    }
+
+    override suspend fun <T> complete(
+        systemPrompt: String,
+        userPrompt: String,
+        userImage: ByteArray?,
+        serializer: DeserializationStrategy<T>,
+    ): T {
+        val imageBase64 = if (userImage != null) Base64.encode(userImage) else null
+        val result = openAi.chatCompletion(
+            ChatCompletionRequest(
+                model = ModelId("gpt-4o-mini"),
+                n = 1,
+                responseFormat = ChatResponseFormat.JsonObject,
+                messages = listOf(
+                    ChatMessage(role = ChatRole.System, content = systemPrompt),
+                    if (userImage != null) {
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = listOf(
+                                TextPart(text = userPrompt),
+                                ImagePart(
+                                    url = "data:image/jpeg;base64,${imageBase64}",
+                                    detail = null
+                                )
+                            ),
+                        )
+                    } else {
+                        ChatMessage(role = ChatRole.User, content = userPrompt)
+                    }
+
+                )
+            )
+        ).choices.first().message.content ?: ""
+        return Json.decodeFromString(serializer, result)
     }
 }

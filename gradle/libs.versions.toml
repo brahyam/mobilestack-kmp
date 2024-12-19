@@ -2,34 +2,32 @@
 android-minSdk = "24"
 android-compileSdk = "34"
 android-targetSdk = "34"
-agp = "8.4.1"
-kotlin = "2.0.0"
-coroutines-core = "1.8.1"
-androidx-activityCompose = "1.9.2"
-androidx-annotation = "1.8.2"
-jetbrains-compose = "1.6.10"
+agp = "8.7.3"
+kotlin = "2.0.21"
+coroutines-core = "1.9.0"
+androidx-activityCompose = "1.9.3"
+androidx-annotation = "1.9.1"
+jetbrains-compose = "1.7.1"
 google-services = "4.4.2"
 firebase-crashlytics = "3.0.2"
-firebase-bom = "33.3.0"
-decompose = "3.1.0"
-essenty = "2.1.0"
-kotlinx-serialization = "1.7.1"
+firebase-bom = "33.7.0"
+decompose = "3.2.2"
+essenty = "2.2.1"
+kotlinx-serialization = "1.7.3"
 gitlive-firebase = "1.10.4"
-billing = "7.1.0"
+billing = "7.1.1"
 multiplatformSettingsNoArg = "1.1.1"
 napier = "2.7.1"
-ktor = "2.3.12"
-koin = "3.5.6"
-calf = "0.5.4"
+ktor = "3.0.2"
 kotlinx-datetime = "0.6.1"
 exifinterface = "1.3.7"
 multiplatform-paging = "3.3.0-alpha02-0.5.1"
-androidx-lifecycleViewmodelCompose = "2.8.6"
+androidx-lifecycleViewmodelCompose = "2.8.7"
 accompanist = "0.34.0"
-camerax = "1.3.4"
-revenuecat-purchases = "1.1.0+13.3.0"
-reviewKtx = "2.0.1"
-openaiclient = "3.8.2"
+camerax = "1.4.1"
+revenuecat-purchases = "1.2.0+13.6.0"
+reviewKtx = "2.0.2"
+openaiclient = "4.0.0-beta01"
 
 [libraries]
 
@@ -87,11 +85,7 @@ openai-client = { module = "com.aallam.openai:openai-client", version.ref = "ope
 ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 
-# DI
-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-
 #UI
-calf = { group = "com.mohamedrejeb.calf", name = "calf-ui", version.ref = "calf" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
 material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "jetbrains-compose" }

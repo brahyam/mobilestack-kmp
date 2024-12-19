@@ -11,10 +11,14 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.CombinedVibration
+import android.os.VibrationEffect
+import android.os.VibratorManager
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import androidx.core.content.FileProvider
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.zenithapps.mobilestack.provider.OSCapabilityProvider
+import com.zenithapps.mobilestack.provider.OSCapabilityProvider.VibrationStrength
 import java.io.File
 
 class AndroidCapabilityProvider(private val activity: Activity) : OSCapabilityProvider {
@@ -64,7 +68,7 @@ class AndroidCapabilityProvider(private val activity: Activity) : OSCapabilityPr
         imageByteArray: ByteArray,
         mimeType: String,
         title: String,
-        message: String
+        message: String,
     ) {
         val imagePath = File(activity.cacheDir, "images")
         imagePath.mkdirs()
@@ -84,6 +88,39 @@ class AndroidCapabilityProvider(private val activity: Activity) : OSCapabilityPr
             addFlags(FLAG_ACTIVITY_NEW_TASK)
         }
         activity.startActivity(Intent.createChooser(intent, title))
+    }
+
+    override fun vibrate(durationMs: Long, strength: VibrationStrength) {
+        val amplitude = when (strength) {
+            VibrationStrength.LIGHT -> 1
+            VibrationStrength.MEDIUM -> 128
+            VibrationStrength.STRONG -> 255
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                activity.applicationContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.vibrate(
+                CombinedVibration.createParallel(
+                    VibrationEffect.createOneShot(
+                        durationMs,
+                        amplitude
+                    )
+                )
+            )
+        } else {
+            val vibrator =
+                activity.applicationContext.getSystemService(Context.VIBRATOR_SERVICE) as android.os.Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        durationMs,
+                        amplitude
+                    )
+                )
+            } else {
+                vibrator.vibrate(durationMs)
+            }
+        }
     }
 
     private fun Context.getPackageInfo(): PackageInfo {

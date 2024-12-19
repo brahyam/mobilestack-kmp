@@ -17,11 +17,13 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,14 +41,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.mohamedrejeb.calf.ui.datepicker.AdaptiveDatePicker
-import com.mohamedrejeb.calf.ui.datepicker.rememberAdaptiveDatePickerState
 import com.zenithapps.mobilestack.component.SignUpComponent
 import com.zenithapps.mobilestack.ui.widget.FeatureItem
 import com.zenithapps.mobilestack.ui.widget.MSFilledButton
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
 import com.zenithapps.mobilestack.ui.widget.MSTopAppBar
-import com.zenithapps.mobilestack.util.toLocalDateTime
+import com.zenithapps.mobilestack.util.toLocalDate
 import com.zenithapps.mobilestack.util.toMillis
 import kotlinx.coroutines.launch
 
@@ -60,13 +60,13 @@ fun SignUpScreen(component: SignUpComponent) {
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(skipHiddenState = false)
     )
-    val state = rememberAdaptiveDatePickerState(
-        initialSelectedDateMillis = model.birthdate?.toMillis()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = model.birthdate?.toMillis(),
+        yearRange = 1970..2015,
     )
-
-    LaunchedEffect(state.selectedDateMillis) {
-        val selectedMillis = state.selectedDateMillis ?: return@LaunchedEffect
-        component.onBirthdateChanged(selectedMillis.toLocalDateTime().date)
+    LaunchedEffect(datePickerState.selectedDateMillis) {
+        val selectedMillis = datePickerState.selectedDateMillis ?: return@LaunchedEffect
+        component.onBirthdateChanged(selectedMillis.toLocalDate())
         scaffoldState.bottomSheetState.hide()
     }
 
@@ -75,7 +75,7 @@ fun SignUpScreen(component: SignUpComponent) {
         topBar = {
             MSTopAppBar(
                 title = "Sign Up",
-                onBackTap = component::onBackTap,
+                onBackTap = if (model.canGoBack) component::onBackTap else null,
                 actions = {
                     TextButton(onClick = component::onSignUpAnonymouslyTap) {
                         Text("Continue as Guest")
@@ -85,16 +85,11 @@ fun SignUpScreen(component: SignUpComponent) {
         },
         sheetPeekHeight = 0.dp,
         sheetContent = {
-            AdaptiveDatePicker(
-                modifier = Modifier.fillMaxSize(),
-                state = state,
-                title = {
-                    Text(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                        text = "Birthdate",
-                        style = MaterialTheme.typography.displayMedium
-                    )
-                }
+            DatePicker(
+                title = null,
+                headline = null,
+                state = datePickerState,
+                showModeToggle = false,
             )
         }
     ) {

@@ -26,13 +26,13 @@ interface AiChatComponent {
         val prompt: String = "",
         val image: ByteArray? = null,
         val capturing: Boolean = false,
-        val messages: List<Message> = emptyList()
+        val messages: List<Message> = emptyList(),
     )
 
     data class Message(
         val isUser: Boolean,
         val text: String,
-        val image: ByteArray? = null
+        val image: ByteArray? = null,
     )
 
     // TIP: a function for each user interaction
@@ -98,7 +98,11 @@ class DefaultAiChatComponent(
         scope.launch {
             try {
                 val result =
-                    aiProvider.completeTextChat(model.value.prompt.trim(), model.value.image)
+                    aiProvider.complete(
+                        systemPrompt = systemPrompt,
+                        userPrompt = model.value.prompt.trim(),
+                        userImage = model.value.image
+                    )
                 val userMessage = Message(
                     isUser = true,
                     text = model.value.prompt.trim(),
@@ -146,4 +150,13 @@ class DefaultAiChatComponent(
     override fun onRemoveImageTap() {
         model.value = model.value.copy(image = null)
     }
+
+    private val systemPrompt =
+        "You are a helpful chatbot but your mission is to sell MobileStack." +
+                " MobileStack is a kotlin multiplatform template that allows " +
+                "developers to ship mobile apps faster by including everything" +
+                " you need to launch and monetise a mobile app out of the box" +
+                " (db, billing, analytics, user management etc).  " +
+                "You can answer questions but always keep then short " +
+                "and find a way to promote MobileStack"
 }

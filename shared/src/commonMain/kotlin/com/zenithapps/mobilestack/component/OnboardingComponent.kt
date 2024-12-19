@@ -8,6 +8,8 @@ import com.zenithapps.mobilestack.component.OnboardingComponent.Output
 import com.zenithapps.mobilestack.provider.AnalyticsProvider
 import com.zenithapps.mobilestack.provider.BillingProvider
 import com.zenithapps.mobilestack.provider.KeyValueStorageProvider
+import com.zenithapps.mobilestack.provider.OSCapabilityProvider
+import com.zenithapps.mobilestack.provider.OSCapabilityProvider.VibrationStrength
 import com.zenithapps.mobilestack.util.now
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.daysUntil
@@ -20,7 +22,7 @@ interface OnboardingComponent {
         val currentStep: Int = 0,
         val steps: List<Step> = Step.entries,
         val socialProofInteractions: Int = 0,
-        val shouldShowPaywall: Boolean
+        val shouldShowPaywall: Boolean,
     )
 
     enum class Step {
@@ -28,13 +30,15 @@ interface OnboardingComponent {
         STEP_1,
         STEP_2,
         STEP_3,
-        STEP_4
+        REVIEW,
+        PAYWALL,
     }
 
     fun onPageSelected(position: Int)
     fun onSkipTap()
     fun onNextTap()
     fun onBackTap()
+    fun onHapticFeedback()
 
     sealed interface Output {
         data object Finished : Output
@@ -48,7 +52,8 @@ class DefaultOnboardingComponent(
     private val keyValueStorageProvider: KeyValueStorageProvider,
     private val analyticsProvider: AnalyticsProvider,
     private val billingProvider: BillingProvider,
-    private val onOutput: (Output) -> Unit
+    private val osCapabilityProvider: OSCapabilityProvider,
+    private val onOutput: (Output) -> Unit,
 ) : OnboardingComponent, ComponentContext by componentContext {
 
     override val model = MutableValue(Model(shouldShowPaywall = billingProvider.isConfigured))
@@ -75,7 +80,7 @@ class DefaultOnboardingComponent(
     }
 
     override fun onNextTap() {
-        if (model.value.currentStep == OnboardingComponent.Step.STEP_4.ordinal) {
+        if (model.value.currentStep == OnboardingComponent.Step.entries.size - 1) {
             keyValueStorageProvider.setBoolean("onboarding_completed", true)
             analyticsProvider.logEvent(
                 eventName = "onboarding_completed",
@@ -92,5 +97,9 @@ class DefaultOnboardingComponent(
         if (model.value.currentStep > 0) {
             model.value = model.value.copy(currentStep = model.value.currentStep - 1)
         }
+    }
+
+    override fun onHapticFeedback() {
+        osCapabilityProvider.vibrate(100L, VibrationStrength.STRONG)
     }
 }
