@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrowseGallery
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.SwitchCamera
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -35,11 +35,10 @@ import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.ui.camera.PeekabooCamera
 import com.preat.peekaboo.ui.camera.rememberPeekabooCameraState
-
 import com.preat.peekaboo.image.picker.ResizeOptions as PickerResizeOptions
 import com.preat.peekaboo.ui.camera.ResizeOptions as CameraResizeOptions
 
-private val pickerResizeOptions = PickerResizeOptions(
+val pickerResizeOptions = PickerResizeOptions(
     width = 512, // Custom width
     height = 512, // Custom height
     resizeThresholdBytes = 2 * 1024 * 1024L, // Custom threshold for 2MB,
@@ -142,7 +141,7 @@ fun Camera(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CameraButton(
-                        imageVector = Icons.Default.BrowseGallery,
+                        imageVector = Icons.Default.Photo,
                         contentDescription = "Browse gallery",
                         enabled = !cameraState.isCapturing,
                         onClick = {

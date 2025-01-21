@@ -19,8 +19,11 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,20 +34,39 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.preat.peekaboo.image.picker.SelectionMode
+import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.image.picker.toImageBitmap
 import com.zenithapps.mobilestack.component.AiChatComponent
 import com.zenithapps.mobilestack.ui.widget.Camera
 import com.zenithapps.mobilestack.ui.widget.MSOutlinedTextField
+import com.zenithapps.mobilestack.ui.widget.pickerResizeOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AiChatScreen(component: AiChatComponent) {
     val model by component.model.subscribeAsState()
+
+    val scope = rememberCoroutineScope()
+    val singleImagePicker = rememberImagePickerLauncher(
+        selectionMode = SelectionMode.Single,
+        scope = scope,
+        resizeOptions = pickerResizeOptions,
+        onResult = { byteArrays ->
+            byteArrays.firstOrNull()?.let {
+                component.onImageSelected(it)
+            }
+        }
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -138,6 +160,52 @@ fun AiChatScreen(component: AiChatComponent) {
                             )
                         }
                         Spacer(modifier = Modifier.size(4.dp))
+                    } else {
+                        Box {
+                            var expandMenu by remember { mutableStateOf(false) }
+                            OutlinedIconButton(
+                                modifier = Modifier.size(60.dp).padding(top = 6.dp),
+                                onClick = { expandMenu = true },
+                                enabled = !model.loading,
+                                shape = MaterialTheme.shapes.medium
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.CameraAlt,
+                                    contentDescription = "Camera"
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = expandMenu,
+                                onDismissRequest = { expandMenu = false }) {
+                                DropdownMenuItem(
+                                    text = { Text("Camera") },
+                                    onClick = {
+                                        expandMenu = false
+                                        component.onCameraTap()
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Default.CameraAlt,
+                                            contentDescription = "Camera"
+                                        )
+                                    },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Gallery") },
+                                    onClick = {
+                                        expandMenu = false
+                                        singleImagePicker.launch()
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Default.Photo,
+                                            contentDescription = "Gallery"
+                                        )
+                                    },
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.size(4.dp))
                     }
                     MSOutlinedTextField(
                         modifier = Modifier.weight(1f),
@@ -147,30 +215,16 @@ fun AiChatScreen(component: AiChatComponent) {
                         label = "Prompt"
                     )
                     Spacer(modifier = Modifier.size(4.dp))
-                    if (model.prompt.isNotBlank() || model.image != null) {
-                        OutlinedIconButton(
-                            modifier = Modifier.size(60.dp).padding(top = 4.dp),
-                            onClick = component::onSubmitTap,
-                            enabled = (model.prompt.isNotBlank() || model.image != null) && !model.loading,
-                            shape = MaterialTheme.shapes.medium
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Default.Send,
-                                contentDescription = "Send"
-                            )
-                        }
-                    } else {
-                        OutlinedIconButton(
-                            modifier = Modifier.size(60.dp).padding(top = 4.dp),
-                            onClick = component::onCameraTap,
-                            enabled = !model.loading,
-                            shape = MaterialTheme.shapes.medium
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.CameraAlt,
-                                contentDescription = "Camera"
-                            )
-                        }
+                    OutlinedIconButton(
+                        modifier = Modifier.size(60.dp).padding(top = 6.dp),
+                        onClick = component::onSubmitTap,
+                        enabled = (model.prompt.isNotBlank() || model.image != null) && !model.loading,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Send,
+                            contentDescription = "Send"
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
