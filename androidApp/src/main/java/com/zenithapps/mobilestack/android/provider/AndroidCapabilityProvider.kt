@@ -76,7 +76,7 @@ class AndroidCapabilityProvider(private val activity: Activity) : OSCapabilityPr
         file.outputStream().use { it.write(imageByteArray) }
         val imageUri = FileProvider.getUriForFile(
             activity,
-            "${activity.application.packageName}.provider",
+            "${activity.application.packageName}.fileprovider",
             file
         )
 
