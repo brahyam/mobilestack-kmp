@@ -27,7 +27,7 @@ accompanist = "0.34.0"
 camerax = "1.4.1"
 revenuecat-purchases = "1.2.0+13.6.0"
 reviewKtx = "2.0.2"
-openaiclient = "4.0.0-beta01"
+openaiclient = "4.0.1"
 
 [libraries]
 

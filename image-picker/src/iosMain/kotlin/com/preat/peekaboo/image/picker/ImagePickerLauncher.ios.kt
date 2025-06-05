@@ -46,6 +46,7 @@ import platform.UIKit.UIGraphicsEndImageContext
 import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
+import platform.UIKit.UIImageOrientation
 import platform.darwin.NSObject
 import platform.darwin.dispatch_group_create
 import platform.darwin.dispatch_group_enter
@@ -53,6 +54,7 @@ import platform.darwin.dispatch_group_leave
 import platform.darwin.dispatch_group_notify
 import platform.posix.memcpy
 
+@OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun rememberImagePickerLauncher(
     selectionMode: SelectionMode,
@@ -82,8 +84,31 @@ actual fun rememberImagePickerLauncher(
                         scope.launch(Dispatchers.Main) {
                             nsData?.let {
                                 val image = UIImage.imageWithData(it)
+                                // Normalize orientation immediately after getting the image
+                                val normalizedImage = image?.let { img ->
+                                    if (img.imageOrientation != UIImageOrientation.UIImageOrientationUp) {
+                                        UIGraphicsBeginImageContextWithOptions(
+                                            img.size,
+                                            false,
+                                            img.scale,
+                                        )
+                                        img.drawInRect(
+                                            CGRectMake(
+                                                x = 0.0,
+                                                y = 0.0,
+                                                width = img.size.useContents { width },
+                                                height = img.size.useContents { height },
+                                            ),
+                                        )
+                                        val normalized = UIGraphicsGetImageFromCurrentImageContext()
+                                        UIGraphicsEndImageContext()
+                                        normalized ?: img
+                                    } else {
+                                        img
+                                    }
+                                }
                                 val resizedImage =
-                                    image?.fitInto(
+                                    normalizedImage?.fitInto(
                                         resizeOptions.width,
                                         resizeOptions.height,
                                         resizeOptions.resizeThresholdBytes,
