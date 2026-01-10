@@ -35,3 +35,12 @@ See the [Setup Guide](https://github.com/getmobilestack/mobilestack-kmp#setup) a
 
 - If you have a question or need help implementing a feature, please create a GitHub issue or discussion.
 - For community support, join our [Discord community](https://discord.gg/mobilestack).
+
+## Third-Party Licenses
+
+This project includes modified versions of the following libraries:
+- **Peekaboo** (camera and image-picker modules) - Apache License 2.0
+  - Original project: https://github.com/onseok/peekaboo
+  - Modifications:
+    - Fix for image picker image orientation on iOS.
+    - Fix for image compression size.
