@@ -1,7 +1,6 @@
 # MobileStack
 
-Welcome to the MobileStack template, This boilerplate is designed to help you quickly get started
-with cross-platform mobile app development using Kotlin Multiplatform (KMP).
+MobileStack is a fully-featured, Kotlin Multiplatform (KMP) boilerplate template for building cross-platform Android/iOS apps with 100% shared UI. It includes authentication, Firestore database, billing (RevenueCat), analytics, OpenAI integration, and camera/image picker functionality - everything you need to ship your mobile app quickly.
 
 # Screenshots
 
@@ -28,55 +27,11 @@ with cross-platform mobile app development using Kotlin Multiplatform (KMP).
 - **User Management**: Includes a user table and samples on how to update user data making it easy
   to pair with your favorite auth management tool.
 
-## Installation, Getting Started and other Documentation
+## Installation and Getting Started
 
-Visit [MobileStack Docs](https://docs.getmobilestack.com).
+See the [Setup Guide](https://github.com/getmobilestack/mobilestack-kmp#setup) and [Documentation](https://docs.getmobilestack.com) for detailed instructions on configuration and usage.
 
 ## Support
 
-- If you have a question or need help implementing a feature please reach out to us
-  at [Discord](https://discord.com/channels/1232698243884908644/1241806926585663498).
-- If you encounter a bug please create a new issue.
-
----
-
-### Supported features
-
-Some features are only available in the Starter and All-in versions of MobileStack. Here's an
-overview
-
-| Feature                             | Launch | Starter | All-in |
-|-------------------------------------|--------|---------|--------|
-| **KMP targets Android / iOS**       | ✅      | ✅       | ✅      |
-| **100% Shared UI + Navigation**     | ✅      | ✅       | ✅      |
-| **Dark Theme Support**              | ✅      | ✅       | ✅      |
-| **Custom UI Components**            | ✅      | ✅       | ✅      |
-| **Analytics with Firebase**         | ✅      | ✅       | ✅      |
-| **Crashlytics**                     | ✅      | ✅       | ✅      |
-| **Auth with Firebase**              | ❌      | ✅       | ✅      |
-| **DB with Firestore**               | ✅      | ✅       | ✅      |
-| **Billing with RevenueCat**         | ❌      | ✅       | ✅      |
-| **Remote Paywalls with RevenueCat** | ❌      | ✅       | ✅      |
-| **In-App Notifications**            | ❌      | ✅       | ✅      |
-| **RemoteConfigs with Firebase**     | ❌      | ✅       | ✅      |
-| **User Management**                 | ✅      | ✅       | ✅      |
-| **OpenAI API Integration**          | ❌      | ✅       | ✅      |
-| **Take Pictures**                   | ❌      | ✅       | ✅      |
-| **Select Pictures from Gallery**    | ❌      | ✅       | ✅      |
-| **Private Discord Access**          | ❌      | ❌       | ✅      |
-| **Lifetime Updates**                | ❌      | ❌       | ✅      |
-
-| Pre-built Screens | Launch | Starter | All-in |
-|-------------------|--------|---------|--------|
-| **Onboarding**    | ❌      | ✅       | ✅      |
-| **Welcome**       | ✅      | ✅       | ✅      |
-| **SignIn**        | ❌      | ✅       | ✅      |
-| **SignUp**        | ❌      | ✅       | ✅      |
-| **ResetPassword** | ❌      | ✅       | ✅      |
-| **Profile**       | ✅      | ✅       | ✅      |
-| **ChatGPT**       | ❌      | ✅       | ✅      |
-| **Paywall**       | ❌      | ✅       | ✅      |
-
----
-
-Thank you for choosing MobileStack Launch. Happy coding!
+- If you have a question or need help implementing a feature, please create a GitHub issue or discussion.
+- For community support, join our [Discord community](https://discord.gg/mobilestack).

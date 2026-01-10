@@ -10,10 +10,10 @@ plugins {
 }
 
 android {
-    namespace = "com.zenithapps.mobilestack.android"
+    namespace = "com.getmobilestack.kmp.android"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        applicationId = "com.zenithapps.mobilestack.android" // TODO: Your app id here
+        applicationId = "com.getmobilestack.kmp" // TODO: Your app id here
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

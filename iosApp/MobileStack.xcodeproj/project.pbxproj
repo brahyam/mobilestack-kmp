@@ -489,7 +489,7 @@
 					"-framework",
 					shared,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.zenithapps.mobilestack.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.getmobilestack.kmp.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -527,7 +527,7 @@
 					"-framework",
 					shared,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.zenithapps.mobilestack.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.getmobilestack.kmp.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

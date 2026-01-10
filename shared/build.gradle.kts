@@ -87,12 +87,12 @@ kotlin {
 
 compose.resources {
     publicResClass = true
-    packageOfResClass = "com.zenithapps.mobilestack.resources"
+    packageOfResClass = "com.getmobilestack.kmp.resources"
     generateResClass = always
 }
 
 android {
-    namespace = "com.zenithapps.mobilestack"
+    namespace = "com.getmobilestack.kmp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
