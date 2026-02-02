@@ -1,0 +1,69 @@
+---
+sidebar_position: 2
+---
+
+# Components
+
+Components are the building blocks of the app and are located in the shared module.
+
+Each component is responsible for a single screen or a part of it.
+
+They are represented by an interface that defines:
+- Model: any dynamic data that the component needs to show to the user. eg. `ProfileComponent` needs to load a `User` to display the user's email.
+- View Actions: functions that the view can call to notify the component about the user actions. eg. `ProfileComponent` can call `onSignOutTap()` to notify that the user clicked on the logout button.
+- Outputs: events that the component can emit to it's parent component to notify of events that need to be handled outside of the component. eg. `ProfileComponent` can emit `SignedOut` to notify that the user logged out.
+
+```kotlin
+
+interface ProfileComponent {
+    val model: Value<Model>
+
+    data class Model(
+        val initialLoading: Boolean = true,
+        val loading: Boolean = false,
+        val user: User? = null,
+        val customerBillingInfo: CustomerBillingInfo? = null,
+        val appVersion: String = "",
+        val newEmail: String = "",
+        val editModeEnabled: Boolean = false,
+        val isAnonymous: Boolean = false,
+        val canGoBack: Boolean
+    )
+
+    fun onSignOutTap()
+
+    fun onPurchaseTap()
+
+    fun onMarketingConsentChanged(consent: Boolean)
+
+    fun onManagePurchasesTap()
+
+    fun onRestorePurchasesTap()
+
+    fun onHelpTap()
+
+    fun onPrivacyPolicyTap()
+
+    fun onTermsOfServiceTap()
+
+    fun onOpenSourceLibrariesTap()
+
+    fun onEmailChanged(email: String)
+
+    fun onSaveEmailTap()
+
+    fun onDeleteAccountTap()
+
+    fun onEnableEditModeTap()
+
+    fun onBackTap()
+
+    fun onMobileStackTap()
+
+    sealed interface Output {
+        data object Purchase : Output
+        data object SignedOut : Output
+        data object GoBack : Output
+    }
+}
+```

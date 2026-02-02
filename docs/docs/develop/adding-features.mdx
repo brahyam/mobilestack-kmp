@@ -1,0 +1,175 @@
+---
+sidebar_position: 4
+---
+
+# Adding Your Own Features
+
+Assuming your feature will have a new screen, start by creating a new component interface in the shared module.
+
+```kotlin
+interface MyFeatureComponent {
+    
+}
+```
+
+Define your feature's `Model` class by deciding the data that the component needs to load and display to the user. eg. a list of items.
+
+```kotlin
+interface MyFeatureComponent {
+    val model: Value<Model>
+
+    data class Model(
+        val items: List<MyFeatureItem> = emptyList()
+    )
+}
+```
+
+Create the functions that the view can call to notify the component about the user actions.
+
+```kotlin
+interface MyFeatureComponent {
+    ...
+    fun onItemTap(itemId: String)
+}
+```
+
+Create the navigation events that the component can emit to it's parent component to move to another screen.
+
+```kotlin
+interface MyFeatureComponent {
+    ...
+    sealed interface Output {
+        data class NavigateToItemDetail(val itemId: String) : Output()
+    }
+}
+```
+
+Now you can create the `Component` implementation by implementing the component interface. 
+Remember to always pass in the constructor arguments the `componentContext`, the `onOutput` function and all dependencies that will be used by the component (eg. `userRepository`, `analyticsProvider`, etc.).
+
+```kotlin
+class DefaultMyFeatureComponent(
+    componentContext: ComponentContext,
+    private val onOutput: (Output) -> Unit
+) : MyFeatureComponent, ComponentContext by componentContext {
+    override val model = MutableValue(Model())
+    ...
+}
+```
+
+Now let's load the data and display it in the view.
+
+You will need to pass the repository that will provide the data to the component. eg. an `ItemRepository` that will provide the list of items.
+
+```kotlin
+class DefaultMyFeatureComponent(
+    componentContext: ComponentContext,
+    private val itemRepository: ItemRepository,
+    private val onOutput: (Output) -> Unit,
+) : MyFeatureComponent, ComponentContext by componentContext {
+    ...
+}
+```
+
+You can choose to load whenever the component is created or when the component is mounted. For that you need to use the `Lifecycle` object from the `ComponentContext`.
+
+You can do this in the `init` block of the component. We assume that the `itemRepository` is a suspend function that will return a list of items.
+
+In order to call the suspend function from the `init` block, we need to wrap the code in a coroutine, so we create a scope that is tied to the component's lifecycle.
+
+```kotlin
+class DefaultMyFeatureComponent(
+    componentContext: ComponentContext,
+    private val itemRepository: ItemRepository,
+    private val onOutput: (Output) -> Unit
+) : MyFeatureComponent, ComponentContext by componentContext {
+    private val scope = createCoroutineScope()
+
+    init {
+        lifecycle.doOnResume {
+            scope.launch {
+                val items = itemRepository.getItems()
+                model.value = model.value.copy(items = items)
+            }
+        }
+    }
+}
+```
+
+Now you can create the view that will display the data.
+
+Create a new `Screen` composable in /ui/screens/ that receives the `MyFeatureComponent` interface as a parameter.
+
+```kotlin
+@Composable
+fun MyFeatureScreen(component: MyFeatureComponent) {
+    ...
+}
+```
+
+Listen to the `model` updates and display the data in the view.
+
+```kotlin
+@Composable
+fun MyFeatureScreen(component: MyFeatureComponent) {
+    val model by component.model.subscribeAsState()
+    model.items.forEach { item ->
+        Text(item.name)
+    }
+}
+```
+
+Now you need to add your feature to the RootComponent interface to declare it as a child component in order for the users to be able to navigate to it.
+
+```kotlin
+interface RootComponent {
+    ...
+    sealed interface Child {
+        data class MyFeature(val component: MyFeatureComponent) : Child
+    }
+}
+```
+
+Then you have to add a new Config in the `RootComponent.Config` object to declare the route that will be used to navigate to the feature.
+
+```kotlin
+@Serializable
+private sealed interface Config {
+    ...
+    data object MyFeature : Config
+}
+```
+
+Finally, you need to add a new case to the RootComponent `createChild` function so Root can instantiate your feature component.
+
+```kotlin
+private fun createChild(
+        config: Config,
+        componentContext: ComponentContext,
+    ): Child =
+        when (config) {
+            ...
+
+            Config.MyFeature -> Child.MyFeature(
+                component = DefaultMyFeatureComponent(
+                    componentContext = componentContext,
+                    itemRepository = itemRepository,
+                    onOutput = { output ->
+                        when (output) {
+                            MyFeatureComponent.Output.NavigateToItemDetail -> navigation.pushToFront(Config.ResetPassword)
+                        }
+                    }
+                )
+            )
+        }
+```
+
+Remember to add the `itemRepository` as a new dependency to the `DependencyProvider` so it can be provided to the `MyFeatureComponent` from Root.
+
+```kotlin
+interface DependencyProvider {
+    ...
+    val itemRepository: ItemRepository
+}
+```
+

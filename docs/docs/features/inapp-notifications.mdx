@@ -1,0 +1,25 @@
+---
+sidebar_position: 5
+---
+
+# In-App Notifications
+
+MobileStack contains a component for displaying in-app notifications.
+
+To display an in-app notification, pass the `InAppNotificationProvider` to the component constructor and use the `showNotification` function:
+
+```kotlin
+class MyComponent(
+    private val inAppNotificationProvider: InAppNotificationProvider
+): Component {
+    fun onShowNotification() {
+        val notification = Notification(message = "Hello, world!")
+        inAppNotificationProvider.showNotification(notification)
+    }
+}
+```
+
+They are displayed as snackbars at the top of the screen.
+
+You can modify the appearance of the snackbars and their position by updating the `InAppNotificationComponent`.
+

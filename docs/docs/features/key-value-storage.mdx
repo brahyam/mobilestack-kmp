@@ -1,0 +1,33 @@
+---
+sidebar_position: 4
+---
+
+# Key-Value Storage
+
+MobileStack uses Android's `SharedPreferences` and iOS's `UserDefaults` for key-value storage.
+
+To store a value, pass the `KeyValueStorageProvider` to the component constructor and use the `setString` function:
+
+```kotlin
+class MyComponent(
+    private val keyValueStorageProvider: KeyValueStorageProvider
+): Component {
+    fun onStoreValue() {
+        keyValueStorageProvider.setString("key", "value")
+    }
+}
+```
+
+To retrieve a value, pass the `KeyValueStorageProvider` to the component constructor and use the `getString` function:
+
+```kotlin
+class MyComponent(
+    private val keyValueStorageProvider: KeyValueStorageProvider
+): Component {
+    fun onRetrieveValue() {
+        val value = keyValueStorageProvider.getString("key")
+    }
+}
+```
+
+There are also functions for storing and retrieving `boolean` and `int`.

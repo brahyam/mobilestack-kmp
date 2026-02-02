@@ -1,0 +1,21 @@
+---
+sidebar_position: 1
+---
+
+# Remote Config
+
+MobileStack uses Firebase Remote Config to provide remote configuration.
+
+To use remote config, pass the `RemoteConfigProvider` to the component constructor and use the `getString` function:
+
+```kotlin
+class MyComponent(
+    private val remoteConfigProvider: RemoteConfigProvider
+): Component {
+    fun onGetConfig() {
+        val config = remoteConfigProvider.getString("key")
+    }
+}
+```
+
+There are also functions for retrieving `boolean`, `double`, and `long`.

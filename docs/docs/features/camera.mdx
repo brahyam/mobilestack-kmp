@@ -1,0 +1,31 @@
+---
+sidebar_position: 7
+---
+
+# Camera
+
+MobileStack includes a camera library that allows you to take photos with the device's camera from Compose Multiplatform.
+
+In order to use the camera, you need to include the `Camera` composable view in your screen.
+
+```kotlin
+@Composable
+fun MyScreen(component: MyComponent) {
+   Camera(
+        onCapture = component::onImageSelected,
+        onSelectedFromFile = component::onImageSelected,
+        onCloseTap = component::onCloseCameraTap,
+        onRequestPermissionTap = component::onRequestCameraPermissionTap
+    )
+}
+```
+
+::: tip
+
+You can check a full example of how to use the camera in the `AiSampleHomeScreen.kt` and `AiSampleComponent.kt` files in the [repository](https://github.com/GetMobileStack/mobilestack-kmp/blob/main/shared/src/commonMain/kotlin/com/zenithapps/mobilestack/ui/screen/home/SampleAiHomeScreen.kt).
+
+:::
+
+
+
+

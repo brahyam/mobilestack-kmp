@@ -1,0 +1,41 @@
+---
+sidebar_position: 6
+---
+
+# AI
+
+MobileStack integrates with the [OpenAI](https://platform.openai.com/) API to provide AI services.
+
+The `AiProvider` currently supports chat completions with and without images. 
+
+Some use cases that you could implement with this are:
+
+- Chat with any text content
+- Identify elements in an image
+- Describe an image
+- Compare two images
+
+In order to use the AI services, you need to:
+- Add your OpenAI API key to Firebase Remote Config with the key `OPENAI_API_KEY`
+- Update the system prompt in `OpenAiProvider`
+- Pass the `AiProvider` to the component constructor
+- Use the function `completeTextChat` to get a chat completion
+eg.
+
+```kotlin
+class MyComponent(
+    private val aiProvider: AiProvider
+): Component {
+    fun onCompleteTextChat() {
+        val completion = aiProvider.completeTextChat("Hello, how are you?")
+    }
+}
+```
+
+:::danger
+Always use a reverse proxy on production to avoid exposing your OpenAI API key. 
+
+We recommend using a service like [Gateway](https://meetgateway.com).
+:::
+
+

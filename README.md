@@ -29,7 +29,7 @@ MobileStack is a fully-featured, Kotlin Multiplatform (KMP) boilerplate template
 
 ## Installation and Getting Started
 
-See the [Setup Guide](https://github.com/getmobilestack/mobilestack-kmp#setup) and [Documentation](https://docs.getmobilestack.com) for detailed instructions on configuration and usage.
+See the [Setup Guide](https://github.com/brahyam/mobilestack-kmp#setup) and [Documentation](https://brahyam.github.io/mobilestack-kmp/) for detailed instructions on configuration and usage.
 
 ## Support
 

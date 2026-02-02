@@ -1,0 +1,9 @@
+{
+  "label": "Setup",
+  "position": 3,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "description": "Run the apps for the first time."
+  }
+}

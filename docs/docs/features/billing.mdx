@@ -1,0 +1,31 @@
+---
+sidebar_position: 3
+---
+
+# Billing
+
+MobileStack uses RevenueCat for billing.
+
+The recommended way to allow purchases is to use RevenueCat's remote paywall.
+
+Whenever you would like to show a paywall, you can navigate to the `RemotePaywall` component.
+
+You can also use the `BillingProvider` to get the current subscription status.
+
+To access the current subscription status, you can pass the `BillingProvider` to the component constructor and use the `getCustomerBillingInfo` function:
+
+```kotlin
+class MyComponent(
+    private val billingProvider: BillingProvider
+): Component {
+    private val scope = createCoroutineScope()
+
+    fun onCurrentSubscriptionStatus() {
+        scope.launch {
+            val billingInfo = billingProvider.getCustomerBillingInfo()
+            // billingInfo.entitlements contains the active user subscriptions
+        }
+    }
+}
+```
+

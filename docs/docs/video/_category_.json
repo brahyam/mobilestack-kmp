@@ -1,0 +1,9 @@
+{
+  "label": "Videos",
+  "position": 2,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "description": "Setup your development environment and run the apps for the first time."
+  }
+}
