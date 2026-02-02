@@ -1,0 +1,30 @@
+---
+sidebar_position: 2
+---
+
+# Analytics
+
+MobileStack integrates with the [Firebase](https://firebase.google.com/products/analytics) API to provide analytics services including crashlytics.
+
+The `AnalyticsProvider` currently supports logging events together with a screen name and custom attributes.
+
+To log an event provide the `AnalyticsProvider` to the component constructor and use the `logEvent` function:
+
+```kotlin
+logEvent(name: String, screen: String? = null, attributes: Map<String, String>? = null)
+```
+
+eg. Logging a login event with a screen name and a custom attribute:
+
+```kotlin
+class MyComponent(
+    private val analyticsProvider: AnalyticsProvider
+): Component {
+    fun onPackageSelected(packageId: String) {
+        analyticsProvider.logEvent("package_selected", "HomeScreen", mapOf("package_id" to packageId))
+    }
+}
+```
+
+You can check the logged events in the Firebase Console under Analytics / Events.
+

@@ -1,0 +1,33 @@
+---
+sidebar_position: 8
+---
+
+# Photo Picker
+
+MobileStack includes a photo picker that allows you to select photos from the device's photo library from Compose Multiplatform.
+
+In order to use the photo picker, you need to include the `PhotoPicker` composable view in your screen.
+
+```kotlin
+@Composable
+fun MyScreen(component: MyComponent) {
+
+    val singleImagePicker = rememberImagePickerLauncher(
+        selectionMode = SelectionMode.Single,
+        scope = scope,
+        resizeOptions = pickerResizeOptions,
+        onResult = { byteArrays ->
+            byteArrays.firstOrNull()?.let {
+                component.onSelectedFromFile(it)
+            }
+        }
+    )
+
+    Button(onClick = { singleImagePicker.launch() }) {
+        Text("Select Image")
+    }
+}
+```
+
+
+

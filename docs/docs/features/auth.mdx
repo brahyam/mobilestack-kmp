@@ -1,0 +1,74 @@
+---
+sidebar_position: 1
+---
+
+# Auth
+
+MobileStack integrates with the [Firebase](https://firebase.google.com/products/auth) API to provide authentication services.
+
+The `AuthProvider` currently supports signing in with email and password and anonymously.
+
+To sign up with email and password provide the `SignUpUseCase` to the component constructor and use the operator function or anonymously function:
+
+```kotlin
+class MyComponent(
+    private val signUp: SignUpUseCase
+): Component {
+    fun onSignUp(email: String, password: String) {
+        signUp(email, password)
+    }
+
+    fun onSignUpAnonymously() {
+        signUp.anonymously()
+    }
+}
+```
+
+To sign in with email and password provide the `SignInUseCase` to the component constructor and use the operator function:
+
+```kotlin
+class MyComponent(
+    private val signIn: SignInUseCase
+): Component {
+    fun onSignIn(email: String, password: String) {
+        signIn(email, password)
+    }
+}
+```
+
+To sign out provide the `SignOutUseCase` to the component constructor and use the operator function:
+
+```kotlin
+class MyComponent(
+    private val signOut: SignOutUseCase
+): Component {
+    fun onSignOut() {
+        signOut()
+    }
+}
+```
+
+To delete the user provide the `DeleteAccountUseCase` to the component constructor and use the operator function:
+
+```kotlin
+class MyComponent(
+    private val deleteAccount: DeleteAccountUseCase
+): Component {
+    fun onDeleteAccount() {
+        deleteAccount()
+    }
+}
+```
+
+To reset the password provide the `AuthProvider` to the component constructor and use the `resetPassword` function:
+
+```kotlin
+class MyComponent(
+    private val authProvider: AuthProvider
+): Component {
+    fun onResetPassword(email: String) {
+        authProvider.resetPassword(email)
+    }
+}
+```
+

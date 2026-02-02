@@ -1,0 +1,57 @@
+---
+sidebar_position: 2
+---
+
+# Theme
+
+Setup your theme colors and splash screen colors.
+
+## Colors
+
+:::tip
+
+You can use the [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/) to generate a complete color palette.
+
+:::
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem value="theme-builder" label="Theme Builder" default>
+    1. Go to [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/)
+    2. Customize your theme colors by uploading a seed picture, randomizing, or manually selecting colors.
+    3. Click on `Pick your font` and then `Export theme` button, select Jetpack Compose and download the zip file.
+    4. Unzip the downloaded zip file and replace `shared/src/commonMain/kotlin/com/zenithapps/mobilestack/ui/style/Color.kt` with the `Color.kt` from the unzipped folder.
+    5. Done! Your app now uses the custom colors.
+
+    KMP doesn't support mid/high contrast colors yet, so you can remove them from the `Color.kt` file.
+  </TabItem>
+  <TabItem value="manually" label="Manually">
+    1. Go to `shared/src/commonMain/kotlin/com/zenithapps/mobilestack/ui/style/Color.kt` and replace the individual HEX values with your custom colors. ( Keep in mind that the colors should be in the format `0xFF000000` where `FF` is the alpha value.)
+  </TabItem>
+</Tabs>
+
+## Dark mode
+
+The app supports dark mode by default. You can customize the colors for dark mode in the `Color.kt` file. 
+
+:::tip
+
+In case you wish to only work with light or dark theme, you can replace the `isSystemInDarkTheme()` value in `shared/src/commonMain/kotlin/com/zenithapps/mobilestack/ui/style/Theme.kt`. eg:
+
+```kotlin
+@Composable
+fun MobileStackTheme(
+    useDarkTheme: Boolean = false, // <- Change like this to only use light theme and vice versa.
+    content: @Composable () -> Unit
+)
+```
+
+:::
+
+## Android Splash screen
+
+By default the OS uses the app icon with the splash background color as the splash screen. To customize the splash background color:
+
+1. Go to `androidApp/src/main/res/` and replace the colors in all the `styles.xml` files with your desired splash background color. (`values-night` will be used for dark mode)

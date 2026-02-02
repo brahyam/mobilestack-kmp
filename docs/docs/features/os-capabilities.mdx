@@ -1,0 +1,46 @@
+---
+sidebar_position: 4
+---
+
+# OS Capabilities
+
+MobileStack provides a set of helpers for interacting with the operating system.
+
+```kotlin
+interface OSCapabilityProvider {
+    // Open a URL in the device's default browser
+    fun openUrl(url: String)
+
+    // Get the platform the app is running on eg. iOS, Android
+    fun getPlatform(): Platform
+
+    // Get the app version
+    fun getAppVersion(): String
+
+    // Manage in-app purchases eg. cancel subscription, restore purchase
+    fun managePurchases()
+
+    // Open the app settings eg. to allow the user to change permissions
+    fun openAppSettings()
+
+    // Request a store review
+    fun requestStoreReview()
+
+    // Share an image with an optional title and message
+    fun shareImage(imageByteArray: ByteArray, mimeType: String, title: String, message: String)
+}
+```
+
+To use the capabilities, pass the `OSCapabilityProvider` to the component constructor and use the functions provided.
+
+```kotlin
+class MyComponent(
+    private val oSCapabilityProvider: OSCapabilityProvider
+): Component {
+    fun onOpenUrl() {
+        oSCapabilityProvider.openUrl("https://www.google.com")
+    }
+}
+```
+
+

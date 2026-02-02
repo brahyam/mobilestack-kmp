@@ -1,0 +1,27 @@
+---
+sidebar_position: 3
+---
+
+# Navigation
+
+Navigation between components is handled by the Root Component and works as a stack of components.
+
+When a component needs to navigate to another component, it emits an `Output` event to the parent component. The parent component then calls the `navigation.pushToFront(componentConfig: Config)` function with the target component Config.
+
+When a component is configured in root, a function is provided to handle the `Output` events. This function is responsible for handling the `Output` events of the component and calling the `navigation` functions to navigate between components.
+
+```kotlin
+Config.Profile -> Child.Profile(
+                component = DefaultProfileComponent(
+                    componentContext = componentContext,
+                    ...
+                    onOutput = { output ->
+                        when (output) {
+                            ProfileComponent.Output.Purchase -> navigation.pushToFront(Config.RemotePaywall)
+                            ProfileComponent.Output.GoBack -> navigation.pop()
+                            ProfileComponent.Output.SignedOut -> navigation.replaceAll(Config.Welcome)
+                        }
+                    }
+                )
+            )
+```

@@ -1,0 +1,156 @@
+---
+sidebar_position: 1
+---
+
+# Android App
+
+Configure and run the Android App for the first time.
+
+## Open the project in Android Studio
+
+1. Open the project in Android Studio by selecting the directory you created while cloning.
+2. Select the `project` view from the dropdown in the top left corner.
+![android studio file tree project view](@site/static/img/android-studio-project-view.png)
+3. Update the `rootProject.name` property in `settings.gradle.kts` to match your project name (without spaces). This will be the name of the project in the Android Studio not the app name.
+4. Sync the project by clicking on the `Sync Project with Gradle Files` button.
+
+## Update local.properties and create signing keys
+
+Look for the file `local.properties` in the project root folder and add the following content after the existing content:
+
+```properties
+DEBUG_PASSWORD=[YOUR_DEBUG_PASSWORD]
+RELEASE_PASSWORD=[YOUR_RELEASE_PASSWORD]
+```
+
+replace `[YOUR_DEBUG_PASSWORD]` and `[YOUR_RELEASE_PASSWORD]` with different passwords you want to use for your signing keys (avoid special characters and passwords shorter than 12 characters).
+
+:::tip
+
+- Can't think of a good password for the keys? Use a [password generator](https://www.lastpass.com/features/password-generator#generatorTool). **Uncheck the special characters option.**
+
+:::
+
+Open a terminal in the root of the project and run the following commands:
+
+```shell
+cd androidApp
+```
+
+⚠️ Before running the following command replace `[DEBUG_PASSWORD]` with the password you added to the properties file. 
+
+```shell
+keytool -genkey -v -keystore debug_keystore.jks -storepass [DEBUG_PASSWORD] -alias androiddebugkey -keypass [DEBUG_PASSWORD] -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+```
+
+⚠️ Before running the following command replace `[RELEASE_PASSWORD]` with the password you added to the properties file.
+
+```shell
+keytool -genkey -v -keystore release_keystore.jks -storepass [RELEASE_PASSWORD] -alias androidreleasekey -keypass [RELEASE_PASSWORD] -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Release,O=Android,C=US"
+```
+
+## Update app name and app id
+
+1. Replace `MobileStack` with your app name in `androidApp/src/main/res/values/strings.xml`. (this will be the app name visibile in the phone)
+2. Replace `com.zenithapps.mobilestack.android` with your application id in `androidApp/src/build.gradle.kts` / `applicationId`. (⚠️ **DO NOT MODIFY THE `namespace` property**)
+3. Sync the project by clicking on the `Sync Project with Gradle Files` button.
+
+:::warning
+
+Replace only the `applicationId` property and NOT `namespace` otherwise you will have to update the namespaces in all the files.
+
+:::
+
+:::tip
+
+For `applicationId` is recommended to use a url that you own, reversed. It will be your unique identifier in the app stores and cannot be changed once your app is published in the stores.
+
+:::
+
+## Configure Firebase services
+
+Go to [Firebase](https://console.firebase.google.com/) 
+
+1. Create a new project
+2. Enable Analytics
+3. Use a new Analytics account for this project
+4. Choose the country where your app will be published / will be legally available
+
+### Add your Android app
+
+From the overview or project settings / general add an Android app to the project.
+
+1. Click on the Android Icon under your project name.
+2. Use the same package name as the one you chose in the previous step.
+3. Use your app name as nickname. (No need to add Android as platform will be identified with an icon)
+4. Download the `google-services.json` file and place it in the `androidApp` directory. 
+5. **Skip SHA certificate and adding the SDK**.
+
+:::warning
+
+Make sure you add the `google-services.json` file to the `/androidApp` directory and not the `/src` directory.
+
+:::
+
+### Enable Firebase Auth
+
+1. From your projects Firebase overview, in the left menu go to `Build/Authentication`.
+2. Click on `Get Started`
+3. Go to `Sign-in method` tab and enable providers `Email/Password` and `Anonymous`. Click on `Save`.
+
+### Enable Firebase Firestore
+
+1. From your projects Firebase overview, in the left menu go to `Build/Firestore Database`.
+2. Click on `Create database`
+3. Select a database region where your app will be published / will be legally available.
+4. Select `Start in production mode`.
+5. Once finished, click on the `Rules` tab and replace all the rules code with the following:
+
+```javascript
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+     // Match documents in the "users" collection where the document ID matches the user's auth UID
+    match /users/{userId} {
+      // Allow read and write access only if the user is authenticated and the userId matches their auth UID
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Match all other documents
+    match /{document=**} {
+      // Deny read and write access to all other documents
+      allow read, write: if false;
+    }
+  }
+}
+```
+
+4. Click on `Publish`.
+
+### Enable Firebase Remote Config
+
+1. From your projects Firebase overview, in the left menu go to `Run/Remote Config`.
+2. Click on `Create Configuration`
+3. Create a test string parameter with the key: `TEST` and default value: `TEST`.
+4. Click on `Save`
+5. Click on `Publish changes`.
+
+## Running the app
+
+In Android Studio:
+
+1. Create an emulator using the `Device Manager` or connect your physical device.
+2. Click on the green play button to run the app.
+3. You will see MobileStack running on your device.
+
+## Troubleshooting
+
+- File `debug_keystore.jks` not found -> Make sure you are in the `androidApp` directory when running the keytool command.
+- `Cause: failed to decrypt safe contents entry: javax.crypto.BadPaddingException` -> The password you chose is too short or contains special characters. Alternatively, the password that you have entered in the `local.properties` file is incorrect.
+- No matching client found for package name -> The package name you chose in the `applicationId` property is not the same as the one you chose in the Firebase console. Remove the app from the Firebase console and add it again using the correct package name.
+- Deprecated Gradle features: The project is using deprecated Gradle features. Update the Gradle wrapper to the latest version. -> Update the Gradle wrapper to the latest version.
+- Cannot generate project dependency accessors because project 'YOUR PROJECT NAME' doesn't follow the naming convention: `[a-zA-Z]([A-Za-z0-9\-_])*` -> The project name you chose in the `settings.gradle.kts` file is not following the naming convention. Replace the project name with a valid one.  
+
+If you are having any other issues, please contact us at [support@getmobilestack.com](mailto:support@getmobilestack.com) or through the [Discord](https://discord.gg/mobilestack) and we will be happy to help you.
