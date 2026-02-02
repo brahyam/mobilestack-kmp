@@ -47,10 +47,6 @@ interface ProfileComponent {
 
     fun onHelpTap()
 
-    fun onPrivacyPolicyTap()
-
-    fun onTermsOfServiceTap()
-
     fun onOpenSourceLibrariesTap()
 
     fun onEmailChanged(email: String)
@@ -207,24 +203,6 @@ class DefaultProfileComponent(
             params = emptyMap()
         )
         osCapabilityProvider.openUrl("https://github.com/brahyam/mobilestack-kmp/issues")
-    }
-
-    override fun onPrivacyPolicyTap() {
-        analyticsProvider.logEvent(
-            eventName = "privacy_policy_tap",
-            screenName = SCREEN_NAME,
-            params = emptyMap()
-        )
-        osCapabilityProvider.openUrl("https://brahyam.github.io/mobilestack-kmp/")
-    }
-
-    override fun onTermsOfServiceTap() {
-        analyticsProvider.logEvent(
-            eventName = "terms_of_service_tap",
-            screenName = SCREEN_NAME,
-            params = emptyMap()
-        )
-        osCapabilityProvider.openUrl("https://brahyam.github.io/mobilestack-kmp/")
     }
 
     override fun onOpenSourceLibrariesTap() {

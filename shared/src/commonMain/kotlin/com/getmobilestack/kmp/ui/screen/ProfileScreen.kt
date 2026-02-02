@@ -192,16 +192,6 @@ fun ProfileScreen(component: ProfileComponent) {
                     )
                     Spacer(Modifier.height(8.dp))
                     SettingsNavigationItem(
-                        label = "Privacy Policy",
-                        onClick = component::onPrivacyPolicyTap
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    SettingsNavigationItem(
-                        label = "Terms of Service",
-                        onClick = component::onTermsOfServiceTap
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    SettingsNavigationItem(
                         label = "Open Source Libraries",
                         onClick = component::onOpenSourceLibrariesTap
                     )
