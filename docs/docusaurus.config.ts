@@ -2,8 +2,6 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
-
 const config: Config = {
 
   markdown: {
@@ -15,11 +13,9 @@ const config: Config = {
   tagline: 'Ship mobile apps fast',
   favicon: 'img/favicon.ico',
 
-  // Prod URL + baseUrl.
-  // - GitHub Pages: https://brahyam.github.io/mobilestack-kmp/
-  // - Custom domain: https://docs.getmobilestack.com/
-  url: isGitHubPages ? 'https://brahyam.github.io' : 'https://docs.getmobilestack.com',
-  baseUrl: isGitHubPages ? '/mobilestack-kmp/' : '/',
+  // Docs live on GitHub Pages.
+  url: 'https://brahyam.github.io',
+  baseUrl: '/mobilestack-kmp/',
 
   // GitHub pages deployment config.
   organizationName: 'brahyam',
@@ -79,13 +75,13 @@ const config: Config = {
         },
         // {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://getmobilestack.com',
-          label: 'Get MobileStack',
+          href: 'https://github.com/brahyam/mobilestack-kmp',
+          label: 'GitHub',
           position: 'right',
         },
         {
-          href: 'https://github.com/brahyam/mobilestack-kmp',
-          label: 'GitHub',
+          href: 'https://brahyam.github.io/mobilestack-kmp/',
+          label: 'Docs',
           position: 'right',
         },
       ],
@@ -131,16 +127,12 @@ const config: Config = {
             //   to: '/blog',
             // },
             {
-              label: 'MobileStack',
-              href: 'https://getmobilestack.com',
+              label: 'GitHub repository',
+              href: 'https://github.com/brahyam/mobilestack-kmp',
             },
             {
-              label: 'Zenith Apps',
-              href: 'https://zenithapps.com',
-            },
-            {
-              label: 'Everblue App',
-              href: 'https://everblue.life',
+              label: 'Docs',
+              href: 'https://brahyam.github.io/mobilestack-kmp/',
             },
           ],
         },
