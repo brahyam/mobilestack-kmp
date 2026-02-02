@@ -100,7 +100,7 @@ import UseThisTemplateImg from '@site/static/img/use-this-template-button.png';
 
 Jump to [Manual Setup](#manual-setup) if you want to manually setup the repository.
 
-Go to [MobileStack Github Template](https://github.com/GetMobileStack/mobile-stack-kmp) and click on `Use this template` button.
+Go to the [MobileStack GitHub template](https://github.com/brahyam/mobilestack-kmp) and click on **Use this template**.
 
 <img src={UseThisTemplateImg} style={{ width: '50%', height: 'auto' }} />
 
@@ -129,7 +129,7 @@ import TabItem from '@theme/TabItem';
   Replace `[YOUR_APP_FOLDER_NAME]` with your app name in the following commands:
 
     ```shell
-    git clone https://github.com/GetMobileStack/mobile-stack-kmp.git [YOUR_APP_FOLDER_NAME]
+    git clone https://github.com/brahyam/mobilestack-kmp.git [YOUR_APP_FOLDER_NAME]
     ```
 
     ```shell
@@ -148,7 +148,7 @@ import TabItem from '@theme/TabItem';
   Replace `[YOUR_APP_FOLDER_NAME]` with your app name in the following commands:
 
     ```shell
-    git clone git@github.com:GetMobileStack/mobile-stack-kmp.git [YOUR_APP_FOLDER_NAME]
+    git clone git@github.com:brahyam/mobilestack-kmp.git [YOUR_APP_FOLDER_NAME]
     ```
 
     ```shell
@@ -184,7 +184,7 @@ git push -u origin main
 <Tabs>
 <TabItem value="https" label="HTTPS" default>
     ```shell
-    git remote add upstream https://github.com/GetMobileStack/mobile-stack-kmp.git
+    git remote add upstream https://github.com/brahyam/mobilestack-kmp.git
     ```
 
     ```shell
@@ -193,7 +193,7 @@ git push -u origin main
   </TabItem>
   <TabItem value="ssh" label="SSH">
     ```shell
-    git remote add upstream git@github.com:GetMobileStack/mobile-stack-kmp.git
+    git remote add upstream git@github.com:brahyam/mobilestack-kmp.git
     ```
 
     ```shell

@@ -206,7 +206,7 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        osCapabilityProvider.openUrl("mailto:support@getmobilestack.com")
+        osCapabilityProvider.openUrl("https://github.com/brahyam/mobilestack-kmp/issues")
     }
 
     override fun onPrivacyPolicyTap() {
@@ -215,7 +215,7 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        osCapabilityProvider.openUrl("https://getmobilestack.com/privacy-policy/")
+        osCapabilityProvider.openUrl("https://brahyam.github.io/mobilestack-kmp/")
     }
 
     override fun onTermsOfServiceTap() {
@@ -224,7 +224,7 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        osCapabilityProvider.openUrl("https://getmobilestack.com/terms-of-use/")
+        osCapabilityProvider.openUrl("https://brahyam.github.io/mobilestack-kmp/")
     }
 
     override fun onOpenSourceLibrariesTap() {
@@ -233,7 +233,7 @@ class DefaultProfileComponent(
             screenName = SCREEN_NAME,
             params = emptyMap()
         )
-        osCapabilityProvider.openUrl("https://github.com/getmobilestack/mobilestack-kmp#open-source-libraries")
+        osCapabilityProvider.openUrl("https://github.com/brahyam/mobilestack-kmp#third-party-licenses")
     }
 
     override fun onEmailChanged(email: String) {
@@ -305,7 +305,7 @@ class DefaultProfileComponent(
     }
 
     override fun onMobileStackTap() {
-        osCapabilityProvider.openUrl("https://getmobilestack.com/")
+        osCapabilityProvider.openUrl("https://github.com/brahyam/mobilestack-kmp")
     }
 
     override fun onOnboardingTap() {
